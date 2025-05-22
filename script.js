@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize EmailJS
-    emailjs.init('wq-IFEEhCtuJHg6ML');
+    emailjs.init('O4pACqPEjvSxMAu8W');
     
     // Mobile Navigation Toggle
     const mobileToggle = document.querySelector('.mobile-toggle');
