@@ -143,134 +143,50 @@ document.addEventListener('DOMContentLoaded', function() {
         checkScrollPosition();
     }
 
-    // ENHANCED EmailJS Contact Form Handler with Detailed Debugging
-    const contactForm = document.getElementById('contactForm');
+    // Initialize EmailJS
+emailjs.init('bdGFY_BzZZsQHro_6'); // Replace with your actual public key
+
+// Form submission handler
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const submitBtn = document.getElementById('submitBtn');
     const formStatus = document.getElementById('formStatus');
     const statusMessage = document.getElementById('statusMessage');
     
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent default form submission
-            
-            console.log('🚀 === FORM SUBMISSION STARTED ===');
-            console.log('Timestamp:', new Date().toISOString());
-            
-            const submitBtn = document.getElementById('submitBtn');
-            
-            // Update button state
-            if (submitBtn) {
-                submitBtn.textContent = 'Sending...';
-                submitBtn.disabled = true;
-            }
-            
-            // Hide previous status messages
-            if (formStatus) {
-                formStatus.style.display = 'none';
-                formStatus.className = '';
-            }
-            
-            // Get form data
-            const formData = {
-                name: document.getElementById('name').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                phone: document.getElementById('phone').value.trim(),
-                message: document.getElementById('message').value.trim()
-            };
-            
-            console.log('📋 Form Data:', formData);
-            console.log('🔑 EmailJS Configuration:');
-            console.log('  - Public Key: O4pACqPEjvSxMAu8W');
-            console.log('  - Service ID: service_gpbqgd6');
-            console.log('  - Template ID: template_957rrxi');
-            
-            // Validate required fields
-            if (!formData.name || !formData.email || !formData.message) {
-                console.log('❌ Validation failed: Missing required fields');
-                showStatus('Please fill in all required fields.', 'error');
-                resetButton();
-                return;
-            }
-            
-            // Validate email format
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(formData.email)) {
-                console.log('❌ Validation failed: Invalid email format');
-                showStatus('Please enter a valid email address.', 'error');
-                resetButton();
-                return;
-            }
-            
-            console.log('✅ Validation passed, sending email via EmailJS...');
-            
-            // Send email via EmailJS
-            emailjs.send("service_gpbqgd6", "template_957rrxi", formData)
-                .then(function(response) {
-                    console.log('✅ === EMAILJS SUCCESS ===');
-                    console.log('Response Status:', response.status);
-                    console.log('Response Text:', response.text);
-                    console.log('Full Response:', response);
-                    showStatus('Message sent successfully! We will get back to you soon.', 'success');
-                    contactForm.reset();
-                })
-                .catch(function(error) {
-                    console.log('❌ === EMAILJS ERROR ===');
-                    console.error('Error Object:', error);
-                    console.error('Error Status:', error.status);
-                    console.error('Error Text:', error.text);
-                    console.error('Error Message:', error.message);
-                    
-                    // Detailed error handling
-                    let errorMessage = 'Failed to send message. ';
-                    
-                    if (error.status === 400) {
-                        errorMessage += 'Bad request - check template variables.';
-                        console.log('💡 Suggestion: Check if template variables {{name}}, {{email}}, {{phone}}, {{message}} exist in your EmailJS template');
-                    } else if (error.status === 401) {
-                        errorMessage += 'Unauthorized - check your EmailJS public key.';
-                        console.log('💡 Suggestion: Verify your public key: O4pACqPEjvSxMAu8W');
-                    } else if (error.status === 404) {
-                        errorMessage += 'Service or template not found.';
-                        console.log('💡 Suggestion: Check service ID (service_gpbqgd6) and template ID (template_957rrxi) in EmailJS dashboard');
-                    } else if (error.status === 422) {
-                        errorMessage += 'Invalid template parameters.';
-                        console.log('💡 Suggestion: Template variables might not match the data being sent');
-                    } else {
-                        errorMessage += 'Network error. Please try again.';
-                        console.log('💡 Suggestion: Check internet connection or try again later');
-                    }
-                    
-                    errorMessage += ' Call us at +91 80192 96878 for immediate assistance.';
-                    showStatus(errorMessage, 'error');
-                })
-                .finally(function() {
-                    console.log('🏁 EmailJS request completed');
-                    resetButton();
-                });
-            
-            function resetButton() {
-                if (submitBtn) {
-                    submitBtn.textContent = 'Send Message';
-                    submitBtn.disabled = false;
-                }
-            }
-            
-            function showStatus(message, type) {
-                console.log(`📢 Status (${type}):`, message);
-                if (formStatus && statusMessage) {
-                    statusMessage.textContent = message;
-                    formStatus.className = type;
-                    formStatus.style.display = 'block';
-                    
-                    // Auto hide success messages after 5 seconds
-                    if (type === 'success') {
-                        setTimeout(() => {
-                            formStatus.style.display = 'none';
-                        }, 5000);
-                    }
-                }
-            }
+    // Change button text
+    submitBtn.textContent = 'Sending...';
+    submitBtn.disabled = true;
+    
+    // Get form data
+    const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        message: document.getElementById('message').value
+    };
+    
+    // Send email
+    emailjs.send('service_gpbqgd6', 'template_e3xds87', formData)
+        .then(function(response) {
+            // Success
+            statusMessage.textContent = 'Message sent successfully!';
+            formStatus.className = 'success';
+            formStatus.style.display = 'block';
+            document.getElementById('contactForm').reset();
+        })
+        .catch(function(error) {
+            // Error
+            statusMessage.textContent = 'Failed to send message. Please try again.';
+            formStatus.className = 'error';
+            formStatus.style.display = 'block';
+        })
+        .finally(function() {
+            // Reset button
+            submitBtn.textContent = 'Send Message';
+            submitBtn.disabled = false;
         });
-    }
+});
 
     // Chatbot functionality
     const chatbotToggle = document.querySelector('.chatbot-toggle');
