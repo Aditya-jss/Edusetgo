@@ -296,7 +296,7 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     };
     
     // Send email
-    emailjs.send('service_gpbqgd6', 'template_odvpuo6', formData)
+    emailjs.send('service_gpbqgd6', '__ejs-test-mail-service__', formData)
         .then(function() {
             alert('Message sent successfully! We will get back to you soon.');
             document.getElementById('contactForm').reset();
