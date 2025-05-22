@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize EmailJS
+    emailjs.init('wq-IFEEhCtuJHg6ML');
+    
     // Mobile Navigation Toggle
     const mobileToggle = document.querySelector('.mobile-toggle');
     const navMenu = document.querySelector('.nav-menu');
@@ -16,52 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 mobileToggle.textContent = '☰';
             }
         });
-    }
-    
-    // Course Tabs Functionality
-    const courseTabs = document.querySelectorAll('.course-tab');
-    const courseGrids = document.querySelectorAll('.courses-grid');
-    
-    if (courseTabs.length > 0 && courseGrids.length > 0) {
-        courseTabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                // Remove active class from all tabs
-                courseTabs.forEach(t => t.classList.remove('active'));
-                
-                // Add active class to clicked tab
-                this.classList.add('active');
-                
-                // Hide all course grids
-                courseGrids.forEach(grid => grid.classList.remove('active'));
-                
-                // Show the selected course grid
-                const country = this.getAttribute('data-country');
-                const targetGrid = document.getElementById(`${country}-courses`);
-                if (targetGrid) {
-                    targetGrid.classList.add('active');
-                }
-            });
-        });
-    }
-    
-    // Clone UK courses to other countries if empty
-    const ukCourses = document.getElementById('uk-courses');
-    const usaCourses = document.getElementById('usa-courses');
-    const canadaCourses = document.getElementById('canada-courses');
-    const australiaCourses = document.getElementById('australia-courses');
-    
-    if (ukCourses) {
-        if (usaCourses && usaCourses.children.length === 0) {
-            usaCourses.innerHTML = ukCourses.innerHTML;
-        }
-        
-        if (canadaCourses && canadaCourses.children.length === 0) {
-            canadaCourses.innerHTML = ukCourses.innerHTML;
-        }
-        
-        if (australiaCourses && australiaCourses.children.length === 0) {
-            australiaCourses.innerHTML = ukCourses.innerHTML;
-        }
     }
     
     // Smooth scrolling for anchor links
@@ -113,96 +70,119 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+    
     // Package Cards Animation and Equal Height
-const packageCards = document.querySelectorAll('.package-card');
+    const packageCards = document.querySelectorAll('.package-card');
 
-// Set equal heights for all package elements
-function equalizePackageHeights() {
-    if (window.innerWidth >= 992) {  // Only equalize on desktop
-        // Reset heights first
-        packageCards.forEach(card => {
-            card.style.height = 'auto';
-            card.querySelector('.package-content').style.height = 'auto';
-            card.querySelector('.package-features').style.height = 'auto';
-        });
-        
-        // Get maximum heights
-        let maxCardHeight = 0;
-        let maxContentHeight = 0;
-        let maxFeaturesHeight = 0;
-        
-        packageCards.forEach(card => {
-            maxCardHeight = Math.max(maxCardHeight, card.offsetHeight);
-            maxContentHeight = Math.max(maxContentHeight, card.querySelector('.package-content').offsetHeight);
-            maxFeaturesHeight = Math.max(maxFeaturesHeight, card.querySelector('.package-features').offsetHeight);
-        });
-        
-        // Apply maximum heights
-        packageCards.forEach(card => {
-            card.style.height = maxCardHeight + 'px';
-            card.querySelector('.package-content').style.height = maxContentHeight + 'px';
-            card.querySelector('.package-features').style.height = maxFeaturesHeight + 'px';
-        });
-    } else {
-        // Reset heights on mobile
-        packageCards.forEach(card => {
-            card.style.height = 'auto';
-            card.querySelector('.package-content').style.height = 'auto';
-            card.querySelector('.package-features').style.height = 'auto';
-        });
-    }
-}
-
-// Run on load and resize
-if (packageCards.length > 0) {
-    window.addEventListener('load', equalizePackageHeights);
-    window.addEventListener('resize', equalizePackageHeights);
-    
-    // Add animation when scrolling to packages section
-    const packagesSection = document.getElementById('packages');
-    
-    function checkScrollPosition() {
-        if (packagesSection) {
-            const rect = packagesSection.getBoundingClientRect();
-            const isVisible = rect.top < window.innerHeight && rect.bottom >= 0;
+    // Set equal heights for all package elements
+    function equalizePackageHeights() {
+        if (window.innerWidth >= 992) {
+            packageCards.forEach(card => {
+                card.style.height = 'auto';
+                const content = card.querySelector('.package-content');
+                const features = card.querySelector('.package-features');
+                if (content) content.style.height = 'auto';
+                if (features) features.style.height = 'auto';
+            });
             
-            if (isVisible) {
-                packageCards.forEach((card, index) => {
-                    setTimeout(() => {
-                        card.classList.add('animated');
-                    }, index * 200); // Staggered animation
-                });
-                
-                window.removeEventListener('scroll', checkScrollPosition);
-            }
+            let maxCardHeight = 0;
+            let maxContentHeight = 0;
+            let maxFeaturesHeight = 0;
+            
+            packageCards.forEach(card => {
+                maxCardHeight = Math.max(maxCardHeight, card.offsetHeight);
+                const content = card.querySelector('.package-content');
+                const features = card.querySelector('.package-features');
+                if (content) maxContentHeight = Math.max(maxContentHeight, content.offsetHeight);
+                if (features) maxFeaturesHeight = Math.max(maxFeaturesHeight, features.offsetHeight);
+            });
+            
+            packageCards.forEach(card => {
+                card.style.height = maxCardHeight + 'px';
+                const content = card.querySelector('.package-content');
+                const features = card.querySelector('.package-features');
+                if (content) content.style.height = maxContentHeight + 'px';
+                if (features) features.style.height = maxFeaturesHeight + 'px';
+            });
+        } else {
+            packageCards.forEach(card => {
+                card.style.height = 'auto';
+                const content = card.querySelector('.package-content');
+                const features = card.querySelector('.package-features');
+                if (content) content.style.height = 'auto';
+                if (features) features.style.height = 'auto';
+            });
         }
     }
+
+    // Run package height equalization
+    if (packageCards.length > 0) {
+        window.addEventListener('load', equalizePackageHeights);
+        window.addEventListener('resize', equalizePackageHeights);
+        
+        const packagesSection = document.getElementById('packages');
+        
+        function checkScrollPosition() {
+            if (packagesSection) {
+                const rect = packagesSection.getBoundingClientRect();
+                const isVisible = rect.top < window.innerHeight && rect.bottom >= 0;
+                
+                if (isVisible) {
+                    packageCards.forEach((card, index) => {
+                        setTimeout(() => {
+                            card.classList.add('animated');
+                        }, index * 200);
+                    });
+                    
+                    window.removeEventListener('scroll', checkScrollPosition);
+                }
+            }
+        }
+        
+        window.addEventListener('scroll', checkScrollPosition);
+        checkScrollPosition();
+    }
     
-    window.addEventListener('scroll', checkScrollPosition);
-    checkScrollPosition(); // Check on load
-}
-    
-    // Contact form submission
+    // EmailJS Contact Form Handler
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
-            // If using Formspree, allow the default form submission
-            // If you want to handle form submission via AJAX, uncomment below
-            
-            /*
             e.preventDefault();
             
+            console.log('Form submitted - EmailJS handler');
+            
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn) {
+                submitBtn.textContent = 'Sending...';
+                submitBtn.disabled = true;
+            }
+            
             // Get form data
-            const formData = new FormData(contactForm);
-            const formValues = Object.fromEntries(formData.entries());
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                message: document.getElementById('message').value
+            };
             
-            // You would typically send this data to your server here
-            console.log('Form data:', formValues);
+            console.log('Sending with EmailJS:', formData);
             
-            // Show success message
-            alert('Thank you for your message! We will get back to you shortly.');
-            contactForm.reset();
-            */
+            // Send email via EmailJS
+            emailjs.send("service_gpbqgd6", "template_957rrxi", formData)
+                .then(function(response) {
+                    console.log('EmailJS SUCCESS!', response);
+                    alert('Message sent successfully! We will get back to you soon.');
+                    contactForm.reset();
+                }, function(error) {
+                    console.log('EmailJS ERROR:', error);
+                    alert('Failed to send message. Please try again or call us directly.');
+                })
+                .finally(function() {
+                    if (submitBtn) {
+                        submitBtn.textContent = 'Send Message';
+                        submitBtn.disabled = false;
+                    }
+                });
         });
     }
     
@@ -281,7 +261,7 @@ if (packageCards.length > 0) {
                 
                 // Generate a response - for custom messages, provide a generic response
                 setTimeout(() => {
-                    addMessage("Thank you for your question. One of our counselors will get back to you soon. Meanwhile, you can check our predefined questions or call us at +91 98765 43210 for immediate assistance.");
+                    addMessage("Thank you for your question. One of our counselors will get back to you soon. Meanwhile, you can check our predefined questions or call us at +91 80192 96878 for immediate assistance.");
                 }, 500);
                 
                 // Clear the input field
