@@ -223,7 +223,7 @@ if (contactForm) {
                 } else if (error.status === 404) {
                     errorMessage += 'Service or template not found.';
                 } else {
-                    errorMessage += 'Please try again or call us directly at +91 80192 96878.';
+                    errorMessage += 'Please try again or call us directly at +91 80192 96878';
                 }
                 
                 showStatus(errorMessage, 'error');
