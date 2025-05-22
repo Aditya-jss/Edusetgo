@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize EmailJS
+    // Initialize EmailJS with your public key
     emailjs.init('O4pACqPEjvSxMAu8W');
     
+    console.log('EmailJS initialized successfully');
+
     // Mobile Navigation Toggle
     const mobileToggle = document.querySelector('.mobile-toggle');
     const navMenu = document.querySelector('.nav-menu');
@@ -20,12 +22,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
-            
             const targetSelector = this.getAttribute('href');
             const targetElement = document.querySelector(targetSelector);
             
@@ -43,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
-    
+
     // Add active class to navigation based on scroll position
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('.nav-menu a');
@@ -51,10 +52,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (sections.length > 0 && navLinks.length > 0) {
         window.addEventListener('scroll', function() {
             let current = '';
-            
             sections.forEach(section => {
                 if (!section.id) return;
-                
                 const sectionTop = section.offsetTop;
                 const sectionHeight = section.clientHeight;
                 if (window.pageYOffset >= sectionTop - 200) {
@@ -70,10 +69,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-    
+
     // Package Cards Animation and Equal Height
     const packageCards = document.querySelectorAll('.package-card');
-
+    
     // Set equal heights for all package elements
     function equalizePackageHeights() {
         if (window.innerWidth >= 992) {
@@ -121,7 +120,6 @@ document.addEventListener('DOMContentLoaded', function() {
         window.addEventListener('resize', equalizePackageHeights);
         
         const packagesSection = document.getElementById('packages');
-        
         function checkScrollPosition() {
             if (packagesSection) {
                 const rect = packagesSection.getBoundingClientRect();
@@ -133,7 +131,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             card.classList.add('animated');
                         }, index * 200);
                     });
-                    
                     window.removeEventListener('scroll', checkScrollPosition);
                 }
             }
@@ -142,50 +139,96 @@ document.addEventListener('DOMContentLoaded', function() {
         window.addEventListener('scroll', checkScrollPosition);
         checkScrollPosition();
     }
-    
-    // EmailJS Contact Form Handler
+
+    // FIXED EmailJS Contact Form Handler
     const contactForm = document.getElementById('contactForm');
+    const formStatus = document.getElementById('formStatus');
+    const statusMessage = document.getElementById('statusMessage');
+    
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+            e.preventDefault(); // Prevent default form submission
             
-            console.log('Form submitted - EmailJS handler');
+            console.log('Form submission started');
             
             const submitBtn = document.getElementById('submitBtn');
+            
+            // Update button state
             if (submitBtn) {
                 submitBtn.textContent = 'Sending...';
                 submitBtn.disabled = true;
             }
             
+            // Hide previous status messages
+            if (formStatus) {
+                formStatus.style.display = 'none';
+                formStatus.className = '';
+            }
+            
             // Get form data
             const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                message: document.getElementById('message').value
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                message: document.getElementById('message').value.trim()
             };
             
-            console.log('Sending with EmailJS:', formData);
+            console.log('Form data:', formData);
+            
+            // Validate required fields
+            if (!formData.name || !formData.email || !formData.message) {
+                showStatus('Please fill in all required fields.', 'error');
+                resetButton();
+                return;
+            }
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                showStatus('Please enter a valid email address.', 'error');
+                resetButton();
+                return;
+            }
             
             // Send email via EmailJS
             emailjs.send("service_gpbqgd6", "template_957rrxi", formData)
                 .then(function(response) {
                     console.log('EmailJS SUCCESS!', response);
-                    alert('Message sent successfully! We will get back to you soon.');
+                    showStatus('Message sent successfully! We will get back to you soon.', 'success');
                     contactForm.reset();
-                }, function(error) {
-                    console.log('EmailJS ERROR:', error);
-                    alert('Failed to send message. Please try again or call us directly.');
+                })
+                .catch(function(error) {
+                    console.error('EmailJS ERROR:', error);
+                    showStatus('Failed to send message. Please try again or call us directly at +91 80192 96878.', 'error');
                 })
                 .finally(function() {
-                    if (submitBtn) {
-                        submitBtn.textContent = 'Send Message';
-                        submitBtn.disabled = false;
-                    }
+                    resetButton();
                 });
+            
+            function resetButton() {
+                if (submitBtn) {
+                    submitBtn.textContent = 'Send Message';
+                    submitBtn.disabled = false;
+                }
+            }
+            
+            function showStatus(message, type) {
+                if (formStatus && statusMessage) {
+                    statusMessage.textContent = message;
+                    formStatus.className = type;
+                    formStatus.style.display = 'block';
+                    
+                    // Auto hide success messages after 5 seconds
+                    if (type === 'success') {
+                        setTimeout(() => {
+                            formStatus.style.display = 'none';
+                        }, 5000);
+                    }
+                }
+            }
         });
     }
-    
+
     // Chatbot functionality
     const chatbotToggle = document.querySelector('.chatbot-toggle');
     const chatbotBox = document.querySelector('.chatbot-box');
@@ -194,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const promptButtons = document.querySelectorAll('.prompt-btn');
     const userMessageInput = document.getElementById('userMessage');
     const sendMessageButton = document.getElementById('sendMessage');
-    
+
     // Predefined responses for the chatbot
     const chatbotResponses = {
         "Tell me about study options in USA": "The USA offers various study options including Bachelor's, Master's, and Doctoral programs. Top fields include Computer Science, Business, Engineering, and Medical Sciences. Most programs require standardized tests like SAT/ACT for undergraduate and GRE/GMAT for graduate programs. The academic year typically starts in August/September with some universities offering January intake.",
@@ -207,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         "How do I apply for scholarships?": "Start researching scholarships 12-18 months before your program begins. Look for university-specific scholarships, government funding, private foundations, and country-specific opportunities. Most merit scholarships require strong academic records, test scores, and compelling personal statements. Our Premium package includes comprehensive scholarship application assistance to maximize your funding options."
     };
-    
+
     // Function to add a message to the chat window
     function addMessage(message, isUser = false) {
         if (!chatbotMessages) return;
@@ -220,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Scroll to the bottom of the messages
         chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
     }
-    
+
     // Setup chatbot if elements exist
     if (chatbotToggle && chatbotBox && closeChat) {
         // Toggle chatbot visibility
@@ -232,6 +275,13 @@ document.addEventListener('DOMContentLoaded', function() {
             chatbotBox.classList.remove('active');
         });
         
+        // Close chatbot when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.chatbot-container')) {
+                chatbotBox.classList.remove('active');
+            }
+        });
+
         // Handle prompt button clicks
         if (promptButtons && promptButtons.length > 0) {
             promptButtons.forEach(button => {
@@ -248,13 +298,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
         }
-        
+
         // Handle custom user messages
         function handleUserMessage() {
             if (!userMessageInput) return;
             
             const userMessage = userMessageInput.value.trim();
-            
             if (userMessage) {
                 // Add the user's message to the chat
                 addMessage(userMessage, true);
@@ -268,12 +317,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 userMessageInput.value = '';
             }
         }
-        
+
         // Send message on button click
         if (sendMessageButton) {
             sendMessageButton.addEventListener('click', handleUserMessage);
         }
-        
+
         // Send message on Enter key press
         if (userMessageInput) {
             userMessageInput.addEventListener('keypress', function(e) {
@@ -283,4 +332,30 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
+
+    // Add some visual enhancements
+    function addScrollAnimations() {
+        const animatedElements = document.querySelectorAll('.testimonial-card, .about-text, .about-image');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        animatedElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    }
+    
+    // Initialize scroll animations
+    addScrollAnimations();
+    
+    console.log('All scripts loaded successfully');
 });

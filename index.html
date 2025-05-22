@@ -171,6 +171,7 @@
                     </div>
                 </div>
                 <div class="contact-form">
+                    <!-- FIXED FORM - Removed action and method attributes -->
                     <form id="contactForm">
                         <div class="form-group">
                             <label for="name">Full Name</label>
@@ -190,6 +191,10 @@
                         </div>
                         <button type="submit" id="submitBtn">Send Message</button>
                     </form>
+                    <!-- Success/Error Messages -->
+                    <div id="formStatus" style="margin-top: 15px; padding: 10px; border-radius: 5px; display: none;">
+                        <p id="statusMessage"></p>
+                    </div>
                 </div>
             </div>
         </div>
