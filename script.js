@@ -1,8 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize EmailJS with your public key
-    emailjs.init('O4pACqPEjvSxMAu8W');
-    
-    console.log('EmailJS initialized successfully');
+    try {
+        emailjs.init('O4pACqPEjvSxMAu8W');
+        console.log('✅ EmailJS initialized successfully');
+    } catch (error) {
+        console.error('❌ EmailJS initialization failed:', error);
+    }
 
     // Mobile Navigation Toggle
     const mobileToggle = document.querySelector('.mobile-toggle');
@@ -140,123 +143,134 @@ document.addEventListener('DOMContentLoaded', function() {
         checkScrollPosition();
     }
 
-    // ENHANCED EmailJS Contact Form Handler with Debugging
-const contactForm = document.getElementById('contactForm');
-const formStatus = document.getElementById('formStatus');
-const statusMessage = document.getElementById('statusMessage');
-
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent default form submission
-        
-        console.log('=== FORM SUBMISSION DEBUG ===');
-        console.log('Form submission started');
-        
-        const submitBtn = document.getElementById('submitBtn');
-        
-        // Update button state
-        if (submitBtn) {
-            submitBtn.textContent = 'Sending...';
-            submitBtn.disabled = true;
-        }
-        
-        // Hide previous status messages
-        if (formStatus) {
-            formStatus.style.display = 'none';
-            formStatus.className = '';
-        }
-        
-        // Get form data
-        const formData = {
-            name: document.getElementById('name').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            phone: document.getElementById('phone').value.trim(),
-            message: document.getElementById('message').value.trim()
-        };
-        
-        console.log('Form data being sent:', formData);
-        console.log('EmailJS Service ID:', "service_gpbqgd6");
-        console.log('EmailJS Template ID:', "template_957rrxi");
-        
-        // Validate required fields
-        if (!formData.name || !formData.email || !formData.message) {
-            console.log('Validation failed: Missing required fields');
-            showStatus('Please fill in all required fields.', 'error');
-            resetButton();
-            return;
-        }
-        
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) {
-            console.log('Validation failed: Invalid email format');
-            showStatus('Please enter a valid email address.', 'error');
-            resetButton();
-            return;
-        }
-        
-        console.log('Validation passed, sending email...');
-        
-        // Send email via EmailJS
-        emailjs.send("service_gpbqgd6", "template_957rrxi", formData)
-            .then(function(response) {
-                console.log('=== EMAILJS SUCCESS ===');
-                console.log('Response:', response);
-                console.log('Status:', response.status);
-                console.log('Text:', response.text);
-                showStatus('Message sent successfully! We will get back to you soon.', 'success');
-                contactForm.reset();
-            })
-            .catch(function(error) {
-                console.log('=== EMAILJS ERROR ===');
-                console.error('Full error object:', error);
-                console.error('Error status:', error.status);
-                console.error('Error text:', error.text);
-                console.error('Error message:', error.message);
-                
-                // More specific error messages
-                let errorMessage = 'Failed to send message. ';
-                if (error.status === 400) {
-                    errorMessage += 'Please check your template configuration.';
-                } else if (error.status === 401) {
-                    errorMessage += 'Authentication failed. Please check your EmailJS keys.';
-                } else if (error.status === 404) {
-                    errorMessage += 'Service or template not found.';
-                } else {
-                    errorMessage += 'Please try again or call us directly at +91 80192 96878';
-                }
-                
-                showStatus(errorMessage, 'error');
-            })
-            .finally(function() {
-                console.log('EmailJS request completed');
-                resetButton();
-            });
-        
-        function resetButton() {
+    // ENHANCED EmailJS Contact Form Handler with Detailed Debugging
+    const contactForm = document.getElementById('contactForm');
+    const formStatus = document.getElementById('formStatus');
+    const statusMessage = document.getElementById('statusMessage');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            
+            console.log('🚀 === FORM SUBMISSION STARTED ===');
+            console.log('Timestamp:', new Date().toISOString());
+            
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Update button state
             if (submitBtn) {
-                submitBtn.textContent = 'Send Message';
-                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sending...';
+                submitBtn.disabled = true;
             }
-        }
-        
-        function showStatus(message, type) {
-            console.log('Showing status:', type, message);
-            if (formStatus && statusMessage) {
-                statusMessage.textContent = message;
-                formStatus.className = type;
-                formStatus.style.display = 'block';
-                
-                // Auto hide success messages after 5 seconds
-                if (type === 'success') {
-                    setTimeout(() => {
-                        formStatus.style.display = 'none';
-                    }, 5000);
+            
+            // Hide previous status messages
+            if (formStatus) {
+                formStatus.style.display = 'none';
+                formStatus.className = '';
+            }
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                message: document.getElementById('message').value.trim()
+            };
+            
+            console.log('📋 Form Data:', formData);
+            console.log('🔑 EmailJS Configuration:');
+            console.log('  - Public Key: O4pACqPEjvSxMAu8W');
+            console.log('  - Service ID: service_gpbqgd6');
+            console.log('  - Template ID: template_957rrxi');
+            
+            // Validate required fields
+            if (!formData.name || !formData.email || !formData.message) {
+                console.log('❌ Validation failed: Missing required fields');
+                showStatus('Please fill in all required fields.', 'error');
+                resetButton();
+                return;
+            }
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                console.log('❌ Validation failed: Invalid email format');
+                showStatus('Please enter a valid email address.', 'error');
+                resetButton();
+                return;
+            }
+            
+            console.log('✅ Validation passed, sending email via EmailJS...');
+            
+            // Send email via EmailJS
+            emailjs.send("service_gpbqgd6", "template_957rrxi", formData)
+                .then(function(response) {
+                    console.log('✅ === EMAILJS SUCCESS ===');
+                    console.log('Response Status:', response.status);
+                    console.log('Response Text:', response.text);
+                    console.log('Full Response:', response);
+                    showStatus('Message sent successfully! We will get back to you soon.', 'success');
+                    contactForm.reset();
+                })
+                .catch(function(error) {
+                    console.log('❌ === EMAILJS ERROR ===');
+                    console.error('Error Object:', error);
+                    console.error('Error Status:', error.status);
+                    console.error('Error Text:', error.text);
+                    console.error('Error Message:', error.message);
+                    
+                    // Detailed error handling
+                    let errorMessage = 'Failed to send message. ';
+                    
+                    if (error.status === 400) {
+                        errorMessage += 'Bad request - check template variables.';
+                        console.log('💡 Suggestion: Check if template variables {{name}}, {{email}}, {{phone}}, {{message}} exist in your EmailJS template');
+                    } else if (error.status === 401) {
+                        errorMessage += 'Unauthorized - check your EmailJS public key.';
+                        console.log('💡 Suggestion: Verify your public key: O4pACqPEjvSxMAu8W');
+                    } else if (error.status === 404) {
+                        errorMessage += 'Service or template not found.';
+                        console.log('💡 Suggestion: Check service ID (service_gpbqgd6) and template ID (template_957rrxi) in EmailJS dashboard');
+                    } else if (error.status === 422) {
+                        errorMessage += 'Invalid template parameters.';
+                        console.log('💡 Suggestion: Template variables might not match the data being sent');
+                    } else {
+                        errorMessage += 'Network error. Please try again.';
+                        console.log('💡 Suggestion: Check internet connection or try again later');
+                    }
+                    
+                    errorMessage += ' Call us at +91 80192 96878 for immediate assistance.';
+                    showStatus(errorMessage, 'error');
+                })
+                .finally(function() {
+                    console.log('🏁 EmailJS request completed');
+                    resetButton();
+                });
+            
+            function resetButton() {
+                if (submitBtn) {
+                    submitBtn.textContent = 'Send Message';
+                    submitBtn.disabled = false;
                 }
             }
-        }
-    });
-}
+            
+            function showStatus(message, type) {
+                console.log(`📢 Status (${type}):`, message);
+                if (formStatus && statusMessage) {
+                    statusMessage.textContent = message;
+                    formStatus.className = type;
+                    formStatus.style.display = 'block';
+                    
+                    // Auto hide success messages after 5 seconds
+                    if (type === 'success') {
+                        setTimeout(() => {
+                            formStatus.style.display = 'none';
+                        }, 5000);
+                    }
+                }
+            }
+        });
+    }
 
     // Chatbot functionality
     const chatbotToggle = document.querySelector('.chatbot-toggle');
@@ -386,5 +400,5 @@ if (contactForm) {
     // Initialize scroll animations
     addScrollAnimations();
     
-    console.log('All scripts loaded successfully');
+    console.log('🎉 All scripts loaded successfully');
 });
