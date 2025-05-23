@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSetGo - University Finder</title>
+    <link rel="stylesheet" href="uni.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo-link">
+                    <img src="4.png" alt="World Map" class="logo-map">
+                    <span class="logo">Edu<span>Set</span>Go</span>
+                </a>
+            </div>
+            <div class="mobile-toggle" id="mobileToggle">☰</div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#packages">Packages</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+                <li class="dropdown" id="servicesDropdown">
+                    <a href="#services" class="dropdown-toggle active">Services</a>
+                    <div class="dropdown-content">
+                        <a href="study.html">Study</a>
+                        <a href="visa.html">Visa Help</a>
+                        <a href="university.html">University Finder</a>
+                    </div>
+                </li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Background Animation -->
+    <div class="background-animation">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="floating-shape shape-4"></div>
+    </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="finder-container">
+                <div class="form-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-user-graduate"></i>
+                            Build Your Academic Profile with - EduSetGo
+                        </h2>
+                        <p class="section-description">Tell us about your academic achievements and preferences</p>
+                    </div>
+
+                    <form class="profile-form" id="profileForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="cgpa">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>CGPA/GPA</span>
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="cgpa" 
+                                    class="form-input" 
+                                    placeholder="Enter your CGPA (e.g., 3.5)" 
+                                    step="0.1" 
+                                    min="0.0"
+                                    max="4.0"
+                                    required
+                                >
+                                <div class="input-help">Scale: 0.0 - 4.0</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="greScore">
+                                    <i class="fas fa-brain"></i>
+                                    <span>GRE Score</span>
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="greScore" 
+                                    class="form-input" 
+                                    placeholder="Enter your GRE score (e.g., 320)"
+                                    min="260"
+                                    max="340"
+                                    required
+                                >
+                                <div class="input-help">Range: 260 - 340</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="englishTest">
+                                    <i class="fas fa-language"></i>
+                                    <span>English Test Type</span>
+                                </label>
+                                <select id="englishTest" class="form-select" required>
+                                    <option value="">Select your English test</option>
+                                    <option value="IELTS">IELTS</option>
+                                    <option value="TOEFL">TOEFL</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="englishScore">
+                                    <i class="fas fa-star"></i>
+                                    <span>English Test Score</span>
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="englishScore" 
+                                    class="form-input" 
+                                    placeholder="Enter your score (e.g., 7.0)" 
+                                    step="0.5"
+                                    required
+                                >
+                                <div class="input-help" id="englishHelp">IELTS: 0.0 - 9.0 | TOEFL: 0 - 120</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="programLevel">
+                                    <i class="fas fa-university"></i>
+                                    <span>Program Level</span>
+                                </label>
+                                <select id="programLevel" class="form-select" required>
+                                    <option value="">Select your program level</option>
+                                    <option value="Bachelors">Bachelor's Degree</option>
+                                    <option value="Masters">Master's Degree</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="course">
+                                    <i class="fas fa-book"></i>
+                                    <span>Field of Study</span>
+                                </label>
+                                <select id="course" class="form-select" required>
+                                    <option value="">Select your field of study</option>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Engineering">Engineering</option>
+                                    <option value="Business">Business</option>
+                                    <option value="Business Administration">Business Administration</option>
+                                    <option value="Data Science">Data Science</option>
+                                    <option value="Psychology">Psychology</option>
+                                    <option value="Medicine">Medicine</option>
+                                    <option value="Law">Law</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="search-button" id="searchBtn">
+                            <span class="btn-content">
+                                <i class="fas fa-search"></i>
+                                Find My Perfect University
+                            </span>
+                            <div class="loading-spinner">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                Analyzing Your Profile...
+                            </div>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="results-section" id="resultsSection">
+                    <!-- Results will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 University Finder. Empowering students worldwide.</p>
+        </footer>
+    </div>
+
+    <script src="uni.js"></script>
+</body>
+</html>

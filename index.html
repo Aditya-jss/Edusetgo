@@ -51,24 +51,215 @@
     </section>
 
    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="container">
-            <div class="section-heading">
-                <h2>About Us</h2>
-                <p>Your trusted partner in international education</p>
+<section class="about" id="about">
+    <div class="container">
+        <div class="section-heading">
+            <h2>About Us</h2>
+            <p>Your trusted partner in international education</p>
+        </div>
+        <div class="about-content">
+            <div class="about-image">
+                <img src="1.png" alt="How to Apply to US Universities" class="us-universities-image">
             </div>
-            <div class="about-content">
-                <div class="about-image">
-                    <img src="1.png" alt="How to Apply to US Universities" class="us-universities-image">
-                </div>
-                <div class="about-text">
-                    <p>Our expert team has successfully guided over 300 students from top Indian institutions like IITs and NITs to 40+ prestigious global universities. We provide comprehensive profile assessment and university matching tailored to each student's unique background and aspirations.</p>
-                    <p>We go beyond admissions by offering career-focused guidance including resume building, job market strategies, and valuable networking opportunities. Our strategic approach helps students secure promising employment even in challenging economic conditions.</p>
-                    <p>Our consultancy boasts an exceptional 95% visa approval rate through rigorous preparation and multiple mock interviews. We stay updated with latest immigration policies and provide country-specific visa application strategies.</p>
+            <div class="about-text">
+                <p>Our expert team has successfully guided over 300 students from top Indian institutions like IITs and NITs to 40+ prestigious global universities. We provide comprehensive profile assessment and university matching tailored to each student's unique background and aspirations.</p>
+                <p>We go beyond admissions by offering career-focused guidance including resume building, job market strategies, and valuable networking opportunities. Our strategic approach helps students secure promising employment even in challenging economic conditions.</p>
+                <p>Our consultancy boasts an exceptional 95% visa approval rate through rigorous preparation and multiple mock interviews. We stay updated with latest immigration policies and provide country-specific visa application strategies.</p>
+                
+                <!-- Action Buttons -->
+                <div class="about-actions">
+                    <a href="university.html" class="action-btn primary-btn">
+                        <span class="btn-icon">🎯</span>
+                        <span class="btn-text">
+                            <strong>University Finder</strong>
+                            <small>Find your perfect match</small>
+                        </span>
+                    </a>
+                    <a href="Listofuni.html" class="action-btn secondary-btn">
+                        <span class="btn-icon">📚</span>
+                        <span class="btn-text">
+                            <strong>Browse Universities</strong>
+                            <small>Explore all options</small>
+                        </span>
+                    </a>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
+<style>
+/* About Section Action Buttons */
+.about-actions {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 18px 25px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    min-width: 220px;
+    flex: 1;
+    max-width: 280px;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.action-btn:hover::before {
+    left: 100%;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #0056b3, #00a0e3);
+    color: white;
+    border: 2px solid transparent;
+}
+
+.primary-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0, 86, 179, 0.3);
+    background: linear-gradient(135deg, #004494, #0088cc);
+}
+
+.secondary-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ff8a8a);
+    color: white;
+    border: 2px solid transparent;
+}
+
+.secondary-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(255, 107, 107, 0.3);
+    background: linear-gradient(135deg, #ff5252, #ff7171);
+}
+
+.btn-icon {
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+    flex-shrink: 0;
+}
+
+.btn-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+.btn-text strong {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.btn-text small {
+    font-size: 12px;
+    opacity: 0.9;
+    font-weight: 400;
+    line-height: 1;
+}
+
+/* Active state */
+.action-btn:active {
+    transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .about-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .action-btn {
+        min-width: 100%;
+        max-width: 100%;
+        justify-content: center;
+        text-align: center;
+        padding: 20px 25px;
+    }
+    
+    .btn-text {
+        align-items: center;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .action-btn {
+        padding: 16px 20px;
+        gap: 12px;
+    }
+    
+    .btn-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+    
+    .btn-text strong {
+        font-size: 14px;
+    }
+    
+    .btn-text small {
+        font-size: 11px;
+    }
+}
+
+/* Animation for buttons */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+        box-shadow: 0 8px 25px rgba(0, 86, 179, 0.2);
+    }
+    100% {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.primary-btn {
+    animation: pulse 3s infinite;
+}
+
+/* Hover effects for better accessibility */
+.action-btn:focus {
+    outline: 3px solid rgba(0, 86, 179, 0.5);
+    outline-offset: 2px;
+}
+
+.secondary-btn:focus {
+    outline: 3px solid rgba(255, 107, 107, 0.5);
+    outline-offset: 2px;
+}
+</style>
 
     <!-- Testimonials Section -->
     <section class="testimonials" id="testimonials">
