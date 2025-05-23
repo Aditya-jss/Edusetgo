@@ -1985,6 +1985,7 @@ document.addEventListener('DOMContentLoaded', function() {
         minGre: 285,
         minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
     },
+    
     {
         name: "University of Connecticut",
         location: "Storrs, CT, USA",

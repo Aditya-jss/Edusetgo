@@ -8,6 +8,364 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* CSS Variables and Base Styles */
+        :root {
+            --primary-color: #2563eb;
+            --accent-color: #f59e0b;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-heading h2 {
+            font-size: 2.5rem;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .section-heading p {
+            font-size: 1.1rem;
+            color: #6b7280;
+        }
+
+        /* About Section Action Buttons */
+        .about-actions {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 25px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            min-width: 220px;
+            flex: 1;
+            max-width: 280px;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #0056b3, #00a0e3);
+            color: white;
+            border: 2px solid transparent;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 86, 179, 0.3);
+            background: linear-gradient(135deg, #004494, #0088cc);
+        }
+
+        .secondary-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ff8a8a);
+            color: white;
+            border: 2px solid transparent;
+        }
+
+        .secondary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 107, 107, 0.3);
+            background: linear-gradient(135deg, #ff5252, #ff7171);
+        }
+
+        .btn-icon {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+        }
+
+        .btn-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+        }
+
+        .btn-text strong {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .btn-text small {
+            font-size: 12px;
+            opacity: 0.9;
+            font-weight: 400;
+            line-height: 1;
+        }
+
+        /* Active state */
+        .action-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .about-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .action-btn {
+                min-width: 100%;
+                max-width: 100%;
+                justify-content: center;
+                text-align: center;
+                padding: 20px 25px;
+            }
+            
+            .btn-text {
+                align-items: center;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .action-btn {
+                padding: 16px 20px;
+                gap: 12px;
+            }
+            
+            .btn-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+            
+            .btn-text strong {
+                font-size: 14px;
+            }
+            
+            .btn-text small {
+                font-size: 11px;
+            }
+        }
+
+        /* Animation for buttons */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            }
+            50% {
+                box-shadow: 0 8px 25px rgba(0, 86, 179, 0.2);
+            }
+            100% {
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        .primary-btn {
+            animation: pulse 3s infinite;
+        }
+
+        /* Hover effects for better accessibility */
+        .action-btn:focus {
+            outline: 3px solid rgba(0, 86, 179, 0.5);
+            outline-offset: 2px;
+        }
+
+        .secondary-btn:focus {
+            outline: 3px solid rgba(255, 107, 107, 0.5);
+            outline-offset: 2px;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 80px 0;
+            background-color: var(--light-color);
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* Gradient Backgrounds */
+        .testimonials-gradient {
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.95) 0%,
+                rgba(240, 249, 255, 0.9) 25%,
+                rgba(219, 234, 254, 0.85) 50%,
+                rgba(191, 219, 254, 0.8) 75%,
+                rgba(147, 197, 253, 0.75) 100%
+            );
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .ocean-gradient {
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.9) 0%,
+                rgba(240, 253, 250, 0.85) 25%,
+                rgba(204, 251, 241, 0.8) 50%,
+                rgba(129, 230, 217, 0.75) 75%,
+                rgba(94, 234, 212, 0.7) 100%
+            );
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .lavender-gradient {
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.9) 0%,
+                rgba(250, 245, 255, 0.85) 25%,
+                rgba(243, 232, 255, 0.8) 50%,
+                rgba(221, 214, 254, 0.75) 75%,
+                rgba(196, 181, 253, 0.7) 100%
+            );
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .transparent-cards .testimonial-card {
+            background-color: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .transparent-cards .testimonial-card:hover {
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+
+        /* Image Positioning */
+        .section-with-image {
+            display: flex;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .image-right {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 40%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .image-right img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .content-left {
+            width: 60%;
+            z-index: 2;
+            position: relative;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .image-right {
+                width: 35%;
+            }
+            .content-left {
+                width: 65%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section-with-image {
+                flex-direction: column;
+                min-height: auto;
+            }
+            
+            .image-right {
+                position: relative;
+                width: 100%;
+                height: 300px;
+                order: 1;
+            }
+            
+            .content-left {
+                width: 100%;
+                order: 2;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -15,7 +373,7 @@
         <div class="container header-container">
             <div class="logo-container">
                 <a href="#home" class="logo-link">
-                    <img src="4.png" alt="World Map" class="logo-map">
+                    <img src="4.png" alt="EduSetGo India World Map Logo" class="logo-map">
                     <span class="logo">Edu<span>Set</span>Go</span>
                 </a>
             </div>
@@ -26,361 +384,176 @@
                 <li><a href="#packages">Packages</a></li>
                 <li><a href="#testimonials">Testimonials</a></li>
                 <li class="dropdown">
-        <a href="#services" class="dropdown-toggle">Services</a>
-        <div class="dropdown-content">
-            <a href="study.html">Study</a>
-            <a href="visa.html">Visa Help</a>
-        </div>
-    </li>
+                    <a href="#services" class="dropdown-toggle">Services</a>
+                    <div class="dropdown-content">
+                        <a href="study.html">Study</a>
+                        <a href="visa.html">Visa Help</a>
+                    </div>
+                </li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
     </header>
 
-    <!-- Hero Section with City Images -->
+    <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-background">
             <div class="city-overlay london-overlay"></div>
             <div class="city-overlay chicago-overlay"></div>
         </div>
         <div class="container">
-            <h1> Gateway to Studying Abroad</h1>
+            <h1>Your Gateway to Studying Abroad</h1>
             <p>EduSetGo India is dedicated to helping Indian students achieve their dreams of studying abroad, particularly in the USA and Canada. Our comprehensive platform offers tailored packages designed to meet diverse needs and aspirations.</p>
             <a href="#packages" class="cta-button">Explore Packages</a>
         </div>
     </section>
 
-   <!-- About Section -->
-<section class="about" id="about">
-    <div class="container">
-        <div class="section-heading">
-            <h2>About Us</h2>
-            <p>Your trusted partner in international education</p>
-        </div>
-        <div class="about-content">
-            <div class="about-image">
-                <img src="1.png" alt="How to Apply to US Universities" class="us-universities-image">
-            </div>
-            <div class="about-text">
-                <p>Our expert team has successfully guided over 300 students from top Indian institutions like IITs and NITs to 40+ prestigious global universities. We provide comprehensive profile assessment and university matching tailored to each student's unique background and aspirations.</p>
-                <p>We go beyond admissions by offering career-focused guidance including resume building, job market strategies, and valuable networking opportunities. Our strategic approach helps students secure promising employment even in challenging economic conditions.</p>
-                <p>Our consultancy boasts an exceptional 95% visa approval rate through rigorous preparation and multiple mock interviews. We stay updated with latest immigration policies and provide country-specific visa application strategies.</p>
-                
-                <!-- Action Buttons -->
-                <div class="about-actions">
-                    <a href="university.html" class="action-btn primary-btn">
-                        <span class="btn-icon">🎯</span>
-                        <span class="btn-text">
-                            <strong>University Finder</strong>
-                            <small>Find your perfect match</small>
-                        </span>
-                    </a>
-                    <a href="Listofuni.html" class="action-btn secondary-btn">
-                        <span class="btn-icon">📚</span>
-                        <span class="btn-text">
-                            <strong>Browse Universities</strong>
-                            <small>Explore all options</small>
-                        </span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<style>
-/* About Section Action Buttons */
-.about-actions {
-    display: flex;
-    gap: 20px;
-    margin-top: 30px;
-    flex-wrap: wrap;
-}
-
-.action-btn {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 18px 25px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-family: 'Poppins', sans-serif;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden;
-    min-width: 220px;
-    flex: 1;
-    max-width: 280px;
-}
-
-.action-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s ease;
-}
-
-.action-btn:hover::before {
-    left: 100%;
-}
-
-.primary-btn {
-    background: linear-gradient(135deg, #0056b3, #00a0e3);
-    color: white;
-    border: 2px solid transparent;
-}
-
-.primary-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(0, 86, 179, 0.3);
-    background: linear-gradient(135deg, #004494, #0088cc);
-}
-
-.secondary-btn {
-    background: linear-gradient(135deg, #ff6b6b, #ff8a8a);
-    color: white;
-    border: 2px solid transparent;
-}
-
-.secondary-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(255, 107, 107, 0.3);
-    background: linear-gradient(135deg, #ff5252, #ff7171);
-}
-
-.btn-icon {
-    font-size: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 45px;
-    height: 45px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    backdrop-filter: blur(10px);
-    flex-shrink: 0;
-}
-
-.btn-text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-}
-
-.btn-text strong {
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.2;
-}
-
-.btn-text small {
-    font-size: 12px;
-    opacity: 0.9;
-    font-weight: 400;
-    line-height: 1;
-}
-
-/* Active state */
-.action-btn:active {
-    transform: translateY(-1px);
-}
-
-/* Responsive Design */
-@media screen and (max-width: 768px) {
-    .about-actions {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .action-btn {
-        min-width: 100%;
-        max-width: 100%;
-        justify-content: center;
-        text-align: center;
-        padding: 20px 25px;
-    }
-    
-    .btn-text {
-        align-items: center;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .action-btn {
-        padding: 16px 20px;
-        gap: 12px;
-    }
-    
-    .btn-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-    }
-    
-    .btn-text strong {
-        font-size: 14px;
-    }
-    
-    .btn-text small {
-        font-size: 11px;
-    }
-}
-
-/* Animation for buttons */
-@keyframes pulse {
-    0% {
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    }
-    50% {
-        box-shadow: 0 8px 25px rgba(0, 86, 179, 0.2);
-    }
-    100% {
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    }
-}
-
-.primary-btn {
-    animation: pulse 3s infinite;
-}
-
-/* Hover effects for better accessibility */
-.action-btn:focus {
-    outline: 3px solid rgba(0, 86, 179, 0.5);
-    outline-offset: 2px;
-}
-
-.secondary-btn:focus {
-    outline: 3px solid rgba(255, 107, 107, 0.5);
-    outline-offset: 2px;
-}
-</style>
-
-    <!-- Testimonials Section -->
-    <section class="testimonials" id="testimonials">
+    <!-- About Section -->
+    <section class="about" id="about">
         <div class="container">
             <div class="section-heading">
-                <h2>Success Stories</h2>
-                <p>What our students say about us</p>
+                <h2>About Us</h2>
+                <p>Your trusted partner in international education</p>
             </div>
-            <div class="testimonial-grid">
-                <div class="testimonial-card">
-                    <div class="testimonial-text">
-                    "EduSetGo India has been a game-changer for me. Their personalized guidance and insights into studying abroad have made my dream of pursuing higher education in the USA a reality."
-                    </div>
-                    <div class="testimonial-author">Rahul Singh</div>
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="1.png" alt="Guide to Applying to US Universities" class="us-universities-image">
                 </div>
-                <div class="testimonial-card">
-                    <div class="testimonial-text">
-                    "My experience with EduSetGo India has been nothing short of amazing. Their Premium package offered comprehensive support, covering everything from university selection to visa application."
+                <div class="about-text">
+                    <p>Our expert team has successfully guided over 300 students from top Indian institutions like IITs and NITs to 40+ prestigious global universities. We provide comprehensive profile assessment and university matching tailored to each student's unique background and aspirations.</p>
+                    <p>We go beyond admissions by offering career-focused guidance including resume building, job market strategies, and valuable networking opportunities. Our strategic approach helps students secure promising employment even in challenging economic conditions.</p>
+                    <p>Our consultancy boasts an exceptional 95% visa approval rate through rigorous preparation and multiple mock interviews. We stay updated with the latest immigration policies and provide country-specific visa application strategies.</p>
+                    <div class="about-actions">
+                        <a href="university.html" class="action-btn primary-btn">
+                            <span class="btn-icon">🎯</span>
+                            <span class="btn-text">
+                                <strong>University Finder</strong>
+                                <small>Find your perfect match</small>
+                            </span>
+                        </a>
+                        <a href="Listofuni.html" class="action-btn secondary-btn">
+                            <span class="btn-icon">📚</span>
+                            <span class="btn-text">
+                                <strong>Browse Universities</strong>
+                                <small>Explore all options</small>
+                            </span>
+                        </a>
                     </div>
-                    <div class="testimonial-author">Priya Patel</div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="testimonial-text">
-                    "Choosing EduSetGo India was one of the best decisions I've made in my academic career. Their Standard package offered a balanced mix of guidance and resources."
-                    </div>
-                    <div class="testimonial-author">Ankit Sharma</div>
                 </div>
             </div>
         </div>
     </section>
 
-
-<!-- Process Flow Section HTML - Add this before your packages section -->
-<section class="process-section" id="process">
-    <div class="container">
-        <div class="section-title">
-            <h2>Your Study Abroad Journey</h2>
-            <p>A comprehensive step-by-step process to make your dream of studying abroad a reality</p>
+    <!-- Testimonials Section -->
+    <section class="testimonials section-with-image testimonials-gradient transparent-cards" id="testimonials">
+        <div class="image-right">
+            <img src="6.jpg" alt="Student celebrating success with raised fist and laptop">
         </div>
-        
-        <div class="process-flow">
-            <!-- Step 1: SOP & LOR -->
-            <div class="process-step">
-                <div class="step-icon">
-                    <span class="step-number">1</span>
-                    📝
+        <div class="content-left">
+            <div class="container">
+                <div class="section-heading">
+                    <h2>Success Stories</h2>
+                    <p>What our students say about us</p>
                 </div>
-                <h3 class="step-title">SOP & LOR</h3>
-                <p class="step-description">Statement of Purpose and Letter of Recommendation preparation</p>
-            </div>
-            
-            <div class="process-arrow">→</div>
-            <div class="process-arrow-mobile">↓</div>
-            
-            <!-- Step 2: University Selection -->
-            <div class="process-step">
-                <div class="step-icon">
-                    <span class="step-number">2</span>
-                    🏫
+                <div class="testimonial-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">
+                            "EduSetGo India has been a game-changer for me. Their personalized guidance and insights into studying abroad have made my dream of pursuing higher education in the USA a reality."
+                        </div>
+                        <div class="testimonial-author">Rahul Singh</div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">
+                            "My experience with EduSetGo India has been nothing short of amazing. Their Premium package offered comprehensive support, covering everything from university selection to visa application."
+                        </div>
+                        <div class="testimonial-author">Priya Patel</div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">
+                            "Choosing EduSetGo India was one of the best decisions I've made in my academic career. Their Standard package offered a balanced mix of guidance and resources."
+                        </div>
+                        <div class="testimonial-author">Ankit Sharma</div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">
+                            "From university shortlisting to scholarship applications, EduSetGo India covered everything. Their comprehensive approach and constant support made what seemed impossible, achievable. Forever grateful for their guidance."
+                        </div>
+                        <div class="testimonial-author">Devika Bhatt</div>
+                    </div>
                 </div>
-                <h3 class="step-title">University Selection</h3>
-                <p class="step-description">Choose the right university based on your profile and preferences</p>
-            </div>
-            
-            <div class="process-arrow">→</div>
-            <div class="process-arrow-mobile">↓</div>
-            
-            <!-- Step 3: Application Process -->
-            <div class="process-step">
-                <div class="step-icon">
-                    <span class="step-number">3</span>
-                    📋
-                </div>
-                <h3 class="step-title">Application Process</h3>
-                <p class="step-description">Complete application submission with all required documents</p>
-            </div>
-            
-            <div class="process-arrow">→</div>
-            <div class="process-arrow-mobile">↓</div>
-            
-            <!-- Step 4: Acceptance -->
-            <div class="process-step">
-                <div class="step-icon">
-                    <span class="step-number">4</span>
-                    🎉
-                </div>
-                <h3 class="step-title">Acceptance</h3>
-                <p class="step-description">Receive your acceptance letter and confirm enrollment</p>
-            </div>
-            
-            <div class="process-arrow">→</div>
-            <div class="process-arrow-mobile">↓</div>
-            
-            <!-- Step 5: Visa Process -->
-            <div class="process-step">
-                <div class="step-icon">
-                    <span class="step-number">5</span>
-                    🛂
-                </div>
-                <h3 class="step-title">Visa Process</h3>
-                <p class="step-description">Student visa application and interview preparation</p>
-            </div>
-            
-            <div class="process-arrow">→</div>
-            <div class="process-arrow-mobile">↓</div>
-            
-            <!-- Step 6: Pre-departure & Flight -->
-            <div class="process-step">
-                <div class="step-icon">
-                    <span class="step-number">6</span>
-                    ✈️
-                </div>
-                <h3 class="step-title">Pre-departure & Flight</h3>
-                <p class="step-description">Final preparations, internship opportunities, and flight booking</p>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-
-
+    <!-- Process Section -->
+    <section class="process-section" id="process">
+        <div class="container">
+            <div class="section-title">
+                <h2>Your Study Abroad Journey</h2>
+                <p>A comprehensive step-by-step process to make your dream of studying abroad a reality</p>
+            </div>
+            <div class="process-flow">
+                <div class="process-step">
+                    <div class="step-icon">
+                        <span class="step-number">1</span>
+                        📝
+                    </div>
+                    <h3 class="step-title">SOP & LOR</h3>
+                    <p class="step-description">Statement of Purpose and Letter of Recommendation preparation</p>
+                </div>
+                <div class="process-arrow">→</div>
+                <div class="process-arrow-mobile">↓</div>
+                <div class="process-step">
+                    <div class="step-icon">
+                        <span class="step-number">2</span>
+                        🏫
+                    </div>
+                    <h3 class="step-title">University Selection</h3>
+                    <p class="step-description">Choose the right university based on your profile and preferences</p>
+                </div>
+                <div class="process-arrow">→</div>
+                <div class="process-arrow-mobile">↓</div>
+                <div class="process-step">
+                    <div class="step-icon">
+                        <span class="step-number">3</span>
+                        📋
+                    </div>
+                    <h3 class="step-title">Application Process</h3>
+                    <p class="step-description">Complete application submission with all required documents</p>
+                </div>
+                <div class="process-arrow">→</div>
+                <div class="process-arrow-mobile">↓</div>
+                <div class="process-step">
+                    <div class="step-icon">
+                        <span class="step-number">4</span>
+                        🎉
+                    </div>
+                    <h3 class="step-title">Acceptance</h3>
+                    <p class="step-description">Receive your acceptance letter and confirm enrollment</p>
+                </div>
+                <div class="process-arrow">→</div>
+                <div class="process-arrow-mobile">↓</div>
+                <div class="process-step">
+                    <div class="step-icon">
+                        <span class="step-number">5</span>
+                        🛂
+                    </div>
+                    <h3 class="step-title">Visa Process</h3>
+                    <p class="step-description">Student visa application and interview preparation</p>
+                </div>
+                <div class="process-arrow">→</div>
+                <div class="process-arrow-mobile">↓</div>
+                <div class="process-step">
+                    <div class="step-icon">
+                        <span class="step-number">6</span>
+                        ✈️
+                    </div>
+                    <h3 class="step-title">Pre-departure & Flight</h3>
+                    <p class="step-description">Final preparations, internship opportunities, and flight booking</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Packages Section -->
     <section class="packages" id="packages">
@@ -460,7 +633,6 @@
                     </div>
                 </div>
                 <div class="contact-form">
-                    <!-- FIXED FORM - Removed action and method attributes -->
                     <form id="contactForm">
                         <div class="form-group">
                             <label for="name">Full Name</label>
@@ -480,7 +652,6 @@
                         </div>
                         <button type="submit" id="submitBtn">Send Message</button>
                     </form>
-                    <!-- Success/Error Messages -->
                     <div id="formStatus" style="margin-top: 15px; padding: 10px; border-radius: 5px; display: none;">
                         <p id="statusMessage"></p>
                     </div>
@@ -538,32 +709,31 @@
                 <div class="footer-column">
                     <h3>Services</h3>
                     <ul class="footer-links">
-                        <li><a href="#">University Selection</a></li>
-                        <li><a href="#">Admission Guidance</a></li>
-                        <li><a href="#">Visa Assistance</a></li>
-                        <li><a href="#">SOP & LOR Support</a></li>
-                        <li><a href="#">Pre-Departure Briefing</a></li>
+                        <li><a href="study.html">University Selection</a></li>
+                        <li><a href="study.html">Admission Guidance</a></li>
+                        <li><a href="visa.html">Visa Assistance</a></li>
+                        <li><a href="study.html">SOP & LOR Support</a></li>
+                        <li><a href="study.html">Pre-Departure Briefing</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h3>Connect With Us</h3>
                     <div class="footer-social">
-                        <a href="#" aria-label="Facebook">FB</a>
-                        <a href="#" aria-label="Instagram">IG</a>
-                        <a href="#" aria-label="Twitter">TW</a>
-                        <a href="#" aria-label="LinkedIn">LI</a>
+                        <a href="#" aria-label="Follow us on Facebook">FB</a>
+                        <a href="#" aria-label="Follow us on Instagram">IG</a>
+                        <a href="#" aria-label="Follow us on Twitter">TW</a>
+                        <a href="#" aria-label="Connect with us on LinkedIn">LI</a>
                     </div>
                 </div>
             </div>
             <div class="copyright">
-                &copy; 2025 EduSetGo India. All rights reserved.
+                © 2025 EduSetGo India. All rights reserved.
             </div>
         </div>
     </footer>
 
     <!-- EmailJS Script -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    
     <!-- Main Script -->
     <script src="script.js"></script>
 </body>
