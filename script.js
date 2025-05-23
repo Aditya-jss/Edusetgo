@@ -170,7 +170,7 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     emailjs.send('service_gpbqgd6', 'template_e3xds87', formData)
         .then(function(response) {
             // Success
-            statusMessage.textContent = 'Message sent successfully!';
+            statusMessage.textContent = 'Message sent successfully!. One of our team will contact you shortly.';
             formStatus.className = 'success';
             formStatus.style.display = 'block';
             document.getElementById('contactForm').reset();
@@ -187,7 +187,36 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
             submitBtn.disabled = false;
         });
 });
-
+// JavaScript for mobile dropdown functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdown = document.querySelector('.dropdown');
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+    
+    // Handle mobile dropdown click
+    if (dropdownToggle) {
+        dropdownToggle.addEventListener('click', function(e) {
+            // Only prevent default and toggle on mobile
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                dropdown.classList.toggle('active');
+            }
+        });
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+    
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            dropdown.classList.remove('active');
+        }
+    });
+});
     // Chatbot functionality
     const chatbotToggle = document.querySelector('.chatbot-toggle');
     const chatbotBox = document.querySelector('.chatbot-box');

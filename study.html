@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Finder</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .container {
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const UniversityFinder = () => {
+            const [studentData, setStudentData] = useState({
+                cgpa: '',
+                greScore: '',
+                englishTest: 'IELTS',
+                englishScore: '',
+                course: '',
+                programLevel: ''
+            });
+            const [result, setResult] = useState(null);
+            const [isSearching, setIsSearching] = useState(false);
+
+            // Single university data
+            const university = {
+                name: "Stanford University",
+                country: "USA",
+                location: "California, USA",
+                website: "https://www.stanford.edu/",
+                courses: {
+                    bachelors: ["Computer Science", "Engineering", "Business"],
+                    masters: ["Computer Science", "Engineering", "Business Administration"],
+                },
+                requirements: {
+                    minCGPA: 3.5,
+                    minGRE: 320,
+                    minIELTS: 7.0,
+                    minTOEFL: 100,
+                }
+            };
+
+            const handleInputChange = (field, value) => {
+                setStudentData(prev => ({
+                    ...prev,
+                    [field]: value
+                }));
+            };
+
+            const checkEligibility = (uni, profile) => {
+                const cgpa = parseFloat(profile.cgpa) || 0;
+                const gre = parseInt(profile.greScore) || 0;
+                const englishScore = parseFloat(profile.englishScore) || 0;
+                const programLevel = profile.programLevel.toLowerCase().replace(' ', '');
+
+                // Check course availability
+                const availableCourses = uni.courses[programLevel] || [];
+                if (!availableCourses.includes(profile.course)) return false;
+
+                // Check requirements
+                if (cgpa < uni.requirements.minCGPA) return false;
+                if (gre < uni.requirements.minGRE) return false;
+                if (profile.englishTest === 'IELTS' && englishScore < uni.requirements.minIELTS) return false;
+                if (profile.englishTest === 'TOEFL' && englishScore < uni.requirements.minTOEFL) return false;
+
+                return true;
+            };
+
+            const searchUniversities = async () => {
+                setIsSearching(true);
+                // Simulate web scraping delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                const isEligible = checkEligibility(university, studentData);
+                setResult(isEligible ? { ...university, matchScore: 80 } : null);
+                setIsSearching(false);
+            };
+
+            return (
+                <div className="container">
+                    <h1>University Finder</h1>
+                    <div>
+                        <h2>Student Profile</h2>
+                        <label>CGPA/GPA</label>
+                        <input
+                            type="number"
+                            step="0.1"
+                            max="4.0"
+                            placeholder="e.g., 3.5"
+                            value={studentData.cgpa}
+                            onChange={(e) => handleInputChange('cgpa', e.target.value)}
+                        />
+                        <label>GRE Score</label>
+                        <input
+                            type="number"
+                            placeholder="e.g., 320"
+                            value={studentData.greScore}
+                            onChange={(e) => handleInputChange('greScore', e.target.value)}
+                        />
+                        <label>English Test</label>
+                        <select
+                            value={studentData.englishTest}
+                            onChange={(e) => handleInputChange('englishTest', e.target.value)}
+                        >
+                            <option value="IELTS">IELTS</option>
+                            <option value="TOEFL">TOEFL</option>
+                        </select>
+                        <label>English Test Score</label>
+                        <input
+                            type="number"
+                            step="0.5"
+                            placeholder={studentData.englishTest === 'IELTS' ? 'e.g., 7.0' : 'e.g., 100'}
+                            value={studentData.englishScore}
+                            onChange={(e) => handleInputChange('englishScore', e.target.value)}
+                        />
+                        <label>Program Level</label>
+                        <select
+                            value={studentData.programLevel}
+                            onChange={(e) => handleInputChange('programLevel', e.target.value)}
+                        >
+                            <option value="">Select Program Level</option>
+                            <option value="Bachelors">Bachelors</option>
+                            <option value="Masters">Masters</option>
+                        </select>
+                        <label>Course</label>
+                        <select
+                            value={studentData.course}
+                            onChange={(e) => handleInputChange('course', e.target.value)}
+                        >
+                            <option value="">Select Course</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Business">Business</option>
+                            <option value="Business Administration">Business Administration</option>
+                        </select>
+                        <button
+                            onClick={searchUniversities}
+                            disabled={isSearching || !studentData.course || !studentData.programLevel}
+                        >
+                            {isSearching ? 'Searching...' : 'Find University'}
+                        </button>
+                    </div>
+
+                    {result && (
+                        <div className="result">
+                            <h2>{result.name}</h2>
+                            <p>Location: {result.location}</p>
+                            <p>Match Score: {result.matchScore}%</p>
+                            <p>Requirements:</p>
+                            <ul>
+                                <li>CGPA: {result.requirements.minCGPA}+</li>
+                                <li>GRE: {result.requirements.minGRE}+</li>
+                                <li>{studentData.englishTest}: {result.requirements[`min${studentData.englishTest}`]}+</li>
+                            </ul>
+                            <p>
+                                <a href={result.website} target="_blank" rel="noopener noreferrer">
+                                    Visit Website
+                                </a>
+                            </p>
+                        </div>
+                    )}
+
+                    {!result && !isSearching && studentData.course && studentData.programLevel && (
+                        <div className="result error">
+                            <p>No matching university found. Try adjusting your criteria.</p>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<UniversityFinder />);
+    </script>
+</body>
+</html>
