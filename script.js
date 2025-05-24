@@ -170,7 +170,7 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     emailjs.send('service_gpbqgd6', 'template_e3xds87', formData)
         .then(function(response) {
             // Success
-            statusMessage.textContent = 'Message sent successfully!. One of our team will contact you shortly.';
+            statusMessage.textContent = 'Your message has been sent successfully. A member of our team will contact you shortly.';
             formStatus.className = 'success';
             formStatus.style.display = 'block';
             document.getElementById('contactForm').reset();
