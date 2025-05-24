@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduSetGo - Study Resources</title>
+<link rel="stylesheet" href="study.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<!-- Navigation Header -->
+<header>
+<div class="container header-container">
+<div class="logo-container">
+<a href="index.html" class="logo-link">
+<img src="4.png" alt="World Map" class="logo-map">
+<span class="logo">Edu<span>Set</span>Go</span>
+</a>
+</div>
+<div class="mobile-toggle" id="mobileToggle">☰</div>
+<ul class="nav-menu" id="navMenu">
+<li><a href="index.html">Home</a></li>
+<li><a href="index.html#about">About</a></li>
+<li><a href="index.html#packages">Packages</a></li>
+<li><a href="index.html#testimonials">Testimonials</a></li>
+<li class="dropdown" id="servicesDropdown">
+<a href="index.html#services" class="dropdown-toggle active">Services</a>
+<div class="dropdown-content">
+<a href="study.html">Study</a>
+<a href="visa.html">Visa Help</a>
+<a href="university.html">University Finder</a>
+</div>
+</li>
+<li><a href="index.html#contact">Contact</a></li>
+</ul>
+</div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+<div class="hero-content">
+<div class="hero-text">
+<h1>Your Study Abroad Journey Starts Here</h1>
+<p>Comprehensive exam preparation, study materials, and course information for USA, Canada, and Australia</p>
+<div class="hero-buttons">
+<button class="btn-primary" onclick="scrollToSection('exams')">View Exams</button>
+<button class="btn-secondary" onclick="scrollToSection('countries')">Explore Countries</button>
+</div>
+</div>
+<div class="hero-image">
+<div class="floating-elements">
+<div class="float-item book"><i class="fas fa-book"></i></div>
+<div class="float-item graduation"><i class="fas fa-graduation-cap"></i></div>
+<div class="float-item globe"><i class="fas fa-globe"></i></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Popular Exams Section -->
+<section id="exams" class="exams-section">
+<div class="container">
+<h2 class="section-title">Popular Study Abroad Exams</h2>
+<div class="exams-grid">
+<div class="exam-card" data-exam="ielts">
+<div class="exam-icon">
+<i class="fas fa-microphone"></i>
+</div>
+<h3>IELTS</h3>
+<p>International English Language Testing System</p>
+<div class="exam-details">
+<span class="exam-score">Band 6-9</span>
+<span class="exam-duration">2h 45m</span>
+</div>
+<button class="exam-btn">Learn More</button>
+</div>
+
+<div class="exam-card" data-exam="toefl">
+<div class="exam-icon">
+<i class="fas fa-laptop"></i>
+</div>
+<h3>TOEFL</h3>
+<p>Test of English as a Foreign Language</p>
+<div class="exam-details">
+<span class="exam-score">80-120</span>
+<span class="exam-duration">3 hours</span>
+</div>
+<button class="exam-btn">Learn More</button>
+</div>
+
+<div class="exam-card" data-exam="gre">
+<div class="exam-icon">
+<i class="fas fa-calculator"></i>
+</div>
+<h3>GRE</h3>
+<p>Graduate Record Examination</p>
+<div class="exam-details">
+<span class="exam-score">260-340</span>
+<span class="exam-duration">3h 45m</span>
+</div>
+<button class="exam-btn">Learn More</button>
+</div>
+
+<div class="exam-card" data-exam="duolingo">
+<div class="exam-icon">
+<i class="fas fa-language"></i>
+</div>
+<h3>Duolingo</h3>
+<p>Duolingo English Test</p>
+<div class="exam-details">
+<span class="exam-score">10-160</span>
+<span class="exam-duration">1 hour</span>
+</div>
+<button class="exam-btn">Learn More</button>
+</div>
+
+<div class="exam-card" data-exam="pte">
+<div class="exam-icon">
+<i class="fas fa-headphones"></i>
+</div>
+<h3>PTE</h3>
+<p>Pearson Test of English</p>
+<div class="exam-details">
+<span class="exam-score">10-90</span>
+<span class="exam-duration">3 hours</span>
+</div>
+<button class="exam-btn">Learn More</button>
+</div>
+
+<div class="exam-card" data-exam="gmat">
+<div class="exam-icon">
+<i class="fas fa-chart-line"></i>
+</div>
+<h3>GMAT</h3>
+<p>Graduate Management Admission Test</p>
+<div class="exam-details">
+<span class="exam-score">200-800</span>
+<span class="exam-duration">3h 7m</span>
+</div>
+<button class="exam-btn">Learn More</button>
+</div>
+</div>
+</div>
+</section>
+
+
+
+<!-- Countries Section -->
+<section id="countries" class="countries-section">
+<div class="container">
+<h2 class="section-title">Study Destinations</h2>
+<div class="countries-tabs">
+<button class="tab-btn active" data-country="usa">🇺🇸 USA</button>
+<button class="tab-btn" data-country="canada">🇨🇦 Canada</button>
+<button class="tab-btn" data-country="australia">🇦🇺 Australia</button>
+</div>
+
+<div class="country-content">
+<!-- USA Content -->
+<div id="usa-content" class="country-tab-content active">
+<div class="country-info">
+<div class="country-overview">
+<h3>United States of America</h3>
+<p>Home to world's top universities with cutting-edge research and diverse academic programs.</p>
+<div class="country-stats">
+<div class="stat">
+<span class="stat-number">4,000+</span>
+<span class="stat-label">Universities</span>
+</div>
+<div class="stat">
+<span class="stat-number">1M+</span>
+<span class="stat-label">International Students</span>
+</div>
+<div class="stat">
+<span class="stat-number">$20K-$60K</span>
+<span class="stat-label">Annual Tuition</span>
+</div>
+</div>
+</div>
+
+<div class="requirements">
+<h4>Required Exams</h4>
+<div class="exam-tags">
+<span class="exam-tag">TOEFL (80+)</span>
+<span class="exam-tag">IELTS (6.5+)</span>
+<span class="exam-tag">GRE (300+)</span>
+<span class="exam-tag">GMAT (600+)</span>
+<span class="exam-tag">Duolingo (105+)</span>
+</div>
+</div>
+
+<div class="popular-courses">
+<h4>Popular Courses</h4>
+<div class="courses-grid">
+<div class="course-item">
+<i class="fas fa-laptop-code"></i>
+<span>Computer Science</span>
+</div>
+<div class="course-item">
+<i class="fas fa-briefcase"></i>
+<span>Business Administration</span>
+</div>
+<div class="course-item">
+<i class="fas fa-cogs"></i>
+<span>Engineering</span>
+</div>
+<div class="course-item">
+<i class="fas fa-heartbeat"></i>
+<span>Medicine</span>
+</div>
+<div class="course-item">
+<i class="fas fa-balance-scale"></i>
+<span>Law</span>
+</div>
+<div class="course-item">
+<i class="fas fa-chart-bar"></i>
+<span>Data Science</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Canada Content -->
+<div id="canada-content" class="country-tab-content">
+<div class="country-info">
+<div class="country-overview">
+<h3>Canada</h3>
+<p>Known for high-quality education, multicultural environment, and post-graduation work opportunities.</p>
+<div class="country-stats">
+<div class="stat">
+<span class="stat-number">200+</span>
+<span class="stat-label">Universities</span>
+</div>
+<div class="stat">
+<span class="stat-number">800K+</span>
+<span class="stat-label">International Students</span>
+</div>
+<div class="stat">
+<span class="stat-number">$15K-$35K</span>
+<span class="stat-label">Annual Tuition</span>
+</div>
+</div>
+</div>
+
+<div class="requirements">
+<h4>Required Exams</h4>
+<div class="exam-tags">
+<span class="exam-tag">IELTS (6.5+)</span>
+<span class="exam-tag">TOEFL (86+)</span>
+<span class="exam-tag">GRE (300+)</span>
+<span class="exam-tag">GMAT (550+)</span>
+<span class="exam-tag">Duolingo (110+)</span>
+</div>
+</div>
+
+<div class="popular-courses">
+<h4>Popular Courses</h4>
+<div class="courses-grid">
+<div class="course-item">
+<i class="fas fa-laptop-code"></i>
+<span>Information Technology</span>
+</div>
+<div class="course-item">
+<i class="fas fa-briefcase"></i>
+<span>Business Management</span>
+</div>
+<div class="course-item">
+<i class="fas fa-cogs"></i>
+<span>Engineering</span>
+</div>
+<div class="course-item">
+<i class="fas fa-user-nurse"></i>
+<span>Healthcare</span>
+</div>
+<div class="course-item">
+<i class="fas fa-leaf"></i>
+<span>Environmental Science</span>
+</div>
+<div class="course-item">
+<i class="fas fa-graduation-cap"></i>
+<span>Education</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Australia Content -->
+<div id="australia-content" class="country-tab-content">
+<div class="country-info">
+<div class="country-overview">
+<h3>Australia</h3>
+<p>Offers world-class education with research opportunities and a relaxed lifestyle in a beautiful country.</p>
+<div class="country-stats">
+<div class="stat">
+<span class="stat-number">150+</span>
+<span class="stat-label">Universities</span>
+</div>
+<div class="stat">
+<span class="stat-number">700K+</span>
+<span class="stat-label">International Students</span>
+</div>
+<div class="stat">
+<span class="stat-number">$20K-$45K</span>
+<span class="stat-label">Annual Tuition</span>
+</div>
+</div>
+</div>
+
+<div class="requirements">
+<h4>Required Exams</h4>
+<div class="exam-tags">
+<span class="exam-tag">IELTS (6.5+)</span>
+<span class="exam-tag">TOEFL (79+)</span>
+<span class="exam-tag">PTE (58+)</span>
+<span class="exam-tag">GRE (300+)</span>
+<span class="exam-tag">Duolingo (105+)</span>
+</div>
+</div>
+
+<div class="popular-courses">
+<h4>Popular Courses</h4>
+<div class="courses-grid">
+<div class="course-item">
+<i class="fas fa-laptop-code"></i>
+<span>Information Technology</span>
+</div>
+<div class="course-item">
+<i class="fas fa-briefcase"></i>
+<span>Business & Commerce</span>
+</div>
+<div class="course-item">
+<i class="fas fa-cogs"></i>
+<span>Engineering</span>
+</div>
+<div class="course-item">
+<i class="fas fa-heartbeat"></i>
+<span>Health Sciences</span>
+</div>
+<div class="course-item">
+<i class="fas fa-paint-brush"></i>
+<span>Arts & Design</span>
+</div>
+<div class="course-item">
+<i class="fas fa-flask"></i>
+<span>Life Sciences</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Study Tips Section -->
+<section class="study-tips">
+<div class="container">
+<h2 class="section-title">Study Tips & Guidelines</h2>
+<div class="tips-grid">
+<div class="tip-card">
+<div class="tip-icon">
+<i class="fas fa-clock"></i>
+</div>
+<h3>Time Management</h3>
+<p>Create a study schedule and stick to it. Allocate specific time slots for each subject and take regular breaks.</p>
+</div>
+
+<div class="tip-card">
+<div class="tip-icon">
+<i class="fas fa-target"></i>
+</div>
+<h3>Set Goals</h3>
+<p>Define clear, achievable goals for each study session and track your progress regularly.</p>
+</div>
+
+<div class="tip-card">
+<div class="tip-icon">
+<i class="fas fa-redo"></i>
+</div>
+<h3>Practice Regularly</h3>
+<p>Consistent practice with mock tests and sample questions is key to improving your scores.</p>
+</div>
+
+<div class="tip-card">
+<div class="tip-icon">
+<i class="fas fa-users"></i>
+</div>
+<h3>Join Study Groups</h3>
+<p>Collaborate with fellow students to share knowledge and motivate each other.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+<div class="container">
+<div class="cta-content">
+<h2>Ready to Start Your Study Journey?</h2>
+<p>Get personalized guidance and expert advice for your study abroad dreams</p>
+<a href="index.html#contact" class="btn-primary large">Get Started Today</a>
+</div>
+</div>
+</section>
+
+<script src="study.js"></script>
+</body>
+</html>

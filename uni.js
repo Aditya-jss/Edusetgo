@@ -632,6 +632,7 @@ document.addEventListener('DOMContentLoaded', function() {
         minGre: 310,
         minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 95
     },
+    
 
     // Technology Focused Universities
     {
@@ -655,6 +656,7 @@ document.addEventListener('DOMContentLoaded', function() {
         minGre: 318,
         minEnglish: profileData.englishTest === 'IELTS' ? 7.0 : 102
     },
+
     {
         name: "Georgia Institute of Technology",
         location: "Atlanta, GA, USA",
@@ -2006,7 +2008,323 @@ document.addEventListener('DOMContentLoaded', function() {
         minCgpa: 3.0,
         minGre: 300,
         minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 80
-    }
+    },
+    // Canadian Universities in exact format
+{
+    name: "University of Toronto",
+    location: "Toronto, ON, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $58,160/year' : 'CAD $61,820/year',
+    requirements: {
+        cgpa: '3.7+',
+        gre: '320+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.0+' : profileData.englishTest === 'TOEFL' ? '105+' : '120+'}`
+    },
+    highlights: [
+        'Canada\'s Top University',
+        'World-Class Research',
+        'Diverse Programs',
+        'Strong Industry Links'
+    ],
+    minCgpa: 3.7,
+    minGre: 320,
+    minEnglish: profileData.englishTest === 'IELTS' ? 7.0 : profileData.englishTest === 'TOEFL' ? 105 : 120
+},
+{
+    name: "University of British Columbia",
+    location: "Vancouver, BC, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $43,053/year' : 'CAD $47,760/year',
+    requirements: {
+        cgpa: '3.5+',
+        gre: '315+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : profileData.englishTest === 'TOEFL' ? '100+' : '110+'}`
+    },
+    highlights: [
+        'Beautiful Vancouver Campus',
+        'Research Excellence',
+        'Pacific Rim Focus',
+        'Strong Co-op Programs'
+    ],
+    minCgpa: 3.5,
+    minGre: 315,
+    minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : profileData.englishTest === 'TOEFL' ? 100 : 110
+},
+{
+    name: "McGill University",
+    location: "Montreal, QC, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $21,742/year' : 'CAD $50,847/year',
+    requirements: {
+        cgpa: '3.5+',
+        gre: '315+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : profileData.englishTest === 'TOEFL' ? '100+' : '110+'}`
+    },
+    highlights: [
+        'Harvard of Canada',
+        'Bilingual Environment',
+        'Historic Campus',
+        'Strong Medical Programs'
+    ],
+    minCgpa: 3.5,
+    minGre: 315,
+    minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : profileData.englishTest === 'TOEFL' ? 100 : 110
+},
+{
+    name: "University of Waterloo",
+    location: "Waterloo, ON, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $39,570/year' : 'CAD $62,890/year',
+    requirements: {
+        cgpa: '3.4+',
+        gre: '312+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : profileData.englishTest === 'TOEFL' ? '100+' : '110+'}`
+    },
+    highlights: [
+        'Top Engineering & CS',
+        'Co-op Excellence',
+        'Tech Industry Hub',
+        'Innovation Focus'
+    ],
+    minCgpa: 3.4,
+    minGre: 312,
+    minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : profileData.englishTest === 'TOEFL' ? 100 : 110
+},
+{
+    name: "University of Alberta",
+    location: "Edmonton, AB, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $12,810/year' : 'CAD $32,244/year',
+    requirements: {
+        cgpa: '3.2+',
+        gre: '308+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '92+' : '100+'}`
+    },
+    highlights: [
+        'Research Intensive',
+        'Affordable Tuition',
+        'Strong STEM Programs',
+        'AI Research Hub'
+    ],
+    minCgpa: 3.2,
+    minGre: 308,
+    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 92 : 100
+},
+{
+    name: "McMaster University",
+    location: "Hamilton, ON, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $29,140/year' : 'CAD $48,180/year',
+    requirements: {
+        cgpa: '3.3+',
+        gre: '310+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '92+' : '100+'}`
+    },
+    highlights: [
+        'Medical Excellence',
+        'Research Innovation',
+        'Beautiful Campus',
+        'Strong Engineering'
+    ],
+    minCgpa: 3.3,
+    minGre: 310,
+    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 92 : 100
+},
+{
+    name: "Queen's University",
+    location: "Kingston, ON, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $25,832/year' : 'CAD $47,666/year',
+    requirements: {
+        cgpa: '3.2+',
+        gre: '308+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '92+' : '100+'}`
+    },
+    highlights: [
+        'Historic University',
+        'Strong Alumni Network',
+        'Beautiful Campus',
+        'Business Excellence'
+    ],
+    minCgpa: 3.2,
+    minGre: 308,
+    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 92 : 100
+},
+{
+    name: "University of Calgary",
+    location: "Calgary, AB, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $11,538/year' : 'CAD $22,683/year',
+    requirements: {
+        cgpa: '3.1+',
+        gre: '305+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '88+' : '100+'}`
+    },
+    highlights: [
+        'Energy Research Hub',
+        'Affordable Education',
+        'Mountain Location',
+        'Strong Industry Ties'
+    ],
+    minCgpa: 3.1,
+    minGre: 305,
+    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 88 : 100
+},
+{
+    name: "Western University",
+    location: "London, ON, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $24,474/year' : 'CAD $38,204/year',
+    requirements: {
+        cgpa: '3.1+',
+        gre: '305+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '88+' : '100+'}`
+    },
+    highlights: [
+        'Ivey Business School',
+        'Research Excellence',
+        'Beautiful Campus',
+        'Strong Programs'
+    ],
+    minCgpa: 3.1,
+    minGre: 305,
+    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 88 : 100
+},
+{
+    name: "Simon Fraser University",
+    location: "Burnaby, BC, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $20,216/year' : 'CAD $35,550/year',
+    requirements: {
+        cgpa: '3.0+',
+        gre: '300+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '88+' : '100+'}`
+    },
+    highlights: [
+        'Modern Campus',
+        'Tech Innovation',
+        'Mountain Views',
+        'Co-op Programs'
+    ],
+    minCgpa: 3.0,
+    minGre: 300,
+    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 88 : 100
+},
+{
+    name: "University of Ottawa",
+    location: "Ottawa, ON, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $19,453/year' : 'CAD $37,425/year',
+    requirements: {
+        cgpa: '3.0+',
+        gre: '300+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '88+' : '100+'}`
+    },
+    highlights: [
+        'Capital City Location',
+        'Bilingual Programs',
+        'Government Connections',
+        'Research Focus'
+    ],
+    minCgpa: 3.0,
+    minGre: 300,
+    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 88 : 100
+},
+{
+    name: "Dalhousie University",
+    location: "Halifax, NS, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $18,750/year' : 'CAD $24,705/year',
+    requirements: {
+        cgpa: '2.9+',
+        gre: '298+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '88+' : '100+'}`
+    },
+    highlights: [
+        'Atlantic Canada Hub',
+        'Marine Research',
+        'Historic Campus',
+        'Affordable Living'
+    ],
+    minCgpa: 2.9,
+    minGre: 298,
+    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 88 : 100
+},
+{
+    name: "University of Saskatchewan",
+    location: "Saskatoon, SK, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $7,749/year' : 'CAD $23,034/year',
+    requirements: {
+        cgpa: '2.9+',
+        gre: '298+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '88+' : '100+'}`
+    },
+    highlights: [
+        'Very Affordable',
+        'Agricultural Excellence',
+        'Research University',
+        'Beautiful Campus'
+    ],
+    minCgpa: 2.9,
+    minGre: 298,
+    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 88 : 100
+},
+{
+    name: "University of Manitoba",
+    location: "Winnipeg, MB, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $11,104/year' : 'CAD $19,816/year',
+    requirements: {
+        cgpa: '2.8+',
+        gre: '295+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '86+' : '95+'}`
+    },
+    highlights: [
+        'Affordable Education',
+        'Research Focus',
+        'Diverse Programs',
+        'Welcoming Community'
+    ],
+    minCgpa: 2.8,
+    minGre: 295,
+    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 86 : 95
+},
+{
+    name: "Concordia University",
+    location: "Montreal, QC, Canada",
+    program: `${profileData.programLevel} in ${profileData.course}`,
+    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
+    tuition: profileData.programLevel === 'Masters' ? 'CAD $16,815/year' : 'CAD $27,822/year',
+    requirements: {
+        cgpa: '2.8+',
+        gre: '295+',
+        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '86+' : '95+'}`
+    },
+    highlights: [
+        'Montreal Location',
+        'Creative Programs',
+        'Modern Facilities',
+        'Diverse Student Body'
+    ],
+    minCgpa: 2.8,
+    minGre: 295,
+    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 86 : 95
+},
 
         ];
 
