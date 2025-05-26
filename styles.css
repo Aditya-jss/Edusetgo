@@ -438,7 +438,36 @@ background-position: center;
 background-attachment: fixed;
 background-repeat: no-repeat;
 }
+.underline {
+    position: relative;
+    text-decoration: none;
+    display: inline-block;
+}
 
+.underline::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--accent-color);
+    border-radius: 2px;
+    animation: underline-grow 0.5s ease-out;
+}
+
+@keyframes underline-grow {
+    0% { width: 0; }
+    100% { width: 100%; }
+}
+
+.accent-text {
+    color: var(--accent-color);
+}
+
+.normal-text {
+    color: inherit;
+}
 /* Add a subtle overlay for better text readability */
 .about::before {
 content: '';
@@ -854,6 +883,74 @@ body {
     background-color: var(--accent-color);
 }
 
+/* Money Back Guarantee Badge */
+.guarantee-badge {
+    margin-top: 30px;
+    display: inline-block;
+}
+
+.guarantee-content {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.guarantee-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.guarantee-content:hover::before {
+    left: 100%;
+}
+
+.guarantee-content:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(40, 167, 69, 0.4);
+}
+
+.guarantee-content i {
+    font-size: 2rem;
+    color: #FFD700;
+    animation: shield-pulse 2s ease-in-out infinite;
+}
+
+@keyframes shield-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.guarantee-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.guarantee-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.guarantee-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
 .package-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -992,6 +1089,45 @@ body {
     transform: translateY(-3px);
 }
 
+/* Terms and Conditions Notice */
+.terms-notice {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.terms-notice p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    font-style: italic;
+    margin: 0;
+    position: relative;
+    display: inline-block;
+}
+
+.terms-notice p::before {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 1px;
+    background-color: #dee2e6;
+}
+
+.terms-notice p::after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 1px;
+    background-color: #dee2e6;
+}
+
 /* Additional animation for package cards */
 .package-card {
     opacity: 0;
@@ -1110,6 +1246,27 @@ body {
     .package-content {
         padding: 25px;
     }
+    
+    /* Mobile adjustments for guarantee badge */
+    .guarantee-content {
+        padding: 15px 25px;
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .guarantee-title {
+        font-size: 1.1rem;
+    }
+    
+    .guarantee-subtitle {
+        font-size: 0.85rem;
+    }
+    
+    .terms-notice p::before,
+    .terms-notice p::after {
+        display: none;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1128,8 +1285,23 @@ body {
     .package-features li {
         font-size: 14px;
     }
+    
+    .guarantee-content {
+        padding: 12px 20px;
+    }
+    
+    .guarantee-content i {
+        font-size: 1.5rem;
+    }
+    
+    .guarantee-title {
+        font-size: 1rem;
+    }
+    
+    .guarantee-subtitle {
+        font-size: 0.8rem;
+    }
 }
-
 /* Contact Section */
 .contact {
     padding: 80px 0;
