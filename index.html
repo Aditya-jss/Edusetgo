@@ -397,17 +397,185 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-background">
-            <div class="city-overlay london-overlay"></div>
-            <div class="city-overlay chicago-overlay"></div>
-        </div>
-        <div class="container">
-            <h1> Gateway to Studying Abroad</h1>
-            <p>EduSetGo India is dedicated to helping Indian students achieve their dreams of studying abroad. Our comprehensive platform offers tailored packages designed to meet diverse needs and aspirations.</p>
+<section class="hero" id="home">
+    <div class="hero-background">
+        <div class="city-overlay london-overlay"></div>
+        <div class="city-overlay chicago-overlay"></div>
+    </div>
+    <div class="container">
+        <h1>Gateway to Studying Abroad</h1>
+        <p>EduSetGo India is dedicated to helping Indian students achieve their dreams of studying abroad. Our comprehensive platform offers tailored packages designed to meet diverse needs and aspirations.</p>
+        <div class="hero-buttons">
             <a href="#packages" class="cta-button">Explore Packages</a>
+            <a href="https://wa.me/message/WCW24CMR7YWCD1" target="_blank" class="whatsapp-hero-btn" aria-label="Chat with us on WhatsApp">
+                <div class="whatsapp-icon">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+                <span>Whatsapp</span>
+            </a>
         </div>
-    </section>
+    </div>
+    
+    <!-- Remove the floating WhatsApp button since it's now inline -->
+    <div style="display: none;" class="whatsapp-float">
+        <a href="https://wa.me/message/WCW24CMR7YWCD1" target="_blank" class="whatsapp-btn" aria-label="Chat with us on WhatsApp">
+            <div class="whatsapp-icon">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+            <div class="whatsapp-text">
+                <span class="chat-text">Chat with us</span>
+                <span class="whatsapp-label">on WhatsApp</span>
+            </div>
+        </a>
+        
+        <!-- Optional: Chat bubble animation -->
+        <div class="chat-bubble">
+            <div class="bubble-content">
+                <p>Hi! How can we help you today? 👋</p>
+            </div>
+            <div class="bubble-arrow"></div>
+        </div>
+    </div>
+    
+    <style>
+        /* Hero Buttons Container */
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        /* WhatsApp Hero Button */
+        .whatsapp-hero-btn {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .whatsapp-hero-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .whatsapp-hero-btn:hover::before {
+            left: 100%;
+        }
+
+        .whatsapp-hero-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(37, 211, 102, 0.6);
+            background: linear-gradient(135deg, #128C7E, #25D366);
+        }
+
+        .whatsapp-hero-btn .whatsapp-icon {
+            background: rgba(255, 255, 255, 0.2);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+        }
+
+        .whatsapp-hero-btn .whatsapp-icon i {
+            font-size: 18px;
+            color: white;
+            animation: whatsapp-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes whatsapp-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Update existing CTA button to match styling */
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .cta-button:hover {
+            background-color: #ff5252;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.6);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .whatsapp-hero-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                gap: 10px;
+            }
+            
+            .whatsapp-hero-btn .whatsapp-icon {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .whatsapp-hero-btn .whatsapp-icon i {
+                font-size: 16px;
+            }
+
+            .cta-button {
+                padding: 12px 25px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .whatsapp-hero-btn {
+                padding: 10px 18px;
+                font-size: 13px;
+            }
+            
+            .cta-button {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</section>
+
+<!-- Add Font Awesome for WhatsApp icon (if not already included) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- About Section -->
     <section class="about" id="about">
@@ -641,7 +809,7 @@
     <section class="contact" id="contact">
         <div class="container">
             <div class="section-heading">
-                <h2>Get In Touch</h2>
+                <h2>Get In Touch with us!</h2>
                 <p>Let us help you achieve your dreams</p>
             </div>
             <div class="contact-grid">

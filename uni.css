@@ -992,14 +992,7 @@ header {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
 }
-:root {
-    --primary-color: #4a90e2;
-    --secondary-color: #f39c12;
-    --accent-color: #e74c3c;
-    --dark-color: #2c3e50;
-    --light-color: #ecf0f1;
-    --text-color: #34495e;
-}
+
 
 * {
     margin: 0;
