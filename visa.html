@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSetGo - Visa Help</title>
+    <link rel="stylesheet" href="visa.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo-link">
+                    <img src="4.png" alt="World Map" class="logo-map">
+                    <span class="logo">Edu<span>Set</span>Go</span>
+                </a>
+            </div>
+            <div class="mobile-toggle" id="mobileToggle">☰</div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#packages">Packages</a></li>
+                <li><a href="index.html#testimonials">Testimonials</a></li>
+                <li class="dropdown" id="servicesDropdown">
+                    <a href="index.html#services" class="dropdown-toggle active">Services</a>
+                    <div class="dropdown-content">
+                        <a href="study.html">Study</a>
+                        <a href="visa.html">Visa Help</a>
+                        <a href="university.html">University Finder</a>
+                    </div>
+                </li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Student Visa Information</h1>
+                <p class="hero-subtitle">We stay updated with the latest visa policies and requirements for each country</p>
+                <div class="policy-alert">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Our team continuously monitors immigration policy changes to provide you with accurate, up-to-date information</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Country Selection -->
+    <section class="country-selection">
+        <div class="container">
+            <h2>Select Your Destination Country</h2>
+            <div class="country-tabs">
+                <button class="country-tab active" data-country="usa">
+                    <img src="https://flagcdn.com/w40/us.png" alt="USA Flag">
+                    <span>USA</span>
+                </button>
+                <button class="country-tab" data-country="uk">
+                    <img src="https://flagcdn.com/w40/gb.png" alt="UK Flag">
+                    <span>UK</span>
+                </button>
+                <button class="country-tab" data-country="canada">
+                    <img src="https://flagcdn.com/w40/ca.png" alt="Canada Flag">
+                    <span>Canada</span>
+                </button>
+                <button class="country-tab" data-country="australia">
+                    <img src="https://flagcdn.com/w40/au.png" alt="Australia Flag">
+                    <span>Australia</span>
+                </button>
+                <button class="country-tab" data-country="germany">
+                    <img src="https://flagcdn.com/w40/de.png" alt="Germany Flag">
+                    <span>Germany</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visa Information Content -->
+    <section class="visa-content">
+        <div class="container">
+            <!-- USA Visa Information -->
+            <div class="country-content active" id="usa-content">
+                <div class="country-header">
+                    <img src="https://flagcdn.com/w80/us.png" alt="USA Flag">
+                    <h2>USA Student Visa (F-1)</h2>
+                </div>
+                
+                <div class="visa-info-grid">
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>Requirements</h3>
+                        </div>
+                        <ul class="requirements-list">
+                            <li>Valid passport (6+ months validity)</li>
+                            <li>Form I-20 from SEVP-approved school</li>
+                            <li>SEVIS fee payment receipt</li>
+                            <li>DS-160 form completion</li>
+                            <li>Visa interview appointment</li>
+                            <li>Financial proof ($40,000+ recommended)</li>
+                            <li>Academic transcripts</li>
+                            <li>English proficiency test scores</li>
+                        </ul>
+                    </div>
+
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-clock"></i>
+                            <h3>Processing Time</h3>
+                        </div>
+                        <div class="processing-info">
+                            <p><strong>Interview Wait Time:</strong> 2-8 weeks</p>
+                            <p><strong>Processing After Interview:</strong> 3-5 business days</p>
+                            <p><strong>Peak Season:</strong> May-August (longer waits)</p>
+                        </div>
+                    </div>
+
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-dollar-sign"></i>
+                            <h3>Fees</h3>
+                        </div>
+                        <div class="fees-info">
+                            <p><strong>Visa Application Fee:</strong> $185</p>
+                            <p><strong>SEVIS Fee:</strong> $350</p>
+                            <p><strong>Total:</strong> $535</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tips-section">
+                    <h3><i class="fas fa-lightbulb"></i> Pro Tips for USA Visa</h3>
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4>Interview Preparation</h4>
+                            <p>Practice common questions about your study plans, career goals, and ties to your home country.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>Financial Documentation</h4>
+                            <p>Show consistent bank statements for 6+ months and avoid large, unexplained deposits.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>Academic Records</h4>
+                            <p>Ensure all transcripts are officially translated and authenticated if not in English.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UK Visa Information -->
+            <div class="country-content" id="uk-content">
+                <div class="country-header">
+                    <img src="https://flagcdn.com/w80/gb.png" alt="UK Flag">
+                    <h2>UK Student Visa (Tier 4)</h2>
+                </div>
+                
+                <div class="visa-info-grid">
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>Requirements</h3>
+                        </div>
+                        <ul class="requirements-list">
+                            <li>Valid passport</li>
+                            <li>Confirmation of Acceptance for Studies (CAS)</li>
+                            <li>Financial proof (tuition + £1,334/month living costs)</li>
+                            <li>English language proficiency</li>
+                            <li>Tuberculosis test (if applicable)</li>
+                            <li>Academic qualifications</li>
+                            <li>Genuine student assessment</li>
+                        </ul>
+                    </div>
+
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-clock"></i>
+                            <h3>Processing Time</h3>
+                        </div>
+                        <div class="processing-info">
+                            <p><strong>Standard Service:</strong> 3 weeks</p>
+                            <p><strong>Priority Service:</strong> 5 working days</p>
+                            <p><strong>Super Priority:</strong> 24 hours</p>
+                        </div>
+                    </div>
+
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-dollar-sign"></i>
+                            <h3>Fees</h3>
+                        </div>
+                        <div class="fees-info">
+                            <p><strong>Visa Application Fee:</strong> £363</p>
+                            <p><strong>Healthcare Surcharge:</strong> £624/year</p>
+                            <p><strong>Priority Service:</strong> +£500</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tips-section">
+                    <h3><i class="fas fa-lightbulb"></i> Pro Tips for UK Visa</h3>
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4>CAS Requirements</h4>
+                            <p>Apply for your CAS only after meeting all academic and English language requirements.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>Financial Evidence</h4>
+                            <p>Maintain required funds for 28 consecutive days before application.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>Biometric Appointment</h4>
+                            <p>Book your biometric appointment early, especially during peak seasons.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Canada Visa Information -->
+            <div class="country-content" id="canada-content">
+                <div class="country-header">
+                    <img src="https://flagcdn.com/w80/ca.png" alt="Canada Flag">
+                    <h2>Canada Study Permit</h2>
+                </div>
+                
+                <div class="visa-info-grid">
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>Requirements</h3>
+                        </div>
+                        <ul class="requirements-list">
+                            <li>Letter of acceptance from DLI</li>
+                            <li>Valid passport or travel document</li>
+                            <li>Proof of financial support (CAD $10,000+)</li>
+                            <li>Letter of explanation</li>
+                            <li>Medical exam (if required)</li>
+                            <li>Police certificate</li>
+                            <li>Digital photo</li>
+                            <li>Language test results</li>
+                        </ul>
+                    </div>
+
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-clock"></i>
+                            <h3>Processing Time</h3>
+                        </div>
+                        <div class="processing-info">
+                            <p><strong>Online Application:</strong> 4-12 weeks</p>
+                            <p><strong>Paper Application:</strong> Longer processing</p>
+                            <p><strong>Peak Season:</strong> May-September</p>
+                        </div>
+                    </div>
+
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-dollar-sign"></i>
+                            <h3>Fees</h3>
+                        </div>
+                        <div class="fees-info">
+                            <p><strong>Study Permit:</strong> CAD $150</p>
+                            <p><strong>Biometrics:</strong> CAD $85</p>
+                            <p><strong>Total:</strong> CAD $235</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tips-section">
+                    <h3><i class="fas fa-lightbulb"></i> Pro Tips for Canada Visa</h3>
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4>Statement of Purpose</h4>
+                            <p>Write a compelling letter explaining your study plans and future intentions.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>Financial Planning</h4>
+                            <p>Show funds for first year tuition plus CAD $10,000 for living expenses.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>Work Opportunities</h4>
+                            <p>Study permit allows 20 hours/week work during studies, full-time during breaks.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Australia Visa Information -->
+            <div class="country-content" id="australia-content">
+                <div class="country-header">
+                    <img src="https://flagcdn.com/w80/au.png" alt="Australia Flag">
+                    <h2>Australia Student Visa (Subclass 500)</h2>
+                </div>
+                
+                <div class="visa-info-grid">
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>Requirements</h3>
+                        </div>
+                        <ul class="requirements-list">
+                            <li>Confirmation of Enrolment (CoE)</li>
+                            <li>Genuine Temporary Entrant (GTE) statement</li>
+                            <li>English language proficiency</li>
+                            <li>Financial capacity evidence</li>
+                            <li>Health insurance (OSHC)</li>
+                            <li>Health examinations</li>
+                            <li>Character requirements</li>
+                            <li>Academic documents</li>
+                        </ul>
+                    </div>
+
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-clock"></i>
+                            <h3>Processing Time</h3>
+                        </div>
+                        <div class="processing-info">
+                            <p><strong>75% of applications:</strong> 29 days</p>
+                            <p><strong>90% of applications:</strong> 4 months</p>
+                            <p><strong>Peak Season:</strong> October-February</p>
+                        </div>
+                    </div>
+
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-dollar-sign"></i>
+                            <h3>Fees</h3>
+                        </div>
+                        <div class="fees-info">
+                            <p><strong>Base Application Fee:</strong> AUD $710</p>
+                            <p><strong>Additional Applicant 18+:</strong> AUD $530</p>
+                            <p><strong>Additional Applicant <18:</strong> AUD $180</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tips-section">
+                    <h3><i class="fas fa-lightbulb"></i> Pro Tips for Australia Visa</h3>
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4>GTE Statement</h4>
+                            <p>Clearly explain your genuine intention to study temporarily in Australia.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>Financial Evidence</h4>
+                            <p>Show AUD $21,041/year for living costs plus tuition and travel expenses.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>Health Insurance</h4>
+                            <p>Purchase OSHC before applying and ensure it covers your entire stay.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Germany Visa Information -->
+            <div class="country-content" id="germany-content">
+                <div class="country-header">
+                    <img src="https://flagcdn.com/w80/de.png" alt="Germany Flag">
+                    <h2>Germany Student Visa</h2>
+                </div>
+                
+                <div class="visa-info-grid">
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>Requirements</h3>
+                        </div>
+                        <ul class="requirements-list">
+                            <li>University admission letter</li>
+                            <li>Completed visa application form</li>
+                            <li>Valid passport</li>
+                            <li>Biometric photos</li>
+                            <li>Proof of financial resources (€11,208/year)</li>
+                            <li>Health insurance</li>
+                            <li>Academic certificates</li>
+                            <li>Language proficiency proof</li>
+                        </ul>
+                    </div>
+
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-clock"></i>
+                            <h3>Processing Time</h3>
+                        </div>
+                        <div class="processing-info">
+                            <p><strong>Standard Processing:</strong> 6-12 weeks</p>
+                            <p><strong>Peak Season:</strong> 3-4 months</p>
+                            <p><strong>Apply Early:</strong> 3 months before travel</p>
+                        </div>
+                    </div>
+
+                    <div class="visa-card">
+                        <div class="card-header">
+                            <i class="fas fa-dollar-sign"></i>
+                            <h3>Fees</h3>
+                        </div>
+                        <div class="fees-info">
+                            <p><strong>Visa Fee:</strong> €75</p>
+                            <p><strong>Service Fee:</strong> Varies by country</p>
+                            <p><strong>Blocked Account:</strong> €11,208</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tips-section">
+                    <h3><i class="fas fa-lightbulb"></i> Pro Tips for Germany Visa</h3>
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4>Blocked Account</h4>
+                            <p>Open a blocked account (Sperrkonto) to prove financial resources.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>Language Requirements</h4>
+                            <p>German programs require DSH-2 or TestDaF. English programs need IELTS/TOEFL.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>Early Application</h4>
+                            <p>Apply 3 months before intended travel due to longer processing times.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Need Personalized Visa Assistance?</h2>
+                <p>Our expert consultants are here to guide you through every step of the visa application process</p>
+                <div class="cta-buttons">
+                    <a href="index.html#contact" class="btn-primary">Get Free Consultation</a>
+                    <a href="index.html#contact" class="btn-secondary">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSetGo - Footer</title>
+    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>EduSetGo India</h3>
+                    <p>Your gateway to studying abroad. We help Indian students achieve their dreams of international education.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#packages">Packages</a></li>
+                        <li><a href="#testimonials">Testimonials</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Services</h3>
+                    <ul class="footer-links">
+                        <li><a href="study.html">University Selection</a></li>
+                        <li><a href="study.html">Admission Guidance</a></li>
+                        <li><a href="visa.html">Visa Assistance</a></li>
+                        <li><a href="study.html">SOP & LOR Support</a></li>
+                        <li><a href="study.html">Pre-Departure Briefing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Connect With Us</h3>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Follow us on Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Follow us on Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Follow us on Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Connect with us on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 EduSetGo India. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+    <script src="visa.js"></script>
+</body>
+</html>
