@@ -611,3 +611,330 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('🎉 All scripts loaded successfully including Enhanced Chatbot');
 });
+// Discount Coupon JavaScript Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const discountCoupon = document.querySelector('.discount-coupon');
+    
+    if (discountCoupon) {
+        // Add click functionality to the coupon
+        discountCoupon.addEventListener('click', function() {
+            // Create and show modal or alert with referral details
+            showReferralModal();
+            
+            // Add special click animation
+            this.style.animation = 'couponPulse 0.6s ease-in-out, couponFloat 3s ease-in-out infinite';
+        });
+        
+        // Add entrance animation when coupon comes into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('coupon-visible');
+                    // Add a slight delay before starting animations
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        // Initially hide the coupon
+        discountCoupon.style.opacity = '0';
+        discountCoupon.style.transform = 'scale(0.5)';
+        discountCoupon.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        
+        observer.observe(discountCoupon);
+        
+        // Add hover sound effect (optional)
+        discountCoupon.addEventListener('mouseenter', function() {
+            // You can add a subtle sound effect here if needed
+            console.log('Coupon hovered!');
+        });
+        
+        // Add periodic attention-grabbing animation
+        setInterval(() => {
+            if (discountCoupon.matches(':hover')) return; // Don't interrupt if user is hovering
+            
+            discountCoupon.style.animation = 'couponFloat 3s ease-in-out infinite, attentionBounce 0.8s ease-in-out';
+            
+            setTimeout(() => {
+                discountCoupon.style.animation = 'couponFloat 3s ease-in-out infinite';
+            }, 800);
+        }, 10000); // Every 10 seconds
+    }
+    
+    // Function to show referral modal
+    function showReferralModal() {
+        // Check if modal already exists
+        let existingModal = document.querySelector('.referral-modal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
+        // Create modal HTML
+        const modalHTML = `
+            <div class="referral-modal" id="referralModal">
+                <div class="modal-overlay"></div>
+                <div class="modal-content">
+                    <button class="modal-close">&times;</button>
+                    <div class="modal-header">
+                        <h3>🎉 Special Referral Offer!</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="offer-details">
+                            <div class="offer-icon">👥</div>
+                            <h4>Refer 3 Members & Get Amazing Benefits:</h4>
+                            <ul class="benefits-list">
+                                <li>✅ <strong>30% OFF</strong> on your selected package</li>
+                                <li>✅ <strong>FREE UPGRADE</strong> to the next package tier</li>
+                                <li>✅ <strong>Priority Support</strong> for all your queries</li>
+                                <li>✅ <strong>Exclusive Access</strong> to premium resources</li>
+                            </ul>
+                            <div class="how-it-works">
+                                <h5>How it works:</h5>
+                                <p>1. Share your referral link with friends<br>
+                                2. When 3 friends sign up using your link<br>
+                                3. You automatically get the discount & upgrade!</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-primary" onclick="startReferral()">Start Referring Now!</button>
+                        <button class="btn-secondary" onclick="closeReferralModal()">Maybe Later</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add modal to body
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Add modal styles
+        addModalStyles();
+        
+        // Show modal with animation
+        const modal = document.getElementById('referralModal');
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+        
+        // Add event listeners
+        const modalClose = modal.querySelector('.modal-close');
+        const modalOverlay = modal.querySelector('.modal-overlay');
+        
+        modalClose.addEventListener('click', closeReferralModal);
+        modalOverlay.addEventListener('click', closeReferralModal);
+        
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeReferralModal();
+            }
+        });
+    }
+    
+    // Add modal styles dynamically
+    function addModalStyles() {
+        if (document.querySelector('#referralModalStyles')) return;
+        
+        const styles = document.createElement('style');
+        styles.id = 'referralModalStyles';
+        styles.textContent = `
+            .referral-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 10000;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .referral-modal.show {
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .modal-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(5px);
+            }
+            
+            .modal-content {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(0.8);
+                background: white;
+                border-radius: 20px;
+                padding: 0;
+                max-width: 500px;
+                width: 90%;
+                max-height: 90vh;
+                overflow-y: auto;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                transition: transform 0.3s ease;
+            }
+            
+            .referral-modal.show .modal-content {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            
+            .modal-close {
+                position: absolute;
+                top: 15px;
+                right: 20px;
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                color: #666;
+                z-index: 1;
+            }
+            
+            .modal-header {
+                background: linear-gradient(135deg, #e74c3c, #c0392b);
+                color: white;
+                padding: 25px 30px;
+                border-radius: 20px 20px 0 0;
+                text-align: center;
+            }
+            
+            .modal-header h3 {
+                margin: 0;
+                font-size: 24px;
+                font-weight: 700;
+            }
+            
+            .modal-body {
+                padding: 30px;
+            }
+            
+            .offer-icon {
+                font-size: 48px;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            
+            .offer-details h4 {
+                text-align: center;
+                color: #333;
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .benefits-list {
+                list-style: none;
+                padding: 0;
+                margin: 20px 0;
+            }
+            
+            .benefits-list li {
+                padding: 10px 0;
+                font-size: 16px;
+                color: #555;
+                border-bottom: 1px solid #eee;
+            }
+            
+            .benefits-list li:last-child {
+                border-bottom: none;
+            }
+            
+            .how-it-works {
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 10px;
+                margin-top: 20px;
+            }
+            
+            .how-it-works h5 {
+                color: #333;
+                margin-bottom: 10px;
+                font-size: 16px;
+            }
+            
+            .how-it-works p {
+                color: #666;
+                line-height: 1.6;
+                margin: 0;
+            }
+            
+            .modal-footer {
+                padding: 20px 30px;
+                border-top: 1px solid #eee;
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+            }
+            
+            .btn-primary, .btn-secondary {
+                padding: 12px 24px;
+                border: none;
+                border-radius: 25px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                flex: 1;
+                max-width: 180px;
+            }
+            
+            .btn-primary {
+                background: linear-gradient(135deg, #e74c3c, #c0392b);
+                color: white;
+            }
+            
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+            }
+            
+            .btn-secondary {
+                background: #f8f9fa;
+                color: #666;
+                border: 1px solid #ddd;
+            }
+            
+            .btn-secondary:hover {
+                background: #e9ecef;
+            }
+            
+            /* Attention bounce animation */
+            @keyframes attentionBounce {
+                0%, 100% { transform: scale(1); }
+                25% { transform: scale(1.1); }
+                50% { transform: scale(1.05); }
+                75% { transform: scale(1.1); }
+            }
+        `;
+        
+        document.head.appendChild(styles);
+    }
+});
+
+// Global functions for modal
+function closeReferralModal() {
+    const modal = document.getElementById('referralModal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.remove();
+        }, 300);
+    }
+}
+
+function startReferral() {
+    // Here you can integrate with your referral system
+    alert('Great! We will set up your referral link. Please contact our team at +91 80192 96878 or hello@edusetgo.com to get started with your referral program!');
+    closeReferralModal();
+    
+    // You can also redirect to a referral page or contact form
+    // window.location.href = '#contact';
+}
