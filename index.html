@@ -404,7 +404,7 @@
     </div>
     <div class="container">
         <h1>Gateway to Studying Abroad</h1>
-        <p>EduSetGo India is dedicated to helping Indian students achieve their dreams of studying abroad. Our comprehensive platform offers tailored packages designed to meet diverse needs and aspirations.</p>
+        <p>EduSetGo India is dedicated to helping students achieve their dreams of studying abroad. Our comprehensive platform offers tailored packages designed to meet diverse needs and aspirations.</p>
         <div class="hero-buttons">
             <a href="#packages" class="cta-button">Explore Packages</a>
             <a href="https://wa.me/message/WCW24CMR7YWCD1" target="_blank" class="whatsapp-hero-btn" aria-label="Chat with us on WhatsApp">
@@ -805,50 +805,135 @@
     </div>
 </section>
 
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <div class="container">
-            <div class="section-heading">
-                <h2>Get In Touch with us!</h2>
-                <p>Let us help you achieve your dreams</p>
+   <!-- Contact Section -->
+<section class="contact-section" id="contact">
+    <div class="contact-container">
+        <!-- Left Side - Image/Info -->
+        <div class="contact-left">
+            <div class="contact-image">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Student" class="student-image">
             </div>
-            <div class="contact-grid">
+            <div class="contact-overlay">
                 <div class="contact-info">
-                    <h3>Contact Information</h3>
-                    <p>We're here to answer any questions you may have about our services. Reach out to us and we'll respond as soon as we can.</p>
+                    <h3>Need Help?</h3>
+                    <p>Our education consultants are here to guide you through your study abroad journey.</p>
                     <div class="contact-details">
-                        <p><strong>Email:</strong> edusetgo.india@gmail.com</p>
-                        <p><strong>Phone:</strong> +91 80192 96878</p>
-                        <p><strong>Address:</strong> 123 Education Lane, Mumbai, Maharashtra, India</p>
-                    </div>
-                </div>
-                <div class="contact-form">
-                    <form id="contactForm">
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <input type="text" name="name" id="name" required>
+                        <div class="contact-item">
+                            <span class="contact-icon">📧</span>
+                            <span>edusetgo.india@gmail.com</span>
                         </div>
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" name="email" id="email" required>
+                        <div class="contact-item">
+                            <span class="contact-icon">📞</span>
+                            <span>+91 80192 96878</span>
                         </div>
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" name="phone" id="phone">
+                        <div class="contact-item">
+                            <span class="contact-icon">📍</span>
+                            <span>Mumbai, Maharashtra, India</span>
                         </div>
-                        <div class="form-group">
-                            <label for="message">Message</label>
-                            <textarea name="message" id="message" required></textarea>
-                        </div>
-                        <button type="submit" id="submitBtn">Send Message</button>
-                    </form>
-                    <div id="formStatus" style="margin-top: 15px; padding: 10px; border-radius: 5px; display: none;">
-                        <p id="statusMessage"></p>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+
+        <!-- Right Side - Form -->
+        <div class="contact-right">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2 class="form-title">Get in touch with us!</h2>
+                </div>
+
+                <form id="contactForm" class="contact-form">
+                    <!-- Name Input -->
+                    <div class="form-group name-group">
+                        <span class="form-prefix">I am</span>
+                        <input type="text" id="name" name="name" class="form-input name-input" placeholder="Your Name" required>
+                        <span class="form-suffix">wanted to know about</span>
+                    </div>
+
+                    <!-- Country Selection -->
+                    <div class="form-group">
+                        <select id="country" name="country" class="form-select" required>
+                            <option value="">Select Countries</option>
+                            <option value="United States">United States</option>
+                            <option value="Canada">Canada</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Germany">Germany</option>
+                            <option value="France">France</option>
+                            <option value="Netherlands">Netherlands</option>
+                            <option value="Singapore">Singapore</option>
+                        </select>
+                    </div>
+
+                    <!-- Contact Info Section -->
+                    <div class="contact-info-section">
+                        <p class="contact-label">You can contact me at</p>
+                        <div class="contact-inputs">
+                            <div class="phone-group">
+                                <select class="country-code" id="countryCode" name="countryCode">
+                                    <option value="IND +91">IND +91</option>
+                                    <option value="USA +1">USA +1</option>
+                                    <option value="UK +44">UK +44</option>
+                                    <option value="AUS +61">AUS +61</option>
+                                    <option value="GER +49">GER +49</option>
+                                </select>
+                                <input type="tel" id="phone" name="phone" class="form-input phone-input" placeholder="Phone No." required>
+                            </div>
+                            <div class="whatsapp-toggle">
+                                <input type="checkbox" id="whatsapp" name="whatsapp" class="toggle-checkbox">
+                                <label for="whatsapp" class="toggle-label">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span class="toggle-text">Use this as Whatsapp number</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group email-group">
+                        <span class="form-prefix">and email</span>
+                        <input type="email" id="email" name="email" class="form-input email-input" placeholder="Email ID" required>
+                    </div>
+
+                    <!-- Message -->
+                    <div class="form-group">
+                        <label for="message" class="message-label">Message</label>
+                        <textarea id="message" name="message" class="form-textarea" placeholder="Tell us about your study abroad goals..." rows="4"></textarea>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="terms-group">
+                        <input type="checkbox" id="terms" name="terms" class="terms-checkbox" required>
+                        <label for="terms" class="terms-label">
+                        I consent that the team can contact me via WhatsApp or email and <a href="#" class="terms-link">I accept Terms & Conditions</a>
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="submitBtn" class="submit-btn">
+                        Submit
+                    </button>
+
+                    <!-- Counseling Section -->
+                    <div class="counseling-section">
+                        <div class="counseling-icon">
+                            <span>🏢</span>
+                        </div>
+                        <div class="counseling-text">
+                            <p class="counseling-title">Need Guidance about your career?</p>
+                            <a href="https://wa.me/message/WCW24CMR7YWCD1" target="_blank" class="counseling-link">Connect with Industry people to know more</a>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Form Status -->
+                <div id="formStatus" class="form-status">
+                    <p id="statusMessage"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
     <!-- Chatbot -->
     <div class="chatbot-container">
