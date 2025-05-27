@@ -808,7 +808,7 @@
     </div>
 </section>
 
-   <!-- Contact Section -->
+  <!-- Contact Section -->
 <section class="contact-section" id="contact">
     <div class="contact-container">
         <!-- Left Side - Image/Info -->
@@ -820,18 +820,45 @@
                 <div class="contact-info">
                     <h3>Need Help?</h3>
                     <p>Our education consultants are here to guide you through your study abroad journey.</p>
-                    <div class="contact-details">
-                        <div class="contact-item">
-                            <span class="contact-icon">📧</span>
-                            <span>edusetgo.india@gmail.com</span>
+                    
+                    <!-- Branches Container -->
+                    <div class="branches-container">
+                        <!-- India Branch -->
+                        <div class="branch-info">
+                            <h4 class="branch-title">India Office</h4>
+                            <div class="contact-details">
+                                <div class="contact-item">
+                                    <span class="contact-icon">📧</span>
+                                    <span>edusetgo.india@gmail.com</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-icon">📞</span>
+                                    <span>+91 80192 96878</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-icon">📍</span>
+                                    <span>Mumbai, Maharashtra, India</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="contact-item">
-                            <span class="contact-icon">📞</span>
-                            <span>+91 80192 96878</span>
-                        </div>
-                        <div class="contact-item">
-                            <span class="contact-icon">📍</span>
-                            <span>Mumbai, Maharashtra, India</span>
+
+                        <!-- USA Branch -->
+                        <div class="branch-info">
+                            <h4 class="branch-title">USA Office</h4>
+                            <div class="contact-details">
+                                <div class="contact-item">
+                                    <span class="contact-icon">📧</span>
+                                    <span>achieve@edusetgo.com</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-icon">📞</span>
+                                    <span>+1 425-961-3320</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-icon">📍</span>
+                                    <span>Seattle, WA, USA</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -908,7 +935,8 @@
                     <div class="terms-group">
                         <input type="checkbox" id="terms" name="terms" class="terms-checkbox" required>
                         <label for="terms" class="terms-label">
-                        I consent that the team can contact me via WhatsApp or email and <a href="#" class="terms-link">I accept Terms & Conditions</a>
+                        I consent that the team can contact me via WhatsApp or email and 
+                        <a href="#" class="terms-link" id="openTermsModal">I accept Terms & Conditions</a>
                         </label>
                     </div>
 
@@ -937,6 +965,117 @@
         </div>
     </div>
 </section>
+
+<!-- Terms & Conditions Modal -->
+<div id="termsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Terms & Conditions</h2>
+            <span class="close-modal" id="closeModal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="terms-content">
+                <h3>1. Information Collection and Use</h3>
+                <p>We collect information you provide directly to us, such as when you fill out our contact form. This may include your name, email address, phone number, and any other information you choose to provide.</p>
+
+                <h3>2. Communication Consent</h3>
+                <p>By submitting this form, you consent to receive communications from EduSetGo via:</p>
+                <ul>
+                    <li>Email messages regarding your study abroad inquiries</li>
+                    <li>WhatsApp messages (if you opt-in)</li>
+                    <li>Phone calls for consultation purposes</li>
+                    <li>SMS notifications about your application status</li>
+                </ul>
+
+                <h3>3. Data Protection</h3>
+                <p>We are committed to protecting your personal information. Your data will be:</p>
+                <ul>
+                    <li>Stored securely and used only for providing our services</li>
+                    <li>Not shared with third parties without your consent</li>
+                    <li>Retained only as long as necessary for our services</li>
+                    <li>Protected according to applicable data protection laws</li>
+                </ul>
+
+                <h3>4. Service Terms</h3>
+                <p>Our education consulting services are provided "as is" and we make no warranties about the completeness, reliability, or accuracy of information provided. We do not guarantee admission to any educational institution.</p>
+
+                <h3>5. Fees and Payments</h3>
+                <p>Some of our services may require payment. All fees will be clearly communicated before any paid service begins. Refund policies will be explained at the time of service agreement.</p>
+
+                <h3>6. Intellectual Property</h3>
+                <p>All content provided by EduSetGo, including but not limited to guides, templates, and consultation materials, remains our intellectual property.</p>
+
+                <h3>7. Limitation of Liability</h3>
+                <p>EduSetGo shall not be liable for any indirect, incidental, special, or consequential damages arising from the use of our services.</p>
+
+                <h3>8. Governing Law</h3>
+                <p>These terms shall be governed by and construed in accordance with the laws of India. Any disputes shall be subject to the jurisdiction of courts in Mumbai, Maharashtra.</p>
+
+                <h3>9. Contact Information</h3>
+                <p>For questions about these terms, please contact us at:</p>
+                <ul>
+                    <li>Email: edusetgo.india@gmail.com</li>
+                    <li>Phone: +91 80192 96878 (India) or +1 425-961-3320 (USA)</li>
+                </ul>
+
+                <h3>10. Changes to Terms</h3>
+                <p>We reserve the right to modify these terms at any time. Continued use of our services after changes constitutes acceptance of the new terms.</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-btn accept-btn" id="acceptTerms">Accept & Close</button>
+            <button type="button" class="modal-btn close-btn" id="closeTermsModal">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Terms & Conditions Modal functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('termsModal');
+    const openModalLink = document.getElementById('openTermsModal');
+    const closeModal = document.getElementById('closeModal');
+    const closeTermsModal = document.getElementById('closeTermsModal');
+    const acceptTerms = document.getElementById('acceptTerms');
+    const termsCheckbox = document.getElementById('terms');
+
+    // Open modal
+    openModalLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    });
+
+    // Close modal functions
+    function closeModalFunction() {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Restore scrolling
+    }
+
+    closeModal.addEventListener('click', closeModalFunction);
+    closeTermsModal.addEventListener('click', closeModalFunction);
+
+    // Accept terms and close
+    acceptTerms.addEventListener('click', function() {
+        termsCheckbox.checked = true;
+        closeModalFunction();
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModalFunction();
+        }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
+            closeModalFunction();
+        }
+    });
+});
+</script>
 
    <!-- Enhanced Chatbot -->
 <div class="chatbot-container">
