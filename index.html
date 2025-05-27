@@ -938,33 +938,74 @@
     </div>
 </section>
 
-    <!-- Chatbot -->
-    <div class="chatbot-container">
-        <div class="chatbot-toggle">
-            <span>Chat with us</span>
-            <div class="chatbot-icon">💬</div>
+   <!-- Enhanced Chatbot -->
+<div class="chatbot-container">
+    <div class="chatbot-toggle">
+        <span>Chat with us</span>
+        <div class="chatbot-icon">💬</div>
+    </div>
+    <div class="chatbot-box">
+        <div class="chatbot-header">
+            <h3>EduSetGo Assistant</h3>
+            <span class="close-chat">✕</span>
         </div>
-        <div class="chatbot-box">
-            <div class="chatbot-header">
-                <h3>EduSetGo Assistant</h3>
-                <span class="close-chat">✕</span>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="bot-message">Hello! How can I help you today? Choose a category below:</div>
+        </div>
+        
+        <!-- Main Categories -->
+        <div class="chatbot-categories" id="chatbotCategories">
+            <button class="category-btn" data-category="visa">
+                <i class="fas fa-passport"></i>
+                <span>Visa & Immigration</span>
+            </button>
+            <button class="category-btn" data-category="study">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Study Programs</span>
+            </button>
+            <button class="category-btn" data-category="documents">
+                <i class="fas fa-file-alt"></i>
+                <span>Documents (LOR/SOP)</span>
+            </button>
+            <button class="category-btn" data-category="interview">
+                <i class="fas fa-microphone"></i>
+                <span>Mock Interview</span>
+            </button>
+            <button class="category-btn" data-category="financial">
+                <i class="fas fa-dollar-sign"></i>
+                <span>Financial Aid</span>
+            </button>
+            <button class="category-btn" data-category="contact">
+                <i class="fas fa-phone"></i>
+                <span>Contact Us</span>
+            </button>
+        </div>
+        
+        <!-- Question Prompts (Initially Hidden) -->
+        <div class="chatbot-prompts" id="chatbotPrompts" style="display: none;">
+            <div class="prompts-header">
+                <button class="back-btn" id="backToCategories">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Categories
+                </button>
+                <button class="collapse-btn" id="collapsePrompts">
+                    <i class="fas fa-chevron-up"></i>
+                    Hide Questions
+                </button>
             </div>
-            <div class="chatbot-messages" id="chatbotMessages">
-                <div class="bot-message">Hello! How can I help you today? Choose a question below or type your own.</div>
+            <div class="prompts-content" id="promptsContent">
+                <!-- Questions will be populated here dynamically -->
             </div>
-            <div class="chatbot-prompts">
-                <button class="prompt-btn">Tell me about study options in USA</button>
-                <button class="prompt-btn">What documents do I need for a student visa?</button>
-                <button class="prompt-btn">How much does it cost to study abroad?</button>
-                <button class="prompt-btn">Which universities do you recommend?</button>
-                <button class="prompt-btn">How do I apply for scholarships?</button>
-            </div>
-            <div class="chatbot-input">
-                <input type="text" id="userMessage" placeholder="Type your message...">
-                <button id="sendMessage">Send</button>
-            </div>
+        </div>
+        
+        <div class="chatbot-input">
+            <input type="text" id="userMessage" placeholder="Type your message...">
+            <button id="sendMessage">
+                <i class="fas fa-paper-plane"></i>
+            </button>
         </div>
     </div>
+</div>
 
     <!DOCTYPE html>
 <html lang="en">
@@ -997,11 +1038,11 @@
                 <div class="footer-column">
                     <h3>Services</h3>
                     <ul class="footer-links">
-                        <li><a href="study.html">University Selection</a></li>
+                        <li><a href="Listofuni.html">University Selection</a></li>
                         <li><a href="study.html">Admission Guidance</a></li>
                         <li><a href="visa.html">Visa Assistance</a></li>
-                        <li><a href="study.html">SOP & LOR Support</a></li>
-                        <li><a href="study.html">Pre-Departure Briefing</a></li>
+                        <li><a href="index.html#contact">SOP & LOR Support</a></li>
+                        <li><a href="index.html#contact">Pre-Departure Briefing</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
