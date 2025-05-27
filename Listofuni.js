@@ -1,4 +1,4 @@
-// Sample university data
+// Sample university data with Duolingo exam added
 const universitiesData = [
     {
         id: 1,
@@ -7,7 +7,7 @@ const universitiesData = [
         location: "Cambridge, Massachusetts",
         fees: 54000,
         ranking: "#1 Global",
-        exams: ["TOEFL", "SAT"],
+        exams: ["TOEFL", "SAT", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Business", "Medicine", "Arts"],
         website: "https://www.harvard.edu"
@@ -19,7 +19,7 @@ const universitiesData = [
         location: "Stanford, California",
         fees: 56000,
         ranking: "#2 Global",
-        exams: ["TOEFL", "GRE", "GMAT"],
+        exams: ["TOEFL", "GRE", "GMAT", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Engineering", "Computer Science", "Business"],
         website: "https://www.stanford.edu"
@@ -31,7 +31,7 @@ const universitiesData = [
         location: "Oxford, England",
         fees: 45000,
         ranking: "#3 Global",
-        exams: ["IELTS", "TOEFL"],
+        exams: ["IELTS", "TOEFL", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Arts", "Medicine", "Science"],
         website: "https://www.ox.ac.uk"
@@ -43,7 +43,7 @@ const universitiesData = [
         location: "Cambridge, England",
         fees: 44000,
         ranking: "#4 Global",
-        exams: ["IELTS", "TOEFL"],
+        exams: ["IELTS", "TOEFL", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Engineering", "Science", "Arts"],
         website: "https://www.cam.ac.uk"
@@ -55,7 +55,7 @@ const universitiesData = [
         location: "Cambridge, Massachusetts",
         fees: 55000,
         ranking: "#5 Global",
-        exams: ["TOEFL", "GRE", "SAT"],
+        exams: ["TOEFL", "GRE", "SAT", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Engineering", "Computer Science", "Science"],
         website: "https://www.mit.edu"
@@ -67,7 +67,7 @@ const universitiesData = [
         location: "Toronto, Ontario",
         fees: 35000,
         ranking: "#18 Global",
-        exams: ["IELTS", "TOEFL"],
+        exams: ["IELTS", "TOEFL", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Engineering", "Medicine", "Business"],
         website: "https://www.utoronto.ca"
@@ -79,7 +79,7 @@ const universitiesData = [
         location: "Melbourne, Victoria",
         fees: 38000,
         ranking: "#33 Global",
-        exams: ["IELTS", "TOEFL"],
+        exams: ["IELTS", "TOEFL", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Arts", "Engineering", "Medicine"],
         website: "https://www.unimelb.edu.au"
@@ -91,7 +91,7 @@ const universitiesData = [
         location: "Zurich",
         fees: 1500,
         ranking: "#8 Global",
-        exams: ["TOEFL", "IELTS"],
+        exams: ["TOEFL", "IELTS", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Engineering", "Computer Science", "Science"],
         website: "https://ethz.ch"
@@ -103,7 +103,7 @@ const universitiesData = [
         location: "Munich, Bavaria",
         fees: 3000,
         ranking: "#50 Global",
-        exams: ["TOEFL", "IELTS"],
+        exams: ["TOEFL", "IELTS", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Engineering", "Computer Science", "Science"],
         website: "https://www.tum.de"
@@ -115,7 +115,7 @@ const universitiesData = [
         location: "Paris",
         fees: 4000,
         ranking: "#72 Global",
-        exams: ["TOEFL", "IELTS"],
+        exams: ["TOEFL", "IELTS", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Arts", "Science", "Medicine"],
         website: "https://www.sorbonne-universite.fr"
@@ -127,7 +127,7 @@ const universitiesData = [
         location: "Amsterdam",
         fees: 12000,
         ranking: "#58 Global",
-        exams: ["IELTS", "TOEFL"],
+        exams: ["IELTS", "TOEFL", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Business", "Arts", "Science"],
         website: "https://www.uva.nl"
@@ -139,7 +139,7 @@ const universitiesData = [
         location: "Montreal, Quebec",
         fees: 32000,
         ranking: "#31 Global",
-        exams: ["IELTS", "TOEFL"],
+        exams: ["IELTS", "TOEFL", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Medicine", "Engineering", "Arts"],
         website: "https://www.mcgill.ca"
@@ -151,7 +151,7 @@ const universitiesData = [
         location: "Canberra, ACT",
         fees: 40000,
         ranking: "#27 Global",
-        exams: ["IELTS", "TOEFL"],
+        exams: ["IELTS", "TOEFL", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Science", "Arts", "Engineering"],
         website: "https://www.anu.edu.au"
@@ -163,7 +163,7 @@ const universitiesData = [
         location: "London, England",
         fees: 47000,
         ranking: "#6 Global",
-        exams: ["IELTS", "TOEFL"],
+        exams: ["IELTS", "TOEFL", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Engineering", "Medicine", "Science"],
         website: "https://www.imperial.ac.uk"
@@ -175,7 +175,7 @@ const universitiesData = [
         location: "Pasadena, California",
         fees: 58000,
         ranking: "#7 Global",
-        exams: ["TOEFL", "SAT", "GRE"],
+        exams: ["TOEFL", "SAT", "GRE", "Duolingo"],
         levels: ["Bachelor", "Master", "PhD"],
         fields: ["Engineering", "Science", "Computer Science"],
         website: "https://www.caltech.edu"
@@ -255,15 +255,21 @@ class UniversityBrowser {
     
     setupEventListeners() {
         // Sort dropdown
-        document.getElementById('sortBy').addEventListener('change', (e) => {
-            this.currentSort = e.target.value;
-            this.sortAndRender();
-        });
+        const sortByElement = document.getElementById('sortBy');
+        if (sortByElement) {
+            sortByElement.addEventListener('change', (e) => {
+                this.currentSort = e.target.value;
+                this.sortAndRender();
+            });
+        }
         
         // Clear filters button
-        document.getElementById('clearFilters').addEventListener('click', () => {
-            this.clearAllFilters();
-        });
+        const clearFiltersElement = document.getElementById('clearFilters');
+        if (clearFiltersElement) {
+            clearFiltersElement.addEventListener('click', () => {
+                this.clearAllFilters();
+            });
+        }
         
         // Filter checkboxes
         this.setupFilterCheckboxes('countryFilters', 'countries');
@@ -274,6 +280,8 @@ class UniversityBrowser {
     
     setupFilterCheckboxes(containerId, filterType) {
         const container = document.getElementById(containerId);
+        if (!container) return;
+        
         const checkboxes = container.querySelectorAll('input[type="checkbox"]');
         
         checkboxes.forEach(checkbox => {
@@ -289,34 +297,79 @@ class UniversityBrowser {
         const minFeesValue = document.getElementById('minFeesValue');
         const maxFeesValue = document.getElementById('maxFeesValue');
         
+        if (!minFeesSlider || !maxFeesSlider || !minFeesValue || !maxFeesValue) {
+            console.warn('Range slider elements not found');
+            return;
+        }
+        
+        // Create range fill element for visual feedback
+        const rangeSliderContainer = minFeesSlider.parentElement;
+        let rangeFill = rangeSliderContainer.querySelector('.range-fill');
+        if (!rangeFill) {
+            rangeFill = document.createElement('div');
+            rangeFill.className = 'range-fill';
+            rangeSliderContainer.appendChild(rangeFill);
+        }
+        
         const updateRangeValues = () => {
-            const minVal = parseInt(minFeesSlider.value);
-            const maxVal = parseInt(maxFeesSlider.value);
+            let minVal = parseInt(minFeesSlider.value);
+            let maxVal = parseInt(maxFeesSlider.value);
             
             // Ensure min doesn't exceed max
             if (minVal >= maxVal) {
-                minFeesSlider.value = maxVal - 1000;
+                minVal = maxVal - 1000;
+                minFeesSlider.value = minVal;
             }
             
             // Ensure max doesn't go below min
             if (maxVal <= minVal) {
-                maxFeesSlider.value = minVal + 1000;
+                maxVal = minVal + 1000;
+                maxFeesSlider.value = maxVal;
             }
             
-            const finalMin = parseInt(minFeesSlider.value);
-            const finalMax = parseInt(maxFeesSlider.value);
+            // Update display values
+            minFeesValue.textContent = `$${minVal.toLocaleString()}`;
+            maxFeesValue.textContent = `$${maxVal.toLocaleString()}`;
             
-            minFeesValue.textContent = `$${finalMin.toLocaleString()}`;
-            maxFeesValue.textContent = `$${finalMax.toLocaleString()}`;
+            // Update range fill visual
+            const minPercent = (minVal / 80000) * 100;
+            const maxPercent = (maxVal / 80000) * 100;
             
-            this.filters.minFees = finalMin;
-            this.filters.maxFees = finalMax;
+            rangeFill.style.left = `${minPercent}%`;
+            rangeFill.style.width = `${maxPercent - minPercent}%`;
             
-            this.applyFilters();
+            // Update filters
+            this.filters.minFees = minVal;
+            this.filters.maxFees = maxVal;
+            
+            // Debounce the filter application
+            clearTimeout(this.rangeTimeout);
+            this.rangeTimeout = setTimeout(() => {
+                this.applyFilters();
+            }, 300);
         };
         
+        // Initialize range values
+        updateRangeValues();
+        
+        // Add event listeners with proper handling
         minFeesSlider.addEventListener('input', updateRangeValues);
         maxFeesSlider.addEventListener('input', updateRangeValues);
+        
+        // Handle mouse events for better UX
+        [minFeesSlider, maxFeesSlider].forEach(slider => {
+            slider.addEventListener('mousedown', () => {
+                slider.classList.add('active');
+            });
+            
+            slider.addEventListener('mouseup', () => {
+                slider.classList.remove('active');
+            });
+            
+            slider.addEventListener('mouseleave', () => {
+                slider.classList.remove('active');
+            });
+        });
     }
     
     updateFilter(filterType, value, isChecked) {
@@ -339,7 +392,7 @@ class UniversityBrowser {
                 return false;
             }
             
-            // Exams filter
+            // Exams filter (including Duolingo)
             if (this.filters.exams.length > 0 && 
                 !this.filters.exams.some(exam => university.exams.includes(exam))) {
                 return false;
@@ -402,17 +455,19 @@ class UniversityBrowser {
         const loadingSpinner = document.getElementById('loadingSpinner');
         const noResults = document.getElementById('noResults');
         
+        if (!container) return;
+        
         // Show loading
-        loadingSpinner.style.display = 'block';
+        if (loadingSpinner) loadingSpinner.style.display = 'block';
         container.innerHTML = '';
-        noResults.style.display = 'none';
+        if (noResults) noResults.style.display = 'none';
         
         // Simulate loading delay
         setTimeout(() => {
-            loadingSpinner.style.display = 'none';
+            if (loadingSpinner) loadingSpinner.style.display = 'none';
             
             if (this.filteredUniversities.length === 0) {
-                noResults.style.display = 'block';
+                if (noResults) noResults.style.display = 'block';
                 return;
             }
             
@@ -433,7 +488,7 @@ class UniversityBrowser {
                     card.style.transform = 'translateY(0)';
                 }, index * 100);
             });
-        }, 500);
+        }, 300);
     }
     
     createUniversityCard(university) {
@@ -505,6 +560,8 @@ class UniversityBrowser {
     
     updateResultsCount() {
         const countElement = document.getElementById('resultsCount');
+        if (!countElement) return;
+        
         const count = this.filteredUniversities.length;
         countElement.textContent = `Showing ${count} ${count === 1 ? 'university' : 'universities'}`;
     }
@@ -527,14 +584,29 @@ class UniversityBrowser {
         });
         
         // Reset range sliders
-        document.getElementById('minFees').value = 0;
-        document.getElementById('maxFees').value = 80000;
-        document.getElementById('minFeesValue').textContent = '$0';
-        document.getElementById('maxFeesValue').textContent = '$80,000';
+        const minFeesSlider = document.getElementById('minFees');
+        const maxFeesSlider = document.getElementById('maxFees');
+        const minFeesValue = document.getElementById('minFeesValue');
+        const maxFeesValue = document.getElementById('maxFeesValue');
+        
+        if (minFeesSlider) minFeesSlider.value = 0;
+        if (maxFeesSlider) maxFeesSlider.value = 80000;
+        if (minFeesValue) minFeesValue.textContent = '$0';
+        if (maxFeesValue) maxFeesValue.textContent = '$80,000';
+        
+        // Reset range fill
+        const rangeFill = document.querySelector('.range-fill');
+        if (rangeFill) {
+            rangeFill.style.left = '0%';
+            rangeFill.style.width = '100%';
+        }
         
         // Reset sort
-        document.getElementById('sortBy').value = 'name';
-        this.currentSort = 'name';
+        const sortByElement = document.getElementById('sortBy');
+        if (sortByElement) {
+            sortByElement.value = 'name';
+            this.currentSort = 'name';
+        }
         
         // Apply filters (which will show all universities)
         this.applyFilters();
