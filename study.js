@@ -71,11 +71,462 @@ heroButtons.forEach(button => {
     });
 });
 
-// Exam Cards Interaction
+// ==================== UPDATED EXAM MODAL FUNCTIONALITY ====================
+
+// Enhanced Exam data with more details
+const examData = {
+    ielts: {
+        title: 'IELTS',
+        icon: 'fas fa-microphone',
+        description: 'IELTS is the world\'s most popular English language proficiency test for higher education and global migration. It assesses your ability to listen, read, write and speak in English.',
+        score: 'Band 6.0 - 9.0 (9.0 being the highest)',
+        duration: '2 hours 45 minutes',
+        sections: ['Listening (30 minutes)', 'Reading (60 minutes)', 'Writing (60 minutes)', 'Speaking (11-14 minutes)'],
+        fee: '$215 - $310 (varies by country)',
+        validity: '2 years from test date'
+    },
+    toefl: {
+        title: 'TOEFL',
+        icon: 'fas fa-laptop',
+        description: 'TOEFL iBT test measures your ability to use and understand English at the university level. It evaluates how well you combine your listening, reading, speaking and writing skills.',
+        score: '0 - 120 points (each section 0-30)',
+        duration: '3 hours',
+        sections: ['Reading (54-72 minutes)', 'Listening (41-57 minutes)', 'Speaking (17 minutes)', 'Writing (50 minutes)'],
+        fee: '$185 - $300 (varies by location)',
+        validity: '2 years from test date'
+    },
+    gre: {
+        title: 'GRE',
+        icon: 'fas fa-calculator',
+        description: 'The GRE General Test measures your verbal reasoning, quantitative reasoning, critical thinking and analytical writing skills for graduate school admissions.',
+        score: '260 - 340 (130-170 per section)',
+        duration: '3 hours 45 minutes',
+        sections: ['Analytical Writing (60 minutes)', 'Verbal Reasoning (60 minutes)', 'Quantitative Reasoning (70 minutes)'],
+        fee: '$205 worldwide',
+        validity: '5 years from test date'
+    },
+    duolingo: {
+        title: 'Duolingo English Test',
+        icon: 'fas fa-language',
+        description: 'A convenient, fast, and affordable English proficiency test that can be taken online anytime, anywhere. Accepted by thousands of universities worldwide.',
+        score: '10 - 160 points',
+        duration: '1 hour',
+        sections: ['Adaptive Test (45 minutes)', 'Video Interview (10 minutes)', 'Writing Sample (5 minutes)'],
+        fee: '$49 worldwide',
+        validity: '2 years from test date'
+    },
+    pte: {
+        title: 'PTE Academic',
+        icon: 'fas fa-headphones',
+        description: 'PTE Academic is a computer-based English language test trusted by universities, colleges and governments around the world for study abroad and immigration purposes.',
+        score: '10 - 90 points',
+        duration: '3 hours',
+        sections: ['Speaking & Writing (77-93 minutes)', 'Reading (32-41 minutes)', 'Listening (45-57 minutes)'],
+        fee: '$200 - $250 (varies by location)',
+        validity: '2 years from test date'
+    },
+    gmat: {
+        title: 'GMAT',
+        icon: 'fas fa-chart-line',
+        description: 'The GMAT exam measures your command of basic arithmetic, algebra, geometry, multi-source data analysis, and grammar for business school admissions.',
+        score: '200 - 800 points',
+        duration: '3 hours 7 minutes',
+        sections: ['Analytical Writing (30 minutes)', 'Integrated Reasoning (30 minutes)', 'Quantitative (62 minutes)', 'Verbal (65 minutes)'],
+        fee: '$250 worldwide',
+        validity: '5 years from test date'
+    }
+};
+
+// Function to open modal (replaces the old showExamDetails)
+function openModal(examType) {
+    const modal = document.getElementById('examModal');
+    const data = examData[examType];
+    
+    if (!modal || !data) return;
+    
+    document.getElementById('modalTitle').textContent = data.title;
+    document.getElementById('modalIcon').innerHTML = `<i class="${data.icon}"></i>`;
+    document.getElementById('modalDescription').textContent = data.description;
+    document.getElementById('modalScore').textContent = data.score;
+    document.getElementById('modalDuration').textContent = data.duration;
+    document.getElementById('modalFee').textContent = data.fee;
+    document.getElementById('modalValidity').textContent = data.validity;
+    
+    const sectionsList = document.getElementById('modalSections');
+    sectionsList.innerHTML = '';
+    data.sections.forEach(section => {
+        const li = document.createElement('li');
+        li.textContent = section;
+        sectionsList.appendChild(li);
+    });
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Function to close modal
+function closeModal() {
+    const modal = document.getElementById('examModal');
+    if (!modal) return;
+    
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
+
+// Replace the old showExamDetails function
+function showExamDetails(examType) {
+    openModal(examType);
+}
+
+// ==================== HELPER FUNCTIONS ====================
+
+// Function to get exam type from modal title
+function getExamTypeFromTitle(title) {
+    const titleMap = {
+        'IELTS': 'IELTS',
+        'TOEFL': 'TOEFL', 
+        'GRE': 'GRE',
+        'Duolingo English Test': 'Duolingo English Test',
+        'PTE Academic': 'PTE Academic',
+        'GMAT': 'GMAT'
+    };
+    return titleMap[title] || title;
+}
+
+// Function to show preparation resources
+function showPrepResources(examType) {
+    const prepResources = {
+        'IELTS': {
+            official: 'https://www.ielts.org/for-test-takers/test-preparation',
+            resources: [
+                { name: 'Official IELTS Practice Tests', url: 'https://www.ielts.org/for-test-takers/test-preparation/free-practice-tests' },
+                { name: 'IELTS Preparation Course - British Council', url: 'https://www.futurelearn.com/courses/understanding-ielts' },
+                { name: 'Cambridge IELTS Books', url: 'https://www.cambridge.org/gb/cambridgeenglish/catalog/cambridge-english-exams-ielts/cambridge-ielts' },
+                { name: 'IELTS Liz - Free Lessons', url: 'https://ieltsliz.com/' }
+            ]
+        },
+        'TOEFL': {
+            official: 'https://www.ets.org/toefl/test-takers/ibt/prepare/',
+            resources: [
+                { name: 'TOEFL iBT Free Practice Test', url: 'https://www.ets.org/toefl/test-takers/ibt/prepare/tests/' },
+                { name: 'Official TOEFL iBT Tests', url: 'https://www.ets.org/toefl/test-takers/ibt/prepare/official-toefl-ibt-tests/' },
+                { name: 'TOEFL Go! Official App', url: 'https://www.ets.org/toefl/test-takers/ibt/prepare/toefl-go-global/' },
+                { name: 'Magoosh TOEFL Prep', url: 'https://magoosh.com/toefl/' }
+            ]
+        },
+        'GRE': {
+            official: 'https://www.ets.org/gre/test-takers/general-test/prepare/',
+            resources: [
+                { name: 'Official GRE Practice Tests', url: 'https://www.ets.org/gre/test-takers/general-test/prepare/powerprep/' },
+                { name: 'GRE Official Guide', url: 'https://www.ets.org/gre/test-takers/general-test/prepare/official-gre-guide/' },
+                { name: 'Manhattan Prep GRE', url: 'https://www.manhattanprep.com/gre/' },
+                { name: 'Kaplan GRE Prep', url: 'https://www.kaptest.com/gre' }
+            ]
+        },
+        'Duolingo English Test': {
+            official: 'https://englishtest.duolingo.com/prepare',
+            resources: [
+                { name: 'Official Practice Test', url: 'https://englishtest.duolingo.com/prepare' },
+                { name: 'Duolingo English Test Tips', url: 'https://englishtest.duolingo.com/applicants/test-taking-tips' },
+                { name: 'Sample Questions', url: 'https://englishtest.duolingo.com/applicants/sample-test' },
+                { name: 'Test Format Guide', url: 'https://englishtest.duolingo.com/applicants/test-overview' }
+            ]
+        },
+        'PTE Academic': {
+            official: 'https://pearsonpte.com/preparation/',
+            resources: [
+                { name: 'Official PTE Practice Tests', url: 'https://pearsonpte.com/preparation/practice-tests/' },
+                { name: 'PTE Academic Preparation Course', url: 'https://pearsonpte.com/preparation/courses/' },
+                { name: 'PTE Study Materials', url: 'https://pearsonpte.com/preparation/study-materials/' },
+                { name: 'E2Language PTE Prep', url: 'https://www.e2language.com/pte/' }
+            ]
+        },
+        'GMAT': {
+            official: 'https://www.mba.com/exams/gmat-exam/prepare',
+            resources: [
+                { name: 'Official GMAT Practice Exams', url: 'https://www.mba.com/exams/gmat-exam/prepare/practice-exams' },
+                { name: 'GMAT Official Guide', url: 'https://www.mba.com/exams/gmat-exam/prepare/gmat-official-guide' },
+                { name: 'Manhattan Prep GMAT', url: 'https://www.manhattanprep.com/gmat/' },
+                { name: 'Magoosh GMAT Prep', url: 'https://magoosh.com/gmat/' }
+            ]
+        }
+    };
+
+    const resources = prepResources[examType];
+    if (!resources) return;
+
+    // Create preparation resources modal
+    const prepModal = document.createElement('div');
+    prepModal.className = 'prep-modal-overlay';
+    prepModal.innerHTML = `
+        <div class="prep-modal-container">
+            <div class="prep-modal-header">
+                <h3><i class="fas fa-book-open"></i> ${examType} Preparation Resources</h3>
+                <button class="prep-close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="prep-modal-content">
+                <div class="official-prep">
+                    <h4><i class="fas fa-star"></i> Official Resources</h4>
+                    <a href="${resources.official}" target="_blank" class="official-link">
+                        <i class="fas fa-external-link-alt"></i>
+                        Official ${examType} Preparation Page
+                    </a>
+                </div>
+                <div class="prep-resources">
+                    <h4><i class="fas fa-list"></i> Recommended Study Materials</h4>
+                    <div class="resource-grid">
+                        ${resources.resources.map(resource => `
+                            <div class="resource-item">
+                                <i class="fas fa-book"></i>
+                                <span>${resource.name}</span>
+                                <a href="${resource.url}" target="_blank" class="resource-link">
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="prep-tips">
+                    <h4><i class="fas fa-lightbulb"></i> Quick Study Tips</h4>
+                    <ul class="tips-list">
+                        ${getStudyTips(examType).map(tip => `<li>${tip}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Add styles for prep modal
+    const prepModalStyles = document.createElement('style');
+    prepModalStyles.textContent = `
+        .prep-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            backdrop-filter: blur(5px);
+        }
+        .prep-modal-container {
+            background: white;
+            border-radius: 20px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        .prep-modal-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .prep-modal-content {
+            padding: 2rem;
+        }
+        .official-prep, .prep-resources, .prep-tips {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+        .official-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        .official-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        .resource-grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .resource-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .resource-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        .resource-item i {
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+        .resource-item span {
+            flex: 1;
+            font-weight: 500;
+        }
+        .resource-link {
+            color: #667eea;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .resource-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(3px);
+        }
+        .tips-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 1rem;
+        }
+        .tips-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        .tips-list li::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+        }
+        .prep-close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        .prep-close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        @media (max-width: 768px) {
+            .prep-modal-container {
+                width: 95%;
+                margin: 1rem;
+            }
+            .prep-modal-header {
+                padding: 1.5rem;
+            }
+            .prep-modal-content {
+                padding: 1.5rem;
+            }
+        }
+    `;
+
+    document.head.appendChild(prepModalStyles);
+    document.body.appendChild(prepModal);
+
+    // Add event listeners
+    const closePrepModal = () => {
+        prepModal.remove();
+        prepModalStyles.remove();
+    };
+
+    prepModal.querySelector('.prep-close-btn').addEventListener('click', closePrepModal);
+    prepModal.addEventListener('click', (e) => {
+        if (e.target === prepModal) closePrepModal();
+    });
+
+    // Add click events to resource links
+    prepModal.querySelectorAll('.resource-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const url = link.closest('.resource-item').querySelector('span').textContent;
+            const resourceUrl = resources.resources.find(r => r.name === url.trim())?.url;
+            if (resourceUrl) {
+                window.open(resourceUrl, '_blank');
+            }
+        });
+    });
+}
+
+// Function to get study tips for each exam
+function getStudyTips(examType) {
+    const tipsByExam = {
+        'IELTS': [
+            'Practice all four skills: Reading, Writing, Listening, and Speaking daily',
+            'Take timed practice tests to improve your speed',
+            'Read English newspapers and academic articles regularly',
+            'Practice speaking with native speakers or language exchange partners',
+            'Focus on time management - each section has strict time limits'
+        ],
+        'TOEFL': [
+            'Get familiar with the computer-based format before test day',
+            'Practice note-taking skills for listening and reading sections',
+            'Build academic vocabulary through reading scholarly articles',
+            'Practice integrated tasks that combine multiple skills',
+            'Use official ETS materials for the most accurate practice'
+        ],
+        'GRE': [
+            'Build vocabulary systematically using flashcards or apps',
+            'Practice quantitative reasoning without a calculator first',
+            'Read complex texts to improve verbal reasoning',
+            'Learn to identify and eliminate obviously wrong answer choices',
+            'Take full-length practice tests under timed conditions'
+        ],
+        'Duolingo English Test': [
+            'Ensure you have a stable internet connection and quiet environment',
+            'Practice typing quickly and accurately',
+            'Familiarize yourself with the adaptive test format',
+            'Speak clearly during the video interview section',
+            'Take the practice test multiple times before the real exam'
+        ],
+        'PTE Academic': [
+            'Practice with computer-based format and get used to the interface',
+            'Work on your pronunciation and speaking clarity',
+            'Improve typing speed for writing tasks',
+            'Practice integrated tasks that test multiple skills simultaneously',
+            'Use official Pearson preparation materials'
+        ],
+        'GMAT': [
+            'Master data sufficiency question types unique to GMAT',
+            'Practice mental math to save time on quantitative section',
+            'Learn to identify critical reasoning question patterns',
+            'Focus on sentence correction grammar rules',
+            'Take adaptive practice tests to simulate real exam conditions'
+        ]
+    };
+    return tipsByExam[examType] || [];
+}
+
+// ==================== END HELPER FUNCTIONS ====================
+
+// Exam Cards Interaction (Updated to use modal)
 examCards.forEach(card => {
     card.addEventListener('click', () => {
         const examType = card.dataset.exam;
-        showExamDetails(examType);
+        openModal(examType); // Use the new modal instead of alert
     });
 
     // Add hover effect with cursor
@@ -83,59 +534,6 @@ examCards.forEach(card => {
         card.style.cursor = 'pointer';
     });
 });
-
-// Show Exam Details (Modal or Alert)
-function showExamDetails(examType) {
-    const examInfo = {
-        ielts: {
-            name: 'IELTS',
-            fullName: 'International English Language Testing System',
-            description: 'IELTS is designed to test the language ability of candidates who want to study or work where English is used as the language of communication.',
-            sections: ['Listening (30 min)', 'Reading (60 min)', 'Writing (60 min)', 'Speaking (11-14 min)'],
-            tips: ['Practice with official materials', 'Focus on time management', 'Improve vocabulary', 'Take mock tests']
-        },
-        toefl: {
-            name: 'TOEFL',
-            fullName: 'Test of English as a Foreign Language',
-            description: 'TOEFL is an internet-based test that measures your ability to use and understand English at the university level.',
-            sections: ['Reading (54-72 min)', 'Listening (41-57 min)', 'Speaking (17 min)', 'Writing (50 min)'],
-            tips: ['Practice note-taking', 'Familiarize with computer interface', 'Work on academic vocabulary', 'Practice integrated tasks']
-        },
-        gre: {
-            name: 'GRE',
-            fullName: 'Graduate Record Examination',
-            description: 'GRE is required for admission to graduate programs in various fields including business and law.',
-            sections: ['Verbal Reasoning', 'Quantitative Reasoning', 'Analytical Writing'],
-            tips: ['Learn vocabulary systematically', 'Practice mental math', 'Read academic texts', 'Time management is crucial']
-        },
-        duolingo: {
-            name: 'Duolingo English Test',
-            fullName: 'Duolingo English Test',
-            description: 'A convenient, fast, and affordable English proficiency test accepted by thousands of universities worldwide.',
-            sections: ['Adaptive Test (45 min)', 'Video Interview (10 min)', 'Writing Sample (5 min)'],
-            tips: ['Take practice tests', 'Ensure stable internet', 'Practice typing speed', 'Speak clearly during video interview']
-        },
-        pte: {
-            name: 'PTE Academic',
-            fullName: 'Pearson Test of English Academic',
-            description: 'PTE Academic is a computer-based English language test for non-native English speakers wanting to study abroad.',
-            sections: ['Speaking & Writing (77-93 min)', 'Reading (32-41 min)', 'Listening (45-57 min)'],
-            tips: ['Practice with computer-based format', 'Work on pronunciation', 'Improve typing speed', 'Familiarize with question types']
-        },
-        gmat: {
-            name: 'GMAT',
-            fullName: 'Graduate Management Admission Test',
-            description: 'GMAT is required for admission to graduate business programs (MBA) worldwide.',
-            sections: ['Analytical Writing (30 min)', 'Integrated Reasoning (30 min)', 'Quantitative (62 min)', 'Verbal (65 min)'],
-            tips: ['Master data sufficiency', 'Practice critical reasoning', 'Improve mental math', 'Learn to eliminate wrong answers']
-        }
-    };
-
-    const exam = examInfo[examType];
-    if (exam) {
-        alert(`${exam.name} - ${exam.fullName}\n\n${exam.description}\n\nSections:\n${exam.sections.join('\n')}\n\nTips:\n${exam.tips.join('\n')}`);
-    }
-}
 
 // Scroll Animation Observer
 const observerOptions = {
@@ -397,6 +795,101 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.transform = 'translateY(0)';
         }, index * 100);
     });
+
+    // ==================== MODAL EVENT LISTENERS ====================
+    
+    // Add click event to all exam buttons (for buttons with data-exam attribute)
+    const examButtons = document.querySelectorAll('.exam-btn');
+    examButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const examType = this.getAttribute('data-exam');
+            if (examType) {
+                openModal(examType);
+            }
+        });
+    });
+    
+    // Close modal button
+    const closeModalBtn = document.getElementById('closeModal');
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeModal);
+    }
+    
+    // Close modal when clicking outside
+    const examModal = document.getElementById('examModal');
+    if (examModal) {
+        examModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    }
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    // ==================== MODAL BUTTON ACTIONS ====================
+    
+    // Register Now buttons - redirect to official exam registration sites
+    const registerButtons = document.querySelectorAll('.register-btn');
+    registerButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modalTitle = document.getElementById('modalTitle').textContent;
+            const examType = getExamTypeFromTitle(modalTitle);
+            
+            // Add click animation
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+            
+            // Redirect to official registration site
+            const registrationUrls = {
+                'IELTS': 'https://www.ielts.org/book-a-test',
+                'TOEFL': 'https://www.ets.org/toefl/test-takers/ibt/register/',
+                'GRE': 'https://www.ets.org/gre/test-takers/general-test/register/',
+                'Duolingo English Test': 'https://englishtest.duolingo.com/',
+                'PTE Academic': 'https://pearsonpte.com/book-now/',
+                'GMAT': 'https://www.mba.com/exams/gmat-exam/register'
+            };
+            
+            const url = registrationUrls[examType];
+            if (url) {
+                // Show confirmation before redirect
+                setTimeout(() => {
+                    if (confirm(`You will be redirected to the official ${examType} registration page. Continue?`)) {
+                        window.open(url, '_blank');
+                    }
+                }, 200);
+            }
+        });
+    });
+    
+    // Preparation Materials buttons - redirect to official prep resources
+    const prepButtons = document.querySelectorAll('.prep-btn');
+    prepButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modalTitle = document.getElementById('modalTitle').textContent;
+            const examType = getExamTypeFromTitle(modalTitle);
+            
+            // Add click animation
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+            
+            // Create preparation resources modal or redirect
+            showPrepResources(examType);
+        });
+    });
+    
+    // ==================== END MODAL EVENT LISTENERS ====================
 
     console.log('Study page loaded successfully!');
 });

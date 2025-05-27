@@ -428,16 +428,26 @@ header {
     transform: translateY(-3px);
 }
 
-/* About Section */
-.about {
-padding: 80px 0;
-position: relative;
-background-image: url('5.jpg');
-background-size: cover;
-background-position: center;
-background-attachment: fixed;
-background-repeat: no-repeat;
+/* Professional About Section CSS */
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #3498db;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --border-radius: 12px;
+    --box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
+
+.about {
+    padding: 80px 0;
+    position: relative;
+    background-image: url('5.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
 .underline {
     position: relative;
     text-decoration: none;
@@ -463,100 +473,216 @@ background-repeat: no-repeat;
 
 .accent-text {
     color: var(--accent-color);
+    font-weight: 700;
 }
 
 .normal-text {
     color: inherit;
-}
-/* Add a subtle overlay for better text readability */
-.about::before {
-content: '';
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
-background: linear-gradient(135deg, 
-    rgba(248, 249, 250, 0.8) 0%, 
-    rgba(255, 255, 255, 0.7) 50%, 
-    rgba(248, 249, 250, 0.8) 100%);
-z-index: 1;
+    font-weight: 600;
 }
 
-/* Ensure content appears above the overlay */
+.about::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg,
+        rgba(248, 249, 250, 0.85) 0%,
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(248, 249, 250, 0.85) 100%);
+    z-index: 1;
+}
+
 .about .container {
-position: relative;
-z-index: 2;
+    position: relative;
+    z-index: 2;
 }
 
 .section-heading {
-text-align: center;
-margin-bottom: 50px;
+    text-align: center;
+    margin-bottom: 50px;
 }
 
 .section-heading h2 {
-font-size: 36px;
-color: var(--primary-color);
-margin-bottom: 15px;
-font-weight: 600;
-text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 36px;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .section-heading p {
-color: #ff0404;
-font-size: 18px;
-font-weight: 400;
+    color: #e74c3c;
+    font-size: 18px;
+    font-weight: 500;
 }
 
 .about-content {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-gap: 40px;
-align-items: center;
-background: rgba(190, 243, 253, 0.9);
-padding: 40px;
-border-radius: 16px;
-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-backdrop-filter: blur(10px);
-border: 1px solid rgba(255, 255, 255, 0.2);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+    align-items: start;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: var(--box-shadow);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .about-image {
-width: 100%;
-overflow: hidden;
-border-radius: var(--border-radius);
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--border-radius);
 }
 
 .us-universities-image {
-width: 100%;
-height: auto;
-display: block;
-border-radius: var(--border-radius);
-box-shadow: var(--box-shadow);
-transition: transform 0.3s ease;
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease;
 }
 
 .us-universities-image:hover {
-transform: scale(1.02);
-}
-
-.image-placeholder {
-background-color: #e9ecef;
-height: 400px;
-display: flex;
-align-items: center;
-justify-content: center;
-border-radius: var(--border-radius);
+    transform: scale(1.02);
 }
 
 .about-text p {
-margin-bottom: 20px;
-line-height: 1.8;
-font-size: 16px;
-color: #495057;
-text-align: justify;
+    margin-bottom: 20px;
+    line-height: 1.8;
+    font-size: 16px;
+    color: #2c3e50;
+    text-align: justify;
 }
 
+.about-text strong {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.stat-number {
+    color: var(--accent-color);
+    font-weight: 800;
+    font-size: 1.1em;
+    background: rgba(52, 152, 219, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.document-highlight {
+    color: var(--warning-color);
+    font-weight: 600;
+    background: rgba(243, 156, 18, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.service-highlight {
+    color: var(--success-color);
+    font-weight: 600;
+    background: rgba(39, 174, 96, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.uni-name {
+    color: var(--accent-color);
+    font-weight: 600;
+    background: rgba(52, 152, 219, 0.1);
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.company-name {
+    color: #e74c3c;
+    font-weight: 600;
+    background: rgba(231, 76, 60, 0.1);
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.about-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 25px;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.primary-btn {
+    background: var(--accent-color);
+    color: white;
+}
+
+.secondary-btn {
+    background: var(--primary-color);
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn-icon {
+    font-size: 1.2em;
+}
+
+.btn-text strong {
+    display: block;
+    font-size: 1em;
+}
+
+.btn-text small {
+    display: block;
+    opacity: 0.9;
+    font-size: 0.85em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .about-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 30px 20px;
+    }
+    
+    .section-heading h2 {
+        font-size: 28px;
+    }
+    
+    .about-text p {
+        font-size: 15px;
+        text-align: left;
+    }
+    
+    .about-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .action-btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+}
 /* Testimonials Section */
 .testimonials {
     padding: 80px 0;
