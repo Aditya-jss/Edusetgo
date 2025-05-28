@@ -44,12 +44,80 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ===== FORM INTERACTIONS =====
 document.addEventListener('DOMContentLoaded', function() {
+    // Form elements
+    const greRequiredSelect = document.getElementById('greRequired');
+    const greScoreGroup = document.getElementById('greScoreGroup');
+    const greScoreInput = document.getElementById('greScore');
+    
+    const englishRequiredSelect = document.getElementById('englishRequired');
+    const englishTestGroup = document.getElementById('englishTestGroup');
+    const englishScoreGroup = document.getElementById('englishScoreGroup');
     const englishTestSelect = document.getElementById('englishTest');
     const englishScoreInput = document.getElementById('englishScore');
     const englishHelp = document.getElementById('englishHelp');
+    
+    const standardizedTestRequiredSelect = document.getElementById('standardizedTestRequired');
+    const standardizedTestGroup = document.getElementById('standardizedTestGroup');
+    const standardizedScoreGroup = document.getElementById('standardizedScoreGroup');
+    const standardizedTestSelect = document.getElementById('standardizedTest');
+    const standardizedScoreInput = document.getElementById('standardizedScore');
+    const standardizedHelp = document.getElementById('standardizedHelp');
+    
     const profileForm = document.getElementById('profileForm');
     const searchBtn = document.getElementById('searchBtn');
     const resultsSection = document.getElementById('resultsSection');
+
+    // GRE requirement handling
+    if (greRequiredSelect && greScoreGroup) {
+        greRequiredSelect.addEventListener('change', function() {
+            if (this.value === 'yes') {
+                greScoreGroup.style.display = 'flex';
+                greScoreInput.required = true;
+            } else {
+                greScoreGroup.style.display = 'none';
+                greScoreInput.required = false;
+                greScoreInput.value = '';
+            }
+        });
+    }
+
+    // English test requirement handling
+    if (englishRequiredSelect && englishTestGroup && englishScoreGroup) {
+        englishRequiredSelect.addEventListener('change', function() {
+            if (this.value === 'yes') {
+                englishTestGroup.style.display = 'flex';
+                englishScoreGroup.style.display = 'flex';
+                englishTestSelect.required = true;
+                englishScoreInput.required = true;
+            } else {
+                englishTestGroup.style.display = 'none';
+                englishScoreGroup.style.display = 'none';
+                englishTestSelect.required = false;
+                englishScoreInput.required = false;
+                englishTestSelect.value = '';
+                englishScoreInput.value = '';
+            }
+        });
+    }
+
+    // Standardized test requirement handling
+    if (standardizedTestRequiredSelect && standardizedTestGroup && standardizedScoreGroup) {
+        standardizedTestRequiredSelect.addEventListener('change', function() {
+            if (this.value === 'yes') {
+                standardizedTestGroup.style.display = 'flex';
+                standardizedScoreGroup.style.display = 'flex';
+                standardizedTestSelect.required = true;
+                standardizedScoreInput.required = true;
+            } else {
+                standardizedTestGroup.style.display = 'none';
+                standardizedScoreGroup.style.display = 'none';
+                standardizedTestSelect.required = false;
+                standardizedScoreInput.required = false;
+                standardizedTestSelect.value = '';
+                standardizedScoreInput.value = '';
+            }
+        });
+    }
 
     // Dynamic help text for English test scores
     if (englishTestSelect && englishScoreInput && englishHelp) {
@@ -68,8 +136,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 englishScoreInput.setAttribute('max', '120');
                 englishScoreInput.setAttribute('min', '0');
                 englishScoreInput.setAttribute('step', '1');
+            } else if (selectedTest === 'Duolingo') {
+                englishHelp.textContent = 'Duolingo: 10 - 160 (Overall score)';
+                englishScoreInput.placeholder = 'Enter Duolingo score (e.g., 120)';
+                englishScoreInput.setAttribute('max', '160');
+                englishScoreInput.setAttribute('min', '10');
+                englishScoreInput.setAttribute('step', '5');
+            } else if (selectedTest === 'PTE') {
+                englishHelp.textContent = 'PTE Academic: 10 - 90 (Overall score)';
+                englishScoreInput.placeholder = 'Enter PTE score (e.g., 65)';
+                englishScoreInput.setAttribute('max', '90');
+                englishScoreInput.setAttribute('min', '10');
+                englishScoreInput.setAttribute('step', '1');
+            } else if (selectedTest === 'Cambridge') {
+                englishHelp.textContent = 'Cambridge: 100 - 230 (Scale score)';
+                englishScoreInput.placeholder = 'Enter Cambridge score (e.g., 180)';
+                englishScoreInput.setAttribute('max', '230');
+                englishScoreInput.setAttribute('min', '100');
+                englishScoreInput.setAttribute('step', '1');
+            } else if (selectedTest === 'CELPIP') {
+                englishHelp.textContent = 'CELPIP: 1 - 12 (CLB levels)';
+                englishScoreInput.placeholder = 'Enter CELPIP score (e.g., 9)';
+                englishScoreInput.setAttribute('max', '12');
+                englishScoreInput.setAttribute('min', '1');
+                englishScoreInput.setAttribute('step', '1');
             } else {
-                englishHelp.textContent = 'IELTS: 0.0 - 9.0 | TOEFL: 0 - 120';
+                englishHelp.textContent = 'Select test type to see score range';
                 englishScoreInput.placeholder = 'Enter your score';
                 englishScoreInput.removeAttribute('max');
                 englishScoreInput.removeAttribute('min');
@@ -77,6 +169,53 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Clear the current value when test type changes
             englishScoreInput.value = '';
+        });
+    }
+
+    // Dynamic help text for standardized test scores
+    if (standardizedTestSelect && standardizedScoreInput && standardizedHelp) {
+        standardizedTestSelect.addEventListener('change', function() {
+            const selectedTest = this.value;
+            
+            if (selectedTest === 'SAT') {
+                standardizedHelp.textContent = 'SAT: 400 - 1600 (Total score)';
+                standardizedScoreInput.placeholder = 'Enter SAT score (e.g., 1450)';
+                standardizedScoreInput.setAttribute('max', '1600');
+                standardizedScoreInput.setAttribute('min', '400');
+                standardizedScoreInput.setAttribute('step', '10');
+            } else if (selectedTest === 'ACT') {
+                standardizedHelp.textContent = 'ACT: 1 - 36 (Composite score)';
+                standardizedScoreInput.placeholder = 'Enter ACT score (e.g., 32)';
+                standardizedScoreInput.setAttribute('max', '36');
+                standardizedScoreInput.setAttribute('min', '1');
+                standardizedScoreInput.setAttribute('step', '1');
+            } else if (selectedTest === 'GMAT') {
+                standardizedHelp.textContent = 'GMAT: 200 - 800 (Total score)';
+                standardizedScoreInput.placeholder = 'Enter GMAT score (e.g., 650)';
+                standardizedScoreInput.setAttribute('max', '800');
+                standardizedScoreInput.setAttribute('min', '200');
+                standardizedScoreInput.setAttribute('step', '10');
+            } else if (selectedTest === 'LSAT') {
+                standardizedHelp.textContent = 'LSAT: 120 - 180 (Scaled score)';
+                standardizedScoreInput.placeholder = 'Enter LSAT score (e.g., 165)';
+                standardizedScoreInput.setAttribute('max', '180');
+                standardizedScoreInput.setAttribute('min', '120');
+                standardizedScoreInput.setAttribute('step', '1');
+            } else if (selectedTest === 'MCAT') {
+                standardizedHelp.textContent = 'MCAT: 472 - 528 (Total score)';
+                standardizedScoreInput.placeholder = 'Enter MCAT score (e.g., 510)';
+                standardizedScoreInput.setAttribute('max', '528');
+                standardizedScoreInput.setAttribute('min', '472');
+                standardizedScoreInput.setAttribute('step', '1');
+            } else {
+                standardizedHelp.textContent = 'Select test type to see score range';
+                standardizedScoreInput.placeholder = 'Enter your score';
+                standardizedScoreInput.removeAttribute('max');
+                standardizedScoreInput.removeAttribute('min');
+            }
+            
+            // Clear the current value when test type changes
+            standardizedScoreInput.value = '';
         });
     }
 
@@ -88,11 +227,21 @@ document.addEventListener('DOMContentLoaded', function() {
             // Get form data
             const profileData = {
                 cgpa: document.getElementById('cgpa').value,
-                greScore: document.getElementById('greScore').value,
-                englishTest: document.getElementById('englishTest').value,
-                englishScore: document.getElementById('englishScore').value,
+                greRequired: document.getElementById('greRequired').value,
+                greScore: document.getElementById('greScore').value || null,
+                englishRequired: document.getElementById('englishRequired').value,
+                englishTest: document.getElementById('englishTest').value || null,
+                englishScore: document.getElementById('englishScore').value || null,
+                standardizedTestRequired: document.getElementById('standardizedTestRequired').value || 'no',
+                standardizedTest: document.getElementById('standardizedTest').value || null,
+                standardizedScore: document.getElementById('standardizedScore').value || null,
                 programLevel: document.getElementById('programLevel').value,
-                course: document.getElementById('course').value
+                course: document.getElementById('course').value,
+                workExperience: document.getElementById('workExperience').value || '0',
+                budget: document.getElementById('budget').value || '',
+                scholarshipRequired: document.getElementById('scholarshipRequired').checked,
+                onlineProgram: document.getElementById('onlineProgram').checked,
+                fastTrack: document.getElementById('fastTrack').checked
             };
 
             // Validate form data
@@ -125,27 +274,52 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // GRE validation
-        if (!data.greScore || data.greScore < 260 || data.greScore > 340) {
-            errors.push('Please enter a valid GRE score between 260 and 340');
-            isValid = false;
+        if (data.greRequired === 'yes') {
+            if (!data.greScore || data.greScore < 260 || data.greScore > 340) {
+                errors.push('Please enter a valid GRE score between 260 and 340');
+                isValid = false;
+            }
         }
 
         // English test validation
-        if (!data.englishTest) {
-            errors.push('Please select an English test type');
-            isValid = false;
+        if (data.englishRequired === 'yes') {
+            if (!data.englishTest) {
+                errors.push('Please select an English test type');
+                isValid = false;
+            }
+            
+            if (!data.englishScore) {
+                errors.push('Please enter your English test score');
+                isValid = false;
+            } else {
+                const score = parseFloat(data.englishScore);
+                if (data.englishTest === 'IELTS' && (score < 0 || score > 9)) {
+                    errors.push('IELTS score must be between 0.0 and 9.0');
+                    isValid = false;
+                } else if (data.englishTest === 'TOEFL' && (score < 0 || score > 120)) {
+                    errors.push('TOEFL score must be between 0 and 120');
+                    isValid = false;
+                } else if (data.englishTest === 'Duolingo' && (score < 10 || score > 160)) {
+                    errors.push('Duolingo score must be between 10 and 160');
+                    isValid = false;
+                } else if (data.englishTest === 'PTE' && (score < 10 || score > 90)) {
+                    errors.push('PTE score must be between 10 and 90');
+                    isValid = false;
+                }
+            }
         }
 
-        // English score validation
-        if (!data.englishScore) {
-            errors.push('Please enter your English test score');
-            isValid = false;
-        } else if (data.englishTest === 'IELTS' && (data.englishScore < 0 || data.englishScore > 9)) {
-            errors.push('IELTS score must be between 0.0 and 9.0');
-            isValid = false;
-        } else if (data.englishTest === 'TOEFL' && (data.englishScore < 0 || data.englishScore > 120)) {
-            errors.push('TOEFL score must be between 0 and 120');
-            isValid = false;
+        // Standardized test validation
+        if (data.standardizedTestRequired === 'yes') {
+            if (!data.standardizedTest) {
+                errors.push('Please select a standardized test type');
+                isValid = false;
+            }
+            
+            if (!data.standardizedScore) {
+                errors.push('Please enter your standardized test score');
+                isValid = false;
+            }
         }
 
         // Program level validation
@@ -206,7 +380,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             ${university.location}
                         </p>
                     </div>
-                    
+                    <div class="match-score">
+                        <i class="fas fa-percentage"></i>
+                        ${university.matchScore}% Match
+                    </div>
                 </div>
                 
                 <div class="university-details">
@@ -223,8 +400,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         <h4><i class="fas fa-clipboard-list"></i> Admission Requirements</h4>
                         <ul class="requirements-list">
                             <li><i class="fas fa-check"></i> Min CGPA: ${university.requirements.cgpa}</li>
-                            <li><i class="fas fa-check"></i> Min GRE: ${university.requirements.gre}</li>
-                            <li><i class="fas fa-check"></i> ${university.requirements.english}</li>
+                            ${university.requirements.gre ? `<li><i class="fas fa-check"></i> Min GRE: ${university.requirements.gre}</li>` : ''}
+                            ${university.requirements.english ? `<li><i class="fas fa-check"></i> ${university.requirements.english}</li>` : ''}
+                            ${university.requirements.standardized ? `<li><i class="fas fa-check"></i> ${university.requirements.standardized}</li>` : ''}
                         </ul>
                     </div>
                     
@@ -270,2067 +448,200 @@ document.addEventListener('DOMContentLoaded', function() {
     // Generate university recommendations based on user profile
     function generateUniversityRecommendations(profileData) {
         const universities = [
-    // Top Tier Universities (Ivy League + Equivalent)
-    {
-        name: "Massachusetts Institute of Technology",
-        location: "Cambridge, MA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$59,750/year' : '$57,400/year',
-        requirements: {
-            cgpa: '3.8+',
-            gre: '325+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.5+' : '110+'}`
-        },
-        highlights: [
-            'Top 1 in Engineering',
-            'Excellent Research Facilities',
-            'Strong Industry Connections',
-            '95% Employment Rate'
-        ],
-        minCgpa: 3.8,
-        minGre: 325,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.5 : 110
-    },
-    {
-        name: "Stanford University",
-        location: "Stanford, CA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$58,416/year' : '$56,169/year',
-        requirements: {
-            cgpa: '3.7+',
-            gre: '320+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.0+' : '105+'}`
-        },
-        highlights: [
-            'Silicon Valley Location',
-            'Innovation Hub',
-            'Startup Incubator',
-            'World-Class Faculty'
-        ],
-        minCgpa: 3.7,
-        minGre: 320,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.0 : 105
-    },
-    {
-        name: "Harvard University",
-        location: "Cambridge, MA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$54,768/year' : '$51,925/year',
-        requirements: {
-            cgpa: '3.8+',
-            gre: '325+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.5+' : '110+'}`
-        },
-        highlights: [
-            'Ivy League Prestige',
-            'World-Renowned Faculty',
-            'Extensive Alumni Network',
-            'Research Excellence'
-        ],
-        minCgpa: 3.8,
-        minGre: 325,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.5 : 110
-    },
-    {
-        name: "California Institute of Technology",
-        location: "Pasadena, CA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$56,394/year' : '$56,394/year',
-        requirements: {
-            cgpa: '3.8+',
-            gre: '325+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.5+' : '110+'}`
-        },
-        highlights: [
-            'Top STEM Research',
-            'Small Class Sizes',
-            'Nobel Prize Winners',
-            'NASA Partnerships'
-        ],
-        minCgpa: 3.8,
-        minGre: 325,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.5 : 110
-    },
-    {
-        name: "Princeton University",
-        location: "Princeton, NJ, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$56,010/year' : '$56,010/year',
-        requirements: {
-            cgpa: '3.8+',
-            gre: '325+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.5+' : '110+'}`
-        },
-        highlights: [
-            'Ivy League Excellence',
-            'Beautiful Campus',
-            'Strong Liberal Arts',
-            'Elite Alumni Network'
-        ],
-        minCgpa: 3.8,
-        minGre: 325,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.5 : 110
-    },
-    {
-        name: "Yale University",
-        location: "New Haven, CT, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$48,300/year' : '$62,250/year',
-        requirements: {
-            cgpa: '3.8+',
-            gre: '325+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.5+' : '110+'}`
-        },
-        highlights: [
-            'Ivy League Tradition',
-            'Gothic Architecture',
-            'Secret Societies',
-            'Presidential Alumni'
-        ],
-        minCgpa: 3.8,
-        minGre: 325,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.5 : 110
-    },
-    {
-        name: "Columbia University",
-        location: "New York, NY, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$51,008/year' : '$66,139/year',
-        requirements: {
-            cgpa: '3.7+',
-            gre: '320+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.0+' : '105+'}`
-        },
-        highlights: [
-            'NYC Location',
-            'Journalism School',
-            'Research Powerhouse',
-            'Urban Campus'
-        ],
-        minCgpa: 3.7,
-        minGre: 320,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.0 : 105
-    },
-    {
-        name: "University of Pennsylvania",
-        location: "Philadelphia, PA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$45,890/year' : '$63,452/year',
-        requirements: {
-            cgpa: '3.7+',
-            gre: '320+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.0+' : '105+'}`
-        },
-        highlights: [
-            'Wharton Business School',
-            'Ivy League Status',
-            'Urban Setting',
-            'Strong Alumni Network'
-        ],
-        minCgpa: 3.7,
-        minGre: 320,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.0 : 105
-    },
-    {
-        name: "Cornell University",
-        location: "Ithaca, NY, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$29,500/year' : '$62,456/year',
-        requirements: {
-            cgpa: '3.6+',
-            gre: '318+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.0+' : '102+'}`
-        },
-        highlights: [
-            'Agricultural Excellence',
-            'Engineering Strength',
-            'Beautiful Campus',
-            'Research Intensive'
-        ],
-        minCgpa: 3.6,
-        minGre: 318,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.0 : 102
-    },
-    {
-        name: "Dartmouth College",
-        location: "Hanover, NH, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$59,458/year' : '$59,458/year',
-        requirements: {
-            cgpa: '3.7+',
-            gre: '320+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.0+' : '105+'}`
-        },
-        highlights: [
-            'Liberal Arts Focus',
-            'Outdoor Recreation',
-            'Strong Alumni Bond',
-            'Quarter System'
-        ],
-        minCgpa: 3.7,
-        minGre: 320,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.0 : 105
-    },
-    {
-        name: "Brown University",
-        location: "Providence, RI, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$63,179/year' : '$63,179/year',
-        requirements: {
-            cgpa: '3.7+',
-            gre: '320+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.0+' : '105+'}`
-        },
-        highlights: [
-            'Open Curriculum',
-            'Creative Freedom',
-            'Ivy League Status',
-            'Diverse Programs'
-        ],
-        minCgpa: 3.7,
-        minGre: 320,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.0 : 105
-    },
-
-    // Top Public Universities
-    {
-        name: "University of California, Berkeley",
-        location: "Berkeley, CA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$44,066/year' : '$43,980/year',
-        requirements: {
-            cgpa: '3.5+',
-            gre: '315+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : '100+'}`
-        },
-        highlights: [
-            'Public Ivy League',
-            'Diverse Student Body',
-            'Research Excellence',
-            'Beautiful Campus'
-        ],
-        minCgpa: 3.5,
-        minGre: 315,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : 100
-    },
-    {
-        name: "University of California, Los Angeles",
-        location: "Los Angeles, CA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$44,066/year' : '$43,473/year',
-        requirements: {
-            cgpa: '3.5+',
-            gre: '315+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : '100+'}`
-        },
-        highlights: [
-            'Entertainment Industry',
-            'Sports Excellence',
-            'Research University',
-            'Sunny Weather'
-        ],
-        minCgpa: 3.5,
-        minGre: 315,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : 100
-    },
-    {
-        name: "University of California, San Diego",
-        location: "San Diego, CA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$44,066/year' : '$44,487/year',
-        requirements: {
-            cgpa: '3.4+',
-            gre: '312+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : '98+'}`
-        },
-        highlights: [
-            'Biotech Hub',
-            'Beach Location',
-            'Research Focus',
-            'STEM Excellence'
-        ],
-        minCgpa: 3.4,
-        minGre: 312,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : 98
-    },
-    {
-        name: "University of Michigan, Ann Arbor",
-        location: "Ann Arbor, MI, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$49,508/year' : '$52,266/year',
-        requirements: {
-            cgpa: '3.5+',
-            gre: '315+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : '100+'}`
-        },
-        highlights: [
-            'Big Ten Sports',
-            'Engineering Excellence',
-            'Ross Business School',
-            'Research Powerhouse'
-        ],
-        minCgpa: 3.5,
-        minGre: 315,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : 100
-    },
-    {
-        name: "University of Virginia",
-        location: "Charlottesville, VA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$34,648/year' : '$56,837/year',
-        requirements: {
-            cgpa: '3.4+',
-            gre: '312+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : '98+'}`
-        },
-        highlights: [
-            'Jefferson\'s University',
-            'Historic Campus',
-            'Honor Code',
-            'Strong Traditions'
-        ],
-        minCgpa: 3.4,
-        minGre: 312,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : 98
-    },
-    {
-        name: "University of North Carolina, Chapel Hill",
-        location: "Chapel Hill, NC, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$28,346/year' : '$38,996/year',
-        requirements: {
-            cgpa: '3.3+',
-            gre: '310+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '95+'}`
-        },
-        highlights: [
-            'Public Ivy',
-            'Basketball Tradition',
-            'Journalism School',
-            'Beautiful Campus'
-        ],
-        minCgpa: 3.3,
-        minGre: 310,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 95
-    },
-    
-
-    // Technology Focused Universities
-    {
-        name: "Carnegie Mellon University",
-        location: "Pittsburgh, PA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$52,040/year' : '$58,924/year',
-        requirements: {
-            cgpa: '3.6+',
-            gre: '318+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.0+' : '102+'}`
-        },
-        highlights: [
-            'Top CS Program',
-            'Strong Alumni Network',
-            'Industry Partnerships',
-            'Cutting-edge Research'
-        ],
-        minCgpa: 3.6,
-        minGre: 318,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.0 : 102
-    },
-
-    {
-        name: "Georgia Institute of Technology",
-        location: "Atlanta, GA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$29,140/year' : '$33,794/year',
-        requirements: {
-            cgpa: '3.4+',
-            gre: '312+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : '98+'}`
-        },
-        highlights: [
-            'Engineering Excellence',
-            'Tech Industry Hub',
-            'Co-op Programs',
-            'Innovation Focus'
-        ],
-        minCgpa: 3.4,
-        minGre: 312,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : 98
-    },
-    {
-        name: "University of Washington",
-        location: "Seattle, WA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$39,906/year' : '$38,166/year',
-        requirements: {
-            cgpa: '3.3+',
-            gre: '310+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '92+'}`
-        },
-        highlights: [
-            'Tech Hub Location',
-            'Affordable Tuition',
-            'Great Weather',
-            'Strong Research'
-        ],
-        minCgpa: 3.3,
-        minGre: 310,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 92
-    },
-    {
-        name: "University of Illinois Urbana-Champaign",
-        location: "Urbana, IL, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$34,330/year' : '$35,110/year',
-        requirements: {
-            cgpa: '3.3+',
-            gre: '310+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '92+'}`
-        },
-        highlights: [
-            'Engineering Powerhouse',
-            'Research Excellence',
-            'Big Ten Network',
-            'Affordable Excellence'
-        ],
-        minCgpa: 3.3,
-        minGre: 310,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 92
-    },
-    {
-        name: "Purdue University",
-        location: "West Lafayette, IN, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$29,132/year' : '$28,794/year',
-        requirements: {
-            cgpa: '3.2+',
-            gre: '308+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '88+'}`
-        },
-        highlights: [
-            'Engineering Excellence',
-            'Aerospace Programs',
-            'Research Focus',
-            'Strong Alumni'
-        ],
-        minCgpa: 3.2,
-        minGre: 308,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 88
-    },
-
-    // Strong Research Universities
-    {
-        name: "Johns Hopkins University",
-        location: "Baltimore, MD, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$58,720/year' : '$60,480/year',
-        requirements: {
-            cgpa: '3.6+',
-            gre: '318+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.0+' : '102+'}`
-        },
-        highlights: [
-            'Medical Excellence',
-            'Research Powerhouse',
-            'Bloomberg School',
-            'International Studies'
-        ],
-        minCgpa: 3.6,
-        minGre: 318,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.0 : 102
-    },
-    {
-        name: "Duke University",
-        location: "Durham, NC, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$63,450/year' : '$63,450/year',
-        requirements: {
-            cgpa: '3.6+',
-            gre: '318+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.0+' : '102+'}`
-        },
-        highlights: [
-            'Basketball Excellence',
-            'Medical Research',
-            'Beautiful Campus',
-            'Strong Academics'
-        ],
-        minCgpa: 3.6,
-        minGre: 318,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.0 : 102
-    },
-    {
-        name: "Northwestern University",
-        location: "Evanston, IL, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$61,810/year' : '$63,468/year',
-        requirements: {
-            cgpa: '3.5+',
-            gre: '315+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : '100+'}`
-        },
-        highlights: [
-            'Journalism School',
-            'Kellogg Business',
-            'Chicago Access',
-            'Quarter System'
-        ],
-        minCgpa: 3.5,
-        minGre: 315,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : 100
-    },
-    {
-        name: "Washington University in St. Louis",
-        location: "St. Louis, MO, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$59,420/year' : '$60,590/year',
-        requirements: {
-            cgpa: '3.5+',
-            gre: '315+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : '100+'}`
-        },
-        highlights: [
-            'Medical Excellence',
-            'Research Focus',
-            'Small Class Sizes',
-            'Beautiful Campus'
-        ],
-        minCgpa: 3.5,
-        minGre: 315,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : 100
-    },
-    {
-        name: "Vanderbilt University",
-        location: "Nashville, TN, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$56,400/year' : '$58,130/year',
-        requirements: {
-            cgpa: '3.4+',
-            gre: '312+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : '98+'}`
-        },
-        highlights: [
-            'Music City Location',
-            'Strong Academics',
-            'Beautiful Campus',
-            'Research Excellence'
-        ],
-        minCgpa: 3.4,
-        minGre: 312,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : 98
-    },
-
-    // State Universities - Tier 1
-    {
-        name: "University of Texas at Austin",
-        location: "Austin, TX, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$20,092/year' : '$41,070/year',
-        requirements: {
-            cgpa: '3.3+',
-            gre: '310+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '92+'}`
-        },
-        highlights: [
-            'Tech Hub Austin',
-            'Strong Alumni Network',
-            'Research Excellence',
-            'Music Scene'
-        ],
-        minCgpa: 3.3,
-        minGre: 310,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 92
-    },
-    {
-        name: "University of Florida",
-        location: "Gainesville, FL, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$12,737/year' : '$28,658/year',
-        requirements: {
-            cgpa: '3.2+',
-            gre: '308+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '88+'}`
-        },
-        highlights: [
-            'Affordable Excellence',
-            'Strong Sports Program',
-            'Research University',
-            'Diverse Programs'
-        ],
-        minCgpa: 3.2,
-        minGre: 308,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 88
-    },
-    {
-        name: "Ohio State University",
-        location: "Columbus, OH, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$11,560/year' : '$34,430/year',
-        requirements: {
-            cgpa: '3.1+',
-            gre: '305+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '88+'}`
-        },
-        highlights: [
-            'Large Research University',
-            'Strong Alumni Network',
-            'Big Ten Sports',
-            'Diverse Programs'
-        ],
-        minCgpa: 3.1,
-        minGre: 305,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 88
-    },
-    {
-        name: "Pennsylvania State University",
-        location: "University Park, PA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$24,198/year' : '$38,651/year',
-        requirements: {
-            cgpa: '3.1+',
-            gre: '305+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '88+'}`
-        },
-        highlights: [
-            'Strong Alumni Network',
-            'Big Ten Sports',
-            'Engineering Excellence',
-            'Research Focus'
-        ],
-        minCgpa: 3.1,
-        minGre: 305,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 88
-    },
-    {
-        name: "University of Wisconsin-Madison",
-        location: "Madison, WI, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$25,269/year' : '$39,427/year',
-        requirements: {
-            cgpa: '3.2+',
-            gre: '308+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '88+'}`
-        },
-        highlights: [
-            'Research Excellence',
-            'Beautiful Campus',
-            'Strong Academics',
-            'College Town Feel'
-        ],
-        minCgpa: 3.2,
-        minGre: 308,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 88
-    },
-    {
-        name: "University of Minnesota Twin Cities",
-        location: "Minneapolis, MN, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$19,116/year' : '$33,843/year',
-        requirements: {
-            cgpa: '3.1+',
-            gre: '305+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '88+'}`
-        },
-        highlights: [
-            'Research University',
-            'Urban Campus',
-            'Strong Programs',
-            'Affordable Tuition'
-        ],
-        minCgpa: 3.1,
-        minGre: 305,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 88
-    },
-
-    // Liberal Arts Colleges and Universities
-    {
-        name: "Rice University",
-        location: "Houston, TX, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$52,070/year' : '$54,960/year',
-        requirements: {
-            cgpa: '3.5+',
-            gre: '315+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : '100+'}`
-        },
-        highlights: [
-            'Small Class Sizes',
-            'Engineering Excellence',
-            'Beautiful Campus',
-            'Strong Academics'
-        ],
-        minCgpa: 3.5,
-        minGre: 315,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : 100
-    },
-    {
-        name: "Emory University",
-        location: "Atlanta, GA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$59,920/year' : '$58,070/year',
-        requirements: {
-            cgpa: '3.4+',
-            gre: '312+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : '98+'}`
-        },
-        highlights: [
-            'Medical Excellence',
-            'Business School',
-            'Research Focus',
-            'Beautiful Campus'
-        ],
-        minCgpa: 3.4,
-        minGre: 312,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : 98
-    },
-    {
-        name: "University of Notre Dame",
-        location: "Notre Dame, IN, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$58,843/year' : '$60,301/year',
-        requirements: {
-            cgpa: '3.4+',
-            gre: '312+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : '98+'}`
-        },
-        highlights: [
-            'Catholic Tradition',
-            'Strong Alumni Network',
-            'Beautiful Campus',
-            'Football Excellence'
-        ],
-        minCgpa: 3.4,
-        minGre: 312,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : 98
-    },
-
-    // West Coast Universities
-    {
-        name: "University of California, Davis",
-        location: "Davis, CA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$44,066/year' : '$44,408/year',
-        requirements: {
-            cgpa: '3.3+',
-            gre: '310+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '92+'}`
-        },
-        highlights: [
-            'Agricultural Excellence',
-            'Veterinary School',
-            'Research Focus',
-            'College Town'
-        ],
-        minCgpa: 3.3,
-        minGre: 310,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 92
-    },
-    {
-        name: "University of California, Irvine",
-        location: "Irvine, CA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$44,066/year' : '$43,709/year',
-        requirements: {
-            cgpa: '3.2+',
-            gre: '308+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '88+'}`
-        },
-        highlights: [
-            'Tech Industry Hub',
-            'Young University',
-            'Research Focus',
-            'Safe Campus'
-        ],
-        minCgpa: 3.2,
-        minGre: 308,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 88
-    },
-    {
-        name: "University of California, Santa Barbara",
-        location: "Santa Barbara, CA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$44,066/year' : '$44,196/year',
-        requirements: {
-            cgpa: '3.2+',
-            gre: '308+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '88+'}`
-        },
-        highlights: [
-            'Beach Location',
-            'Physics Excellence',
-            'Research University',
-            'Beautiful Setting'
-        ],
-        minCgpa: 3.2,
-        minGre: 308,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 88
-    },
-    {
-        name: "University of Southern California",
-        location: "Los Angeles, CA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$64,726/year' : '$64,726/year',
-        requirements: {
-            cgpa: '3.4+',
-            gre: '312+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : '98+'}`
-        },
-        highlights: [
-            'Film School Excellence',
-            'Strong Alumni Network',
-            'Research University',
-            'Urban Campus'
-        ],
-        minCgpa: 3.4,
-        minGre: 312,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : 98
-    },
-    {
-        name: "Oregon State University",
-        location: "Corvallis, OR, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$27,930/year' : '$32,535/year',
-        requirements: {
-            cgpa: '3.0+',
-            gre: '300+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '80+'}`
-        },
-        highlights: [
-            'Engineering Focus',
-            'Affordable Tuition',
-            'Research Opportunities',
-            'Beautiful Oregon'
-        ],
-        minCgpa: 3.0,
-        minGre: 300,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 80
-    },
-
-    // East Coast Universities
-    {
-        name: "Boston University",
-        location: "Boston, MA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$62,360/year' : '$62,360/year',
-        requirements: {
-            cgpa: '3.3+',
-            gre: '310+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '92+'}`
-        },
-        highlights: [
-            'Urban Campus',
-            'Strong Programs',
-            'Research University',
-            'Boston Location'
-        ],
-        minCgpa: 3.3,
-        minGre: 310,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 92
-    },
-    {
-        name: "Northeastern University",
-        location: "Boston, MA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$59,100/year' : '$59,100/year',
-        requirements: {
-            cgpa: '3.2+',
-            gre: '308+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '88+'}`
-        },
-        highlights: [
-            'Co-op Programs',
-            'Industry Connections',
-            'Urban Setting',
-            'Practical Learning'
-        ],
-        minCgpa: 3.2,
-        minGre: 308,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 88
-    },
-    {
-        name: "New York University",
-        location: "New York, NY, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$58,168/year' : '$58,168/year',
-        requirements: {
-            cgpa: '3.3+',
-            gre: '310+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '92+'}`
-        },
-        highlights: [
-            'NYC Location',
-            'Global Campuses',
-            'Arts Excellence',
-            'Urban Experience'
-        ],
-        minCgpa: 3.3,
-        minGre: 310,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 92
-    },
-    {
-        name: "Rutgers University",
-        location: "New Brunswick, NJ, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$18,619/year' : '$33,005/year',
-        requirements: {
-            cgpa: '3.0+',
-            gre: '300+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '80+'}`
-        },
-        highlights: [
-            'Research University',
-            'Affordable Tuition',
-            'Diverse Programs',
-            'Strong Academics'
-        ],
-        minCgpa: 3.0,
-        minGre: 300,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 80
-    },
-
-    // Midwest Universities
-    {
-        name: "University of Chicago",
-        location: "Chicago, IL, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$64,260/year' : '$64,260/year',
-        requirements: {
-            cgpa: '3.6+',
-            gre: '318+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.0+' : '102+'}`
-        },
-        highlights: [
-            'Economics Excellence',
-            'Intellectual Rigor',
-            'Beautiful Campus',
-            'Nobel Laureates'
-        ],
-        minCgpa: 3.6,
-        minGre: 318,
-        minEnglish: profileData.englishTest === 'IELTS' ? 7.0 : 102
-    },
-    {
-        name: "University of Iowa",
-        location: "Iowa City, IA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$11,167/year' : '$31,233/year',
-        requirements: {
-            cgpa: '3.0+',
-            gre: '300+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '80+'}`
-        },
-        highlights: [
-            'Writers Workshop',
-            'Medical Excellence',
-            'Research Focus',
-            'College Town'
-        ],
-        minCgpa: 3.0,
-        minGre: 300,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 80
-    },
-    {
-        name: "Michigan State University",
-        location: "East Lansing, MI, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$18,274/year' : '$41,958/year',
-        requirements: {
-            cgpa: '3.0+',
-            gre: '300+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '80+'}`
-        },
-        highlights: [
-            'Large Research University',
-            'Strong Alumni Network',
-            'Sports Excellence',
-            'Diverse Programs'
-        ],
-        minCgpa: 3.0,
-        minGre: 300,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 80
-    },
-
-    // Southern Universities
-    {
-        name: "University of Georgia",
-        location: "Athens, GA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$12,080/year' : '$30,220/year',
-        requirements: {
-            cgpa: '3.1+',
-            gre: '305+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '88+'}`
-        },
-        highlights: [
-            'Strong Academics',
-            'Beautiful Campus',
-            'Research University',
-            'College Town Feel'
-        ],
-        minCgpa: 3.1,
-        minGre: 305,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 88
-    },
-    {
-        name: "University of Alabama",
-        location: "Tuscaloosa, AL, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$11,580/year' : '$32,400/year',
-        requirements: {
-            cgpa: '2.8+',
-            gre: '295+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Football Excellence',
-            'Strong Traditions',
-            'Beautiful Campus',
-            'Affordable Tuition'
-        ],
-        minCgpa: 2.8,
-        minGre: 295,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "University of Tennessee",
-        location: "Knoxville, TN, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$13,264/year' : '$31,684/year',
-        requirements: {
-            cgpa: '2.9+',
-            gre: '298+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '80+'}`
-        },
-        highlights: [
-            'SEC Sports',
-            'Research University',
-            'Mountain Location',
-            'Strong Programs'
-        ],
-        minCgpa: 2.9,
-        minGre: 298,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 80
-    },
-    {
-        name: "University of Vermont",
-        location: "Burlington, VT, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$16,392/year' : '$45,890/year',
-        requirements: {
-            cgpa: '2.9+',
-            gre: '298+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '80+'}`
-        },
-        highlights: [
-            'Beautiful Vermont',
-            'Outdoor Recreation',
-            'Strong Academics',
-            'Small Town Feel'
-        ],
-        minCgpa: 2.9,
-        minGre: 298,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 80
-    },
-    {
-        name: "University of New Hampshire",
-        location: "Durham, NH, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$16,986/year' : '$37,718/year',
-        requirements: {
-            cgpa: '2.8+',
-            gre: '295+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Research University',
-            'Beautiful Campus',
-            'Strong Programs',
-            'New England Charm'
-        ],
-        minCgpa: 2.8,
-        minGre: 295,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "University of Maine",
-        location: "Orono, ME, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$13,968/year' : '$33,240/year',
-        requirements: {
-            cgpa: '2.7+',
-            gre: '290+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Affordable Tuition',
-            'Natural Beauty',
-            'Research Focus',
-            'Small Class Sizes'
-        ],
-        minCgpa: 2.7,
-        minGre: 290,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-
-    // Additional Mid-Tier Universities
-    {
-        name: "Temple University",
-        location: "Philadelphia, PA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$20,174/year' : '$32,196/year',
-        requirements: {
-            cgpa: '2.9+',
-            gre: '298+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '80+'}`
-        },
-        highlights: [
-            'Urban Campus',
-            'Diverse Programs',
-            'Research University',
-            'City Opportunities'
-        ],
-        minCgpa: 2.9,
-        minGre: 298,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 80
-    },
-    {
-        name: "Drexel University",
-        location: "Philadelphia, PA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$56,595/year' : '$56,595/year',
-        requirements: {
-            cgpa: '3.0+',
-            gre: '300+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '80+'}`
-        },
-        highlights: [
-            'Co-op Programs',
-            'Tech Focus',
-            'Urban Setting',
-            'Industry Connections'
-        ],
-        minCgpa: 3.0,
-        minGre: 300,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 80
-    },
-    {
-        name: "Syracuse University",
-        location: "Syracuse, NY, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$58,440/year' : '$58,440/year',
-        requirements: {
-            cgpa: '3.1+',
-            gre: '305+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '88+'}`
-        },
-        highlights: [
-            'Strong Alumni Network',
-            'Communications Excellence',
-            'Sports Tradition',
-            'Beautiful Campus'
-        ],
-        minCgpa: 3.1,
-        minGre: 305,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 88
-    },
-    {
-        name: "University of Pittsburgh",
-        location: "Pittsburgh, PA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$25,586/year' : '$36,000/year',
-        requirements: {
-            cgpa: '3.0+',
-            gre: '300+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '80+'}`
-        },
-        highlights: [
-            'Medical Excellence',
-            'Research University',
-            'Urban Campus',
-            'Strong Academics'
-        ],
-        minCgpa: 3.0,
-        minGre: 300,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 80
-    },
-
-    // California State Universities
-    {
-        name: "San Jose State University",
-        location: "San Jose, CA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$8,634/year' : '$20,485/year',
-        requirements: {
-            cgpa: '2.7+',
-            gre: '290+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Silicon Valley Location',
-            'Tech Industry Hub',
-            'Affordable Tuition',
-            'Industry Connections'
-        ],
-        minCgpa: 2.7,
-        minGre: 290,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "California State University, Long Beach",
-        location: "Long Beach, CA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$8,634/year' : '$20,485/year',
-        requirements: {
-            cgpa: '2.7+',
-            gre: '290+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Beach Location',
-            'Diverse Programs',
-            'Affordable Education',
-            'Strong Academics'
-        ],
-        minCgpa: 2.7,
-        minGre: 290,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "California Polytechnic State University",
-        location: "San Luis Obispo, CA, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$10,344/year' : '$22,195/year',
-        requirements: {
-            cgpa: '2.9+',
-            gre: '298+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '80+'}`
-        },
-        highlights: [
-            'Learn by Doing',
-            'Engineering Focus',
-            'Beautiful Campus',
-            'Strong Industry Ties'
-        ],
-        minCgpa: 2.9,
-        minGre: 298,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 80
-    },
-
-    // Texas Universities
-    {
-        name: "Texas A&M University",
-        location: "College Station, TX, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$13,040/year' : '$38,602/year',
-        requirements: {
-            cgpa: '3.0+',
-            gre: '300+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '80+'}`
-        },
-        highlights: [
-            'Aggie Tradition',
-            'Engineering Excellence',
-            'Research University',
-            'Strong Alumni Network'
-        ],
-        minCgpa: 3.0,
-        minGre: 300,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 80
-    },
-    {
-        name: "University of Houston",
-        location: "Houston, TX, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$12,036/year' : '$26,756/year',
-        requirements: {
-            cgpa: '2.8+',
-            gre: '295+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Energy Capital',
-            'Diverse City',
-            'Research University',
-            'Affordable Tuition'
-        ],
-        minCgpa: 2.8,
-        minGre: 295,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "Texas Tech University",
-        location: "Lubbock, TX, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$10,882/year' : '$25,892/year',
-        requirements: {
-            cgpa: '2.7+',
-            gre: '290+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Red Raider Pride',
-            'Engineering Focus',
-            'Research University',
-            'Strong Traditions'
-        ],
-        minCgpa: 2.7,
-        minGre: 290,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-
-    // Additional Public Universities
-    {
-        name: "University of Arkansas",
-        location: "Fayetteville, AR, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$11,522/year' : '$27,196/year',
-        requirements: {
-            cgpa: '2.7+',
-            gre: '290+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Razorback Sports',
-            'Beautiful Campus',
-            'Strong Academics',
-            'Affordable Tuition'
-        ],
-        minCgpa: 2.7,
-        minGre: 290,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "University of Oklahoma",
-        location: "Norman, OK, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$8,028/year' : '$25,588/year',
-        requirements: {
-            cgpa: '2.8+',
-            gre: '295+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Sooner Tradition',
-            'Football Excellence',
-            'Research University',
-            'Strong Programs'
-        ],
-        minCgpa: 2.8,
-        minGre: 295,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "Kansas State University",
-        location: "Manhattan, KS, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$10,520/year' : '$26,405/year',
-        requirements: {
-            cgpa: '2.7+',
-            gre: '290+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Wildcat Pride',
-            'Agricultural Excellence',
-            'Strong Community',
-            'Research Focus'
-        ],
-        minCgpa: 2.7,
-        minGre: 290,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-
-    // International Friendly Universities
-    {
-        name: "University of South Florida",
-        location: "Tampa, FL, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$17,324/year' : '$27,068/year',
-        requirements: {
-            cgpa: '2.8+',
-            gre: '295+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Diverse Student Body',
-            'Research University',
-            'Florida Weather',
-            'Growing Reputation'
-        ],
-        minCgpa: 2.8,
-        minGre: 295,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "Florida International University",
-        location: "Miami, FL, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$18,954/year' : '$25,332/year',
-        requirements: {
-            cgpa: '2.7+',
-            gre: '290+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'International Focus',
-            'Miami Location',
-            'Diverse Programs',
-            'Growing University'
-        ],
-        minCgpa: 2.7,
-        minGre: 290,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "University of Central Florida",
-        location: "Orlando, FL, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$13,052/year' : '$22,467/year',
-        requirements: {
-            cgpa: '2.8+',
-            gre: '295+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Large University',
-            'Modern Facilities',
-            'Orlando Location',
-            'Growing Reputation'
-        ],
-        minCgpa: 2.8,
-        minGre: 295,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-
-    // Additional Options
-    {
-        name: "University of Nevada, Las Vegas",
-        location: "Las Vegas, NV, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$8,926/year' : '$25,540/year',
-        requirements: {
-            cgpa: '2.7+',
-            gre: '290+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Entertainment Capital',
-            'Growing University',
-            'Diverse Programs',
-            'Unique Location'
-        ],
-        minCgpa: 2.7,
-        minGre: 290,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "University of Hawaii at Manoa",
-        location: "Honolulu, HI, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$18,336/year' : '$35,316/year',
-        requirements: {
-            cgpa: '2.8+',
-            gre: '295+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Paradise Location',
-            'Unique Culture',
-            'Research Focus',
-            'Pacific Studies'
-        ],
-        minCgpa: 2.8,
-        minGre: 295,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "Portland State University",
-        location: "Portland, OR, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$15,732/year' : '$29,664/year',
-        requirements: {
-            cgpa: '2.7+',
-            gre: '290+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Urban Campus',
-            'Sustainability Focus',
-            'Diverse Programs',
-            'Pacific Northwest'
-        ],
-        minCgpa: 2.7,
-        minGre: 290,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-
-    // Final additions to reach 100+
-    {
-        name: "Wayne State University",
-        location: "Detroit, MI, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$14,932/year' : '$30,783/year',
-        requirements: {
-            cgpa: '2.7+',
-            gre: '290+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Urban Research',
-            'Medical Excellence',
-            'Diverse Student Body',
-            'Affordable Programs'
-        ],
-        minCgpa: 2.7,
-        minGre: 290,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "University of Toledo",
-        location: "Toledo, OH, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$11,898/year' : '$20,972/year',
-        requirements: {
-            cgpa: '2.5+',
-            gre: '285+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Affordable Education',
-            'Engineering Focus',
-            'Research Opportunities',
-            'Small Class Sizes'
-        ],
-        minCgpa: 2.5,
-        minGre: 285,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "University of Akron",
-        location: "Akron, OH, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$11,660/year' : '$19,937/year',
-        requirements: {
-            cgpa: '2.5+',
-            gre: '285+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Polymer Science',
-            'Engineering Excellence',
-            'Affordable Tuition',
-            'Research Focus'
-        ],
-        minCgpa: 2.5,
-        minGre: 285,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "Wright State University",
-        location: "Dayton, OH, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$9,476/year' : '$18,838/year',
-        requirements: {
-            cgpa: '2.5+',
-            gre: '285+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Aerospace Programs',
-            'Medical School',
-            'Research University',
-            'Affordable Options'
-        ],
-        minCgpa: 2.5,
-        minGre: 285,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "Southern Illinois University",
-        location: "Carbondale, IL, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$11,697/year' : '$16,729/year',
-        requirements: {
-            cgpa: '2.5+',
-            gre: '285+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Research University',
-            'Diverse Programs',
-            'Affordable Education',
-            'Beautiful Campus'
-        ],
-        minCgpa: 2.5,
-        minGre: 285,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "University of Wyoming",
-        location: "Laramie, WY, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$6,408/year' : '$20,688/year',
-        requirements: {
-            cgpa: '2.5+',
-            gre: '285+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Very Affordable',
-            'Beautiful Location',
-            'Small Class Sizes',
-            'Research Opportunities'
-        ],
-        minCgpa: 2.5,
-        minGre: 285,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    {
-        name: "University of North Dakota",
-        location: "Grand Forks, ND, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$9,818/year' : '$22,539/year',
-        requirements: {
-            cgpa: '2.5+',
-            gre: '285+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '79+'}`
-        },
-        highlights: [
-            'Aviation Excellence',
-            'Energy Programs',
-            'Research Focus',
-            'Affordable Tuition'
-        ],
-        minCgpa: 2.5,
-        minGre: 285,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 79
-    },
-    
-    {
-        name: "University of Connecticut",
-        location: "Storrs, CT, USA",
-        program: `${profileData.programLevel} in ${profileData.course}`,
-        duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-        tuition: profileData.programLevel === 'Masters' ? '$17,834/year' : '$41,890/year',
-        requirements: {
-            cgpa: '3.0+',
-            gre: '300+',
-            english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : '80+'}`
-        },
-        highlights: [
-            'Research University',
-            'Basketball Excellence',
-            'Strong Academics',
-            'Beautiful Campus'
-        ],
-        minCgpa: 3.0,
-        minGre: 300,
-        minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : 80
-    },
-    // Canadian Universities in exact format
-{
-    name: "University of Toronto",
-    location: "Toronto, ON, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $58,160/year' : 'CAD $61,820/year',
-    requirements: {
-        cgpa: '3.7+',
-        gre: '320+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '7.0+' : profileData.englishTest === 'TOEFL' ? '105+' : '120+'}`
-    },
-    highlights: [
-        'Canada\'s Top University',
-        'World-Class Research',
-        'Diverse Programs',
-        'Strong Industry Links'
-    ],
-    minCgpa: 3.7,
-    minGre: 320,
-    minEnglish: profileData.englishTest === 'IELTS' ? 7.0 : profileData.englishTest === 'TOEFL' ? 105 : 120
-},
-{
-    name: "University of British Columbia",
-    location: "Vancouver, BC, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $43,053/year' : 'CAD $47,760/year',
-    requirements: {
-        cgpa: '3.5+',
-        gre: '315+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : profileData.englishTest === 'TOEFL' ? '100+' : '110+'}`
-    },
-    highlights: [
-        'Beautiful Vancouver Campus',
-        'Research Excellence',
-        'Pacific Rim Focus',
-        'Strong Co-op Programs'
-    ],
-    minCgpa: 3.5,
-    minGre: 315,
-    minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : profileData.englishTest === 'TOEFL' ? 100 : 110
-},
-{
-    name: "McGill University",
-    location: "Montreal, QC, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $21,742/year' : 'CAD $50,847/year',
-    requirements: {
-        cgpa: '3.5+',
-        gre: '315+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : profileData.englishTest === 'TOEFL' ? '100+' : '110+'}`
-    },
-    highlights: [
-        'Harvard of Canada',
-        'Bilingual Environment',
-        'Historic Campus',
-        'Strong Medical Programs'
-    ],
-    minCgpa: 3.5,
-    minGre: 315,
-    minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : profileData.englishTest === 'TOEFL' ? 100 : 110
-},
-{
-    name: "University of Waterloo",
-    location: "Waterloo, ON, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $39,570/year' : 'CAD $62,890/year',
-    requirements: {
-        cgpa: '3.4+',
-        gre: '312+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.5+' : profileData.englishTest === 'TOEFL' ? '100+' : '110+'}`
-    },
-    highlights: [
-        'Top Engineering & CS',
-        'Co-op Excellence',
-        'Tech Industry Hub',
-        'Innovation Focus'
-    ],
-    minCgpa: 3.4,
-    minGre: 312,
-    minEnglish: profileData.englishTest === 'IELTS' ? 6.5 : profileData.englishTest === 'TOEFL' ? 100 : 110
-},
-{
-    name: "University of Alberta",
-    location: "Edmonton, AB, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $12,810/year' : 'CAD $32,244/year',
-    requirements: {
-        cgpa: '3.2+',
-        gre: '308+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '92+' : '100+'}`
-    },
-    highlights: [
-        'Research Intensive',
-        'Affordable Tuition',
-        'Strong STEM Programs',
-        'AI Research Hub'
-    ],
-    minCgpa: 3.2,
-    minGre: 308,
-    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 92 : 100
-},
-{
-    name: "McMaster University",
-    location: "Hamilton, ON, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $29,140/year' : 'CAD $48,180/year',
-    requirements: {
-        cgpa: '3.3+',
-        gre: '310+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '92+' : '100+'}`
-    },
-    highlights: [
-        'Medical Excellence',
-        'Research Innovation',
-        'Beautiful Campus',
-        'Strong Engineering'
-    ],
-    minCgpa: 3.3,
-    minGre: 310,
-    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 92 : 100
-},
-{
-    name: "Queen's University",
-    location: "Kingston, ON, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $25,832/year' : 'CAD $47,666/year',
-    requirements: {
-        cgpa: '3.2+',
-        gre: '308+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '92+' : '100+'}`
-    },
-    highlights: [
-        'Historic University',
-        'Strong Alumni Network',
-        'Beautiful Campus',
-        'Business Excellence'
-    ],
-    minCgpa: 3.2,
-    minGre: 308,
-    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 92 : 100
-},
-{
-    name: "University of Calgary",
-    location: "Calgary, AB, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $11,538/year' : 'CAD $22,683/year',
-    requirements: {
-        cgpa: '3.1+',
-        gre: '305+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '88+' : '100+'}`
-    },
-    highlights: [
-        'Energy Research Hub',
-        'Affordable Education',
-        'Mountain Location',
-        'Strong Industry Ties'
-    ],
-    minCgpa: 3.1,
-    minGre: 305,
-    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 88 : 100
-},
-{
-    name: "Western University",
-    location: "London, ON, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $24,474/year' : 'CAD $38,204/year',
-    requirements: {
-        cgpa: '3.1+',
-        gre: '305+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '88+' : '100+'}`
-    },
-    highlights: [
-        'Ivey Business School',
-        'Research Excellence',
-        'Beautiful Campus',
-        'Strong Programs'
-    ],
-    minCgpa: 3.1,
-    minGre: 305,
-    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 88 : 100
-},
-{
-    name: "Simon Fraser University",
-    location: "Burnaby, BC, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $20,216/year' : 'CAD $35,550/year',
-    requirements: {
-        cgpa: '3.0+',
-        gre: '300+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '88+' : '100+'}`
-    },
-    highlights: [
-        'Modern Campus',
-        'Tech Innovation',
-        'Mountain Views',
-        'Co-op Programs'
-    ],
-    minCgpa: 3.0,
-    minGre: 300,
-    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 88 : 100
-},
-{
-    name: "University of Ottawa",
-    location: "Ottawa, ON, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $19,453/year' : 'CAD $37,425/year',
-    requirements: {
-        cgpa: '3.0+',
-        gre: '300+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '88+' : '100+'}`
-    },
-    highlights: [
-        'Capital City Location',
-        'Bilingual Programs',
-        'Government Connections',
-        'Research Focus'
-    ],
-    minCgpa: 3.0,
-    minGre: 300,
-    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 88 : 100
-},
-{
-    name: "Dalhousie University",
-    location: "Halifax, NS, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $18,750/year' : 'CAD $24,705/year',
-    requirements: {
-        cgpa: '2.9+',
-        gre: '298+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '88+' : '100+'}`
-    },
-    highlights: [
-        'Atlantic Canada Hub',
-        'Marine Research',
-        'Historic Campus',
-        'Affordable Living'
-    ],
-    minCgpa: 2.9,
-    minGre: 298,
-    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 88 : 100
-},
-{
-    name: "University of Saskatchewan",
-    location: "Saskatoon, SK, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $7,749/year' : 'CAD $23,034/year',
-    requirements: {
-        cgpa: '2.9+',
-        gre: '298+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '88+' : '100+'}`
-    },
-    highlights: [
-        'Very Affordable',
-        'Agricultural Excellence',
-        'Research University',
-        'Beautiful Campus'
-    ],
-    minCgpa: 2.9,
-    minGre: 298,
-    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 88 : 100
-},
-{
-    name: "University of Manitoba",
-    location: "Winnipeg, MB, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $11,104/year' : 'CAD $19,816/year',
-    requirements: {
-        cgpa: '2.8+',
-        gre: '295+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '86+' : '95+'}`
-    },
-    highlights: [
-        'Affordable Education',
-        'Research Focus',
-        'Diverse Programs',
-        'Welcoming Community'
-    ],
-    minCgpa: 2.8,
-    minGre: 295,
-    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 86 : 95
-},
-{
-    name: "Concordia University",
-    location: "Montreal, QC, Canada",
-    program: `${profileData.programLevel} in ${profileData.course}`,
-    duration: profileData.programLevel === 'Masters' ? '2 years' : '4 years',
-    tuition: profileData.programLevel === 'Masters' ? 'CAD $16,815/year' : 'CAD $27,822/year',
-    requirements: {
-        cgpa: '2.8+',
-        gre: '295+',
-        english: `${profileData.englishTest}: ${profileData.englishTest === 'IELTS' ? '6.0+' : profileData.englishTest === 'TOEFL' ? '86+' : '95+'}`
-    },
-    highlights: [
-        'Montreal Location',
-        'Creative Programs',
-        'Modern Facilities',
-        'Diverse Student Body'
-    ],
-    minCgpa: 2.8,
-    minGre: 295,
-    minEnglish: profileData.englishTest === 'IELTS' ? 6.0 : profileData.englishTest === 'TOEFL' ? 86 : 95
-},
-
+            // Top Tier Universities
+            {
+                name: "Massachusetts Institute of Technology (MIT)",
+                location: "Cambridge, MA, USA",
+                program: `${profileData.programLevel} in ${profileData.course}`,
+                duration: profileData.programLevel === 'Masters' ? '2 years' : profileData.programLevel === 'PhD' ? '4-6 years' : '4 years',
+                tuition: profileData.programLevel === 'Masters' ? '$59,750/year' : profileData.programLevel === 'PhD' ? '$57,400/year' : '$57,400/year',
+                requirements: {
+                    cgpa: '3.8+',
+                    gre: profileData.greRequired === 'yes' ? '325+' : null,
+                    english: profileData.englishRequired === 'yes' ? getEnglishRequirement(profileData.englishTest, 'high') : null,
+                    standardized: profileData.standardizedTestRequired === 'yes' ? getStandardizedRequirement(profileData.standardizedTest, 'high') : null
+                },
+                highlights: [
+                    'Top 1 in Engineering',
+                    'Excellent Research Facilities',
+                    'Strong Industry Connections',
+                    '95% Employment Rate'
+                ],
+                minCgpa: 3.8,
+                minGre: profileData.greRequired === 'yes' ? 325 : 0,
+                minEnglish: getMinEnglishScore(profileData.englishTest, 'high'),
+                category: 'top'
+            },
+            {
+                name: "Stanford University",
+                location: "Stanford, CA, USA",
+                program: `${profileData.programLevel} in ${profileData.course}`,
+                duration: profileData.programLevel === 'Masters' ? '2 years' : profileData.programLevel === 'PhD' ? '4-6 years' : '4 years',
+                tuition: profileData.programLevel === 'Masters' ? '$58,416/year' : profileData.programLevel === 'PhD' ? '$56,169/year' : '$58,416/year',
+                requirements: {
+                    cgpa: '3.8+',
+                    gre: profileData.greRequired === 'yes' ? '325+' : null,
+                    english: profileData.englishRequired === 'yes' ? getEnglishRequirement(profileData.englishTest, 'high') : null,
+                    standardized: profileData.standardizedTestRequired === 'yes' ? getStandardizedRequirement(profileData.standardizedTest, 'high') : null
+                },
+                highlights: [
+                    'Silicon Valley Location',
+                    'Top Innovation Hub',
+                    'Excellent Alumni Network',
+                    'World-Class Faculty'
+                ],
+                minCgpa: 3.8,
+                minGre: profileData.greRequired === 'yes' ? 325 : 0,
+                minEnglish: getMinEnglishScore(profileData.englishTest, 'high'),
+                category: 'top'
+            },
+            {
+                name: "Harvard University",
+                location: "Cambridge, MA, USA",
+                program: `${profileData.programLevel} in ${profileData.course}`,
+                duration: profileData.programLevel === 'Masters' ? '2 years' : profileData.programLevel === 'PhD' ? '4-6 years' : '4 years',
+                tuition: profileData.programLevel === 'Masters' ? '$54,768/year' : profileData.programLevel === 'PhD' ? '$52,659/year' : '$54,768/year',
+                requirements: {
+                    cgpa: '3.9+',
+                    gre: profileData.greRequired === 'yes' ? '330+' : null,
+                    english: profileData.englishRequired === 'yes' ? getEnglishRequirement(profileData.englishTest, 'high') : null,
+                    standardized: profileData.standardizedTestRequired === 'yes' ? getStandardizedRequirement(profileData.standardizedTest, 'high') : null
+                },
+                highlights: [
+                    'Ivy League Prestige',
+                    'World-Renowned Faculty',
+                    'Extensive Resources',
+                    'Global Recognition'
+                ],
+                minCgpa: 3.9,
+                minGre: profileData.greRequired === 'yes' ? 330 : 0,
+                minEnglish: getMinEnglishScore(profileData.englishTest, 'high'),
+                category: 'top'
+            },
+            // Mid-Tier Universities
+            {
+                name: "University of California, Berkeley",
+                location: "Berkeley, CA, USA",
+                program: `${profileData.programLevel} in ${profileData.course}`,
+                duration: profileData.programLevel === 'Masters' ? '2 years' : profileData.programLevel === 'PhD' ? '4-6 years' : '4 years',
+                tuition: profileData.programLevel === 'Masters' ? '$29,272/year' : profileData.programLevel === 'PhD' ? '$14,226/year' : '$46,326/year',
+                requirements: {
+                    cgpa: '3.5+',
+                    gre: profileData.greRequired === 'yes' ? '315+' : null,
+                    english: profileData.englishRequired === 'yes' ? getEnglishRequirement(profileData.englishTest, 'medium') : null,
+                    standardized: profileData.standardizedTestRequired === 'yes' ? getStandardizedRequirement(profileData.standardizedTest, 'medium') : null
+                },
+                highlights: [
+                    'Public Ivy Status',
+                    'Strong Research Programs',
+                    'Diverse Student Body',
+                    'California Location'
+                ],
+                minCgpa: 3.5,
+                minGre: profileData.greRequired === 'yes' ? 315 : 0,
+                minEnglish: getMinEnglishScore(profileData.englishTest, 'medium'),
+                category: 'mid'
+            },
+            {
+                name: "University of Toronto",
+                location: "Toronto, ON, Canada",
+                program: `${profileData.programLevel} in ${profileData.course}`,
+                duration: profileData.programLevel === 'Masters' ? '2 years' : profileData.programLevel === 'PhD' ? '4-6 years' : '4 years',
+                tuition: profileData.programLevel === 'Masters' ? 'CAD $25,000/year' : profileData.programLevel === 'PhD' ? 'CAD $6,100/year' : 'CAD $61,720/year',
+                requirements: {
+                    cgpa: '3.3+',
+                    gre: profileData.greRequired === 'yes' ? '310+' : null,
+                    english: profileData.englishRequired === 'yes' ? getEnglishRequirement(profileData.englishTest, 'medium') : null,
+                    standardized: profileData.standardizedTestRequired === 'yes' ? getStandardizedRequirement(profileData.standardizedTest, 'medium') : null
+                },
+                highlights: [
+                    'Top Canadian University',
+                    'Multicultural Environment',
+                    'Strong Research Focus',
+                    'Post-Study Work Options'
+                ],
+                minCgpa: 3.3,
+                minGre: profileData.greRequired === 'yes' ? 310 : 0,
+                minEnglish: getMinEnglishScore(profileData.englishTest, 'medium'),
+                category: 'mid'
+            },
+            {
+                name: "Arizona State University",
+                location: "Tempe, AZ, USA",
+                program: `${profileData.programLevel} in ${profileData.course}`,
+                duration: profileData.programLevel === 'Masters' ? '2 years' : profileData.programLevel === 'PhD' ? '4-6 years' : '4 years',
+                tuition: profileData.programLevel === 'Masters' ? '$31,200/year' : profileData.programLevel === 'PhD' ? '$12,376/year' : '$31,200/year',
+                requirements: {
+                    cgpa: '3.0+',
+                    gre: profileData.greRequired === 'yes' ? '300+' : null,
+                    english: profileData.englishRequired === 'yes' ? getEnglishRequirement(profileData.englishTest, 'low') : null,
+                    standardized: profileData.standardizedTestRequired === 'yes' ? getStandardizedRequirement(profileData.standardizedTest, 'low') : null
+                },
+                highlights: [
+                    'Innovation Focus',
+                    'Online Programs Available',
+                    'Diverse Programs',
+                    'Affordable Tuition'
+                ],
+                minCgpa: 3.0,
+                minGre: profileData.greRequired === 'yes' ? 300 : 0,
+                minEnglish: getMinEnglishScore(profileData.englishTest, 'low'),
+                category: 'accessible'
+            },
+            // More universities for Accounting and other fields
+            {
+                name: "University of Pennsylvania (Wharton)",
+                location: "Philadelphia, PA, USA",
+                program: `${profileData.programLevel} in ${profileData.course}`,
+                duration: profileData.programLevel === 'Masters' ? '2 years' : profileData.programLevel === 'PhD' ? '4-6 years' : '4 years',
+                tuition: profileData.programLevel === 'Masters' ? '$81,378/year' : profileData.programLevel === 'PhD' ? '$70,200/year' : '$63,452/year',
+                requirements: {
+                    cgpa: '3.7+',
+                    gre: profileData.greRequired === 'yes' ? '320+' : null,
+                    english: profileData.englishRequired === 'yes' ? getEnglishRequirement(profileData.englishTest, 'high') : null,
+                    standardized: profileData.standardizedTestRequired === 'yes' ? getStandardizedRequirement(profileData.standardizedTest, 'high') : null
+                },
+                highlights: [
+                    'Top Business School',
+                    'Wall Street Connections',
+                    'Ivy League Status',
+                    'Excellent ROI'
+                ],
+                minCgpa: 3.7,
+                minGre: profileData.greRequired === 'yes' ? 320 : 0,
+                minEnglish: getMinEnglishScore(profileData.englishTest, 'high'),
+                category: 'top'
+            },
+            {
+                name: "Concordia University",
+                location: "Montreal, QC, Canada",
+                program: `${profileData.programLevel} in ${profileData.course}`,
+                duration: profileData.programLevel === 'Masters' ? '2 years' : profileData.programLevel === 'PhD' ? '4-6 years' : '4 years',
+                tuition: profileData.programLevel === 'Masters' ? 'CAD $16,815/year' : profileData.programLevel === 'PhD' ? 'CAD $4,000/year' : 'CAD $27,822/year',
+                requirements: {
+                    cgpa: '2.8+',
+                    gre: profileData.greRequired === 'yes' ? '295+' : null,
+                    english: profileData.englishRequired === 'yes' ? getEnglishRequirement(profileData.englishTest, 'low') : null,
+                    standardized: profileData.standardizedTestRequired === 'yes' ? getStandardizedRequirement(profileData.standardizedTest, 'low') : null
+                },
+                highlights: [
+                    'Montreal Location',
+                    'Creative Programs',
+                    'Modern Facilities',
+                    'Diverse Student Body'
+                ],
+                minCgpa: 2.8,
+                minGre: profileData.greRequired === 'yes' ? 295 : 0,
+                minEnglish: getMinEnglishScore(profileData.englishTest, 'low'),
+                category: 'accessible'
+            }
         ];
 
         // Filter universities based on user qualifications
         const qualifiedUniversities = universities.filter(uni => {
             const userCgpa = parseFloat(profileData.cgpa);
-            const userGre = parseInt(profileData.greScore);
-            const userEnglish = parseFloat(profileData.englishScore);
+            const userGre = profileData.greScore ? parseInt(profileData.greScore) : 400; // Default high score if no GRE
+            const userEnglish = profileData.englishScore ? parseFloat(profileData.englishScore) : getMaxEnglishScore(profileData.englishTest);
 
             return userCgpa >= uni.minCgpa && 
                    userGre >= uni.minGre && 
@@ -2340,8 +651,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Calculate match scores and sort
         return qualifiedUniversities.map(uni => {
             const cgpaScore = Math.min(100, (parseFloat(profileData.cgpa) / uni.minCgpa) * 30);
-            const greScore = Math.min(100, (parseInt(profileData.greScore) / uni.minGre) * 40);
-            const englishScore = Math.min(100, (parseFloat(profileData.englishScore) / uni.minEnglish) * 30);
+            const greScore = profileData.greRequired === 'yes' ? 
+                Math.min(100, (parseInt(profileData.greScore) / uni.minGre) * 40) : 40;
+            const englishScore = profileData.englishRequired === 'yes' ? 
+                Math.min(100, (parseFloat(profileData.englishScore) / uni.minEnglish) * 30) : 30;
             
             const matchScore = Math.round(cgpaScore + greScore + englishScore);
             
@@ -2352,21 +665,85 @@ document.addEventListener('DOMContentLoaded', function() {
         }).sort((a, b) => b.matchScore - a.matchScore);
     }
 
+    // Helper functions for test requirements
+    function getEnglishRequirement(testType, level) {
+        if (!testType) return null;
+        
+        const requirements = {
+            'IELTS': { high: '7.5+', medium: '6.5+', low: '6.0+' },
+            'TOEFL': { high: '110+', medium: '90+', low: '80+' },
+            'Duolingo': { high: '130+', medium: '115+', low: '105+' },
+            'PTE': { high: '73+', medium: '65+', low: '58+' },
+            'Cambridge': { high: '191+', medium: '176+', low: '169+' },
+            'CELPIP': { high: '9+', medium: '7+', low: '6+' }
+        };
+        
+        return `${testType}: ${requirements[testType][level]}`;
+    }
+
+    function getMinEnglishScore(testType, level) {
+        if (!testType) return 0;
+        
+        const scores = {
+            'IELTS': { high: 7.5, medium: 6.5, low: 6.0 },
+            'TOEFL': { high: 110, medium: 90, low: 80 },
+            'Duolingo': { high: 130, medium: 115, low: 105 },
+            'PTE': { high: 73, medium: 65, low: 58 },
+            'Cambridge': { high: 191, medium: 176, low: 169 },
+            'CELPIP': { high: 9, medium: 7, low: 6 }
+        };
+        
+        return scores[testType][level] || 0;
+    }
+
+    function getMaxEnglishScore(testType) {
+        if (!testType) return 0;
+        
+        const maxScores = {
+            'IELTS': 9.0,
+            'TOEFL': 120,
+            'Duolingo': 160,
+            'PTE': 90,
+            'Cambridge': 230,
+            'CELPIP': 12
+        };
+        
+        return maxScores[testType] || 0;
+    }
+
+    function getStandardizedRequirement(testType, level) {
+        if (!testType) return null;
+        
+        const requirements = {
+            'SAT': { high: '1500+', medium: '1350+', low: '1200+' },
+            'ACT': { high: '33+', medium: '28+', low: '24+' },
+            'GMAT': { high: '700+', medium: '650+', low: '600+' },
+            'LSAT': { high: '170+', medium: '160+', low: '155+' },
+            'MCAT': { high: '515+', medium: '505+', low: '500+' }
+        };
+        
+        return `${testType}: ${requirements[testType][level]}`;
+    }
+
     // Show no results message
     function showNoResultsMessage(profileData) {
         const suggestions = [];
         
-        if (parseFloat(profileData.cgpa) < 3.3) {
-            suggestions.push('Consider improving your CGPA through additional coursework');
+        if (parseFloat(profileData.cgpa) < 3.0) {
+            suggestions.push('Consider improving your CGPA through additional coursework or retaking courses');
         }
-        if (parseInt(profileData.greScore) < 310) {
-            suggestions.push('Retake the GRE to improve your score');
+        if (profileData.greRequired === 'yes' && parseInt(profileData.greScore) < 300) {
+            suggestions.push('Retake the GRE to improve your score (aim for 300+ for better options)');
         }
-        if (profileData.englishTest === 'IELTS' && parseFloat(profileData.englishScore) < 6.0) {
-            suggestions.push('Improve your IELTS score with additional practice');
-        }
-        if (profileData.englishTest === 'TOEFL' && parseFloat(profileData.englishScore) < 92) {
-            suggestions.push('Improve your TOEFL score with additional practice');
+        if (profileData.englishRequired === 'yes' && profileData.englishScore) {
+            const score = parseFloat(profileData.englishScore);
+            if (profileData.englishTest === 'IELTS' && score < 6.0) {
+                suggestions.push('Improve your IELTS score to at least 6.0 for more university options');
+            } else if (profileData.englishTest === 'TOEFL' && score < 80) {
+                suggestions.push('Improve your TOEFL score to at least 80 for more university options');
+            } else if (profileData.englishTest === 'Duolingo' && score < 105) {
+                suggestions.push('Improve your Duolingo score to at least 105 for more university options');
+            }
         }
 
         const suggestionHtml = suggestions.length > 0 ? `
@@ -2410,8 +787,8 @@ function applyToUniversity(universityName) {
         cancelText: 'Maybe Later',
         confirmColor: '#10b981',
         onConfirm: () => {
-            // Store the university name in localStorage
-            localStorage.setItem('selectedUniversity', universityName);
+            // Store the university name in session storage for this session
+            sessionStorage.setItem('selectedUniversity', universityName);
             
             // Show success message and redirect
             showSuccessMessage('Redirecting to contact form...', () => {
@@ -2432,7 +809,7 @@ function learnMore(universityName) {
         confirmColor: '#6366f1',
         onConfirm: () => {
             // Store university name for inquiry
-            localStorage.setItem('inquiryUniversity', universityName);
+            sessionStorage.setItem('inquiryUniversity', universityName);
             
             // Show success message and redirect
             showSuccessMessage('Connecting you with our consultants...', () => {
@@ -2866,6 +1243,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 isValid = value >= 0 && value <= 9.0;
             } else if (testType === 'TOEFL') {
                 isValid = value >= 0 && value <= 120;
+            } else if (testType === 'Duolingo') {
+                isValid = value >= 10 && value <= 160;
+            } else if (testType === 'PTE') {
+                isValid = value >= 10 && value <= 90;
             }
         } else if (input.tagName === 'SELECT') {
             isValid = value !== '';
