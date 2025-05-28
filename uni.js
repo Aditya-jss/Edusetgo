@@ -206,9 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             ${university.location}
                         </p>
                     </div>
-                    <div class="match-score">
-                        ${university.matchScore}% Match
-                    </div>
+                    
                 </div>
                 
                 <div class="university-details">

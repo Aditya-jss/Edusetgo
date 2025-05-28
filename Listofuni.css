@@ -231,7 +231,7 @@ header {
     }
 }
 
-/* ===== PAGE TITLE SECTION WITH PROPER ALIGNMENT ===== */
+/* Option 1: If image is in an 'images' folder */
 .page-title {
     position: relative;
     background-image: url('10.jpg');
