@@ -20,33 +20,55 @@ if (mobileToggle && navMenu) {
 }
 
 // Country Tabs Functionality
+function activateCountryTab(country) {
+    // Remove active class from all tabs and content
+    tabButtons.forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.country-tab-content').forEach(content => {
+        content.classList.remove('active');
+        content.style.display = 'none'; // Ensure it's hidden
+        content.style.opacity = '0';
+        content.style.transform = 'translateY(20px)';
+    });
+
+    // Add active class to clicked tab and corresponding content
+    const button = Array.from(tabButtons).find(btn => btn.dataset.country === country);
+    if (button) {
+        button.classList.add('active');
+    }
+
+    const content = document.getElementById(`${country}-content`);
+    if (content) {
+        content.classList.add('active');
+        content.style.display = 'block'; // Ensure it's visible
+        setTimeout(() => {
+            content.style.opacity = '1';
+            content.style.transform = 'translateY(0)';
+            content.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        }, 50);
+
+        // Animate steps within the active tab
+        const steps = content.querySelectorAll('.step');
+        steps.forEach((step, index) => {
+            setTimeout(() => {
+                step.classList.add('visible');
+            }, index * 100);
+        });
+    } else {
+        console.error(`Content for country "${country}" not found. Check if the ID "${country}-content" exists in the HTML.`);
+    }
+}
+
+// Add click event to tab buttons
 tabButtons.forEach(button => {
     button.addEventListener('click', () => {
         const country = button.dataset.country;
-
-        // Remove active class from all tabs and content
-        tabButtons.forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.country-tab-content').forEach(content => {
-            content.classList.remove('active');
-        });
-
-        // Add active class to clicked tab and corresponding content
-        button.classList.add('active');
-        const content = document.getElementById(`${country}-content`);
-        if (content) {
-            content.classList.add('active');
-
-            // Add animation effect
-            content.style.opacity = '0';
-            content.style.transform = 'translateY(20px)';
-
-            setTimeout(() => {
-                content.style.opacity = '1';
-                content.style.transform = 'translateY(0)';
-                content.style.transition = 'all 0.5s ease';
-            }, 50);
-        }
+        activateCountryTab(country);
     });
+});
+
+// Set default tab (USA) on page load
+document.addEventListener('DOMContentLoaded', () => {
+    activateCountryTab('usa'); // Default to USA
 });
 
 // Smooth Scrolling Function
@@ -63,7 +85,6 @@ function scrollToSection(sectionId) {
 // Hero Buttons Click Events
 heroButtons.forEach(button => {
     button.addEventListener('click', () => {
-        // Add click animation
         button.style.transform = 'scale(0.95)';
         setTimeout(() => {
             button.style.transform = 'scale(1)';
@@ -71,9 +92,7 @@ heroButtons.forEach(button => {
     });
 });
 
-// ==================== UPDATED EXAM MODAL FUNCTIONALITY ====================
-
-// Enhanced Exam data with more details
+// Exam Modal Functionality
 const examData = {
     ielts: {
         title: 'IELTS',
@@ -137,7 +156,6 @@ const examData = {
     }
 };
 
-// Function to open modal (replaces the old showExamDetails)
 function openModal(examType) {
     const modal = document.getElementById('examModal');
     const data = examData[examType];
@@ -164,7 +182,6 @@ function openModal(examType) {
     document.body.style.overflow = 'hidden';
 }
 
-// Function to close modal
 function closeModal() {
     const modal = document.getElementById('examModal');
     if (!modal) return;
@@ -173,18 +190,14 @@ function closeModal() {
     document.body.style.overflow = 'auto';
 }
 
-// Replace the old showExamDetails function
 function showExamDetails(examType) {
     openModal(examType);
 }
 
-// ==================== HELPER FUNCTIONS ====================
-
-// Function to get exam type from modal title
 function getExamTypeFromTitle(title) {
     const titleMap = {
         'IELTS': 'IELTS',
-        'TOEFL': 'TOEFL', 
+        'TOEFL': 'TOEFL',
         'GRE': 'GRE',
         'Duolingo English Test': 'Duolingo English Test',
         'PTE Academic': 'PTE Academic',
@@ -193,7 +206,6 @@ function getExamTypeFromTitle(title) {
     return titleMap[title] || title;
 }
 
-// Function to show preparation resources
 function showPrepResources(examType) {
     const prepResources = {
         'IELTS': {
@@ -255,7 +267,6 @@ function showPrepResources(examType) {
     const resources = prepResources[examType];
     if (!resources) return;
 
-    // Create preparation resources modal
     const prepModal = document.createElement('div');
     prepModal.className = 'prep-modal-overlay';
     prepModal.innerHTML = `
@@ -298,7 +309,6 @@ function showPrepResources(examType) {
         </div>
     `;
 
-    // Add styles for prep modal
     const prepModalStyles = document.createElement('style');
     prepModalStyles.textContent = `
         .prep-modal-overlay {
@@ -447,7 +457,6 @@ function showPrepResources(examType) {
     document.head.appendChild(prepModalStyles);
     document.body.appendChild(prepModal);
 
-    // Add event listeners
     const closePrepModal = () => {
         prepModal.remove();
         prepModalStyles.remove();
@@ -457,21 +466,8 @@ function showPrepResources(examType) {
     prepModal.addEventListener('click', (e) => {
         if (e.target === prepModal) closePrepModal();
     });
-
-    // Add click events to resource links
-    prepModal.querySelectorAll('.resource-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const url = link.closest('.resource-item').querySelector('span').textContent;
-            const resourceUrl = resources.resources.find(r => r.name === url.trim())?.url;
-            if (resourceUrl) {
-                window.open(resourceUrl, '_blank');
-            }
-        });
-    });
 }
 
-// Function to get study tips for each exam
 function getStudyTips(examType) {
     const tipsByExam = {
         'IELTS': [
@@ -520,16 +516,13 @@ function getStudyTips(examType) {
     return tipsByExam[examType] || [];
 }
 
-// ==================== END HELPER FUNCTIONS ====================
-
-// Exam Cards Interaction (Updated to use modal)
+// Exam Cards Interaction
 examCards.forEach(card => {
     card.addEventListener('click', () => {
         const examType = card.dataset.exam;
-        openModal(examType); // Use the new modal instead of alert
+        openModal(examType);
     });
 
-    // Add hover effect with cursor
     card.addEventListener('mouseenter', () => {
         card.style.cursor = 'pointer';
     });
@@ -550,7 +543,6 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-// Elements to animate on scroll
 const animateElements = document.querySelectorAll('.exam-card, .material-card, .tip-card, .course-item');
 animateElements.forEach(element => {
     element.style.opacity = '0';
@@ -620,16 +612,13 @@ function animateCounter(element, start, end, duration) {
     window.requestAnimationFrame(step);
 }
 
-// Statistics Animation Observer
 const statsObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             const statNumbers = entry.target.querySelectorAll('.stat-number');
             statNumbers.forEach(stat => {
                 const text = stat.textContent;
-                // Skip animation for text that contains ranges (like "$20K-$45K") or non-numeric content
                 if (text.includes('-') || text.includes('K') || text.includes('+')) {
-                    // Just add a fade-in animation instead of counter animation
                     stat.style.opacity = '0';
                     stat.style.transform = 'translateY(20px)';
                     stat.style.transition = 'all 0.6s ease';
@@ -639,7 +628,6 @@ const statsObserver = new IntersectionObserver((entries) => {
                     }, 300);
                     return;
                 }
-                // Only animate pure numbers
                 const number = parseInt(text.replace(/[^\d]/g, ''));
                 if (!isNaN(number) && number > 0) {
                     stat.dataset.suffix = text.replace(/[\d,]/g, '');
@@ -664,13 +652,12 @@ if (dropdown) {
     });
 
     dropdown.addEventListener('mouseleave', () => {
-        dropdownTimeout = setTimeout(() => {
-            // Add any cleanup if needed
-        }, 100);
+        dropdownTimeout = setTimeout(() => {}, 100);
     });
 }
 
 // CTA Button Animation
+// CTA Button Animation (continued)
 const ctaButton = document.querySelector('.cta-section .btn-primary');
 if (ctaButton) {
     ctaButton.addEventListener('click', () => {
@@ -796,9 +783,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, index * 100);
     });
 
-    // ==================== MODAL EVENT LISTENERS ====================
-    
-    // Add click event to all exam buttons (for buttons with data-exam attribute)
+    // Modal Event Listeners
     const examButtons = document.querySelectorAll('.exam-btn');
     examButtons.forEach(button => {
         button.addEventListener('click', function(e) {
@@ -810,14 +795,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-    
-    // Close modal button
+
     const closeModalBtn = document.getElementById('closeModal');
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', closeModal);
     }
-    
-    // Close modal when clicking outside
+
     const examModal = document.getElementById('examModal');
     if (examModal) {
         examModal.addEventListener('click', function(e) {
@@ -826,30 +809,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    
-    // Close modal with Escape key
+
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeModal();
         }
     });
 
-    // ==================== MODAL BUTTON ACTIONS ====================
-    
     // Register Now buttons - redirect to official exam registration sites
     const registerButtons = document.querySelectorAll('.register-btn');
     registerButtons.forEach(button => {
         button.addEventListener('click', function() {
             const modalTitle = document.getElementById('modalTitle').textContent;
             const examType = getExamTypeFromTitle(modalTitle);
-            
-            // Add click animation
+
             this.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 this.style.transform = 'scale(1)';
             }, 150);
-            
-            // Redirect to official registration site
+
             const registrationUrls = {
                 'IELTS': 'https://www.ielts.org/book-a-test',
                 'TOEFL': 'https://www.ets.org/toefl/test-takers/ibt/register/',
@@ -858,10 +836,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 'PTE Academic': 'https://pearsonpte.com/book-now/',
                 'GMAT': 'https://www.mba.com/exams/gmat-exam/register'
             };
-            
+
             const url = registrationUrls[examType];
             if (url) {
-                // Show confirmation before redirect
                 setTimeout(() => {
                     if (confirm(`You will be redirected to the official ${examType} registration page. Continue?`)) {
                         window.open(url, '_blank');
@@ -870,26 +847,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-    
+
     // Preparation Materials buttons - redirect to official prep resources
     const prepButtons = document.querySelectorAll('.prep-btn');
     prepButtons.forEach(button => {
         button.addEventListener('click', function() {
             const modalTitle = document.getElementById('modalTitle').textContent;
             const examType = getExamTypeFromTitle(modalTitle);
-            
-            // Add click animation
+
             this.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 this.style.transform = 'scale(1)';
             }, 150);
-            
-            // Create preparation resources modal or redirect
+
             showPrepResources(examType);
         });
     });
-    
-    // ==================== END MODAL EVENT LISTENERS ====================
 
     console.log('Study page loaded successfully!');
 });
