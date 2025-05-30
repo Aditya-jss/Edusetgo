@@ -1496,7 +1496,7 @@ function addResetButtonToForm() {
         searchBtn.parentNode.appendChild(resetBtn);
     }
 }
-    // ===== REPLACE YOUR showResults FUNCTION WITH THIS =====
+   // ===== REPLACE YOUR showResults FUNCTION WITH THIS =====
 function showResults(profileData) {
     const universities = generateUniversityRecommendations(profileData);
     
@@ -1505,7 +1505,16 @@ function showResults(profileData) {
         return;
     }
 
-    const resultsHtml = universities.map(university => `
+    // Calculate dynamic match scores for each university
+    const universitiesWithMatchScores = universities.map(university => {
+        const matchScore = calculateMatchScore(profileData, university);
+        return { ...university, matchScore };
+    });
+
+    // Sort universities by match score (highest first)
+    universitiesWithMatchScores.sort((a, b) => b.matchScore - a.matchScore);
+
+    const resultsHtml = universitiesWithMatchScores.map(university => `
         <div class="university-card">
             <div class="university-header">
                 <div class="university-logo">
@@ -1518,7 +1527,7 @@ function showResults(profileData) {
                         ${university.location}
                     </p>
                 </div>
-                <div class="match-score">
+                <div class="match-score ${getMatchScoreClass(university.matchScore)}">
                     <i class="fas fa-percentage"></i>
                     ${university.matchScore}% Match
                 </div>
@@ -1537,8 +1546,20 @@ function showResults(profileData) {
                 <div class="detail-card">
                     <h4><i class="fas fa-clipboard-list"></i> Admission Requirements</h4>
                     <ul class="requirements-list">
-                        <li><i class="fas fa-check"></i> Min CGPA: ${university.requirements.cgpa}</li>
-                        ${university.requirements.gre ? `<li><i class="fas fa-check"></i> Min GRE: ${university.requirements.gre}</li>` : ''}
+                        <li><i class="fas fa-check ${getCGPAStatusClass(parseFloat(profileData.cgpa), parseFloat(university.requirements.cgpa))}"></i> 
+                            Min CGPA: ${university.requirements.cgpa} 
+                            ${parseFloat(profileData.cgpa) >= parseFloat(university.requirements.cgpa) ? 
+                                `<span class="status-indicator success">✓ Your CGPA: ${profileData.cgpa}</span>` : 
+                                `<span class="status-indicator warning">⚠ Your CGPA: ${profileData.cgpa}</span>`}
+                        </li>
+                        ${university.requirements.gre ? `
+                            <li><i class="fas fa-check ${getGREStatusClass(profileData, university.requirements.gre)}"></i> 
+                                Min GRE: ${university.requirements.gre}
+                                ${getUserGREScore(profileData) && getUserGREScore(profileData) >= university.requirements.gre ? 
+                                    `<span class="status-indicator success">✓ Your GRE: ${getUserGREScore(profileData)}</span>` : 
+                                    `<span class="status-indicator warning">⚠ Your GRE: ${getUserGREScore(profileData) || 'Not provided'}</span>`}
+                            </li>
+                        ` : ''}
                         ${university.requirements.english ? `<li><i class="fas fa-check"></i> ${university.requirements.english}</li>` : ''}
                         ${university.requirements.standardized ? `<li><i class="fas fa-check"></i> ${university.requirements.standardized}</li>` : ''}
                     </ul>
@@ -1571,10 +1592,10 @@ function showResults(profileData) {
         <div class="results-header">
             <div style="padding: 2rem; text-align: center; border-bottom: 1px solid var(--border-color);">
                 <h3 style="color: var(--success-color); margin-bottom: 1rem;">
-                    <i class="fas fa-check-circle"></i> Found ${universities.length} Perfect Matches!
+                    <i class="fas fa-check-circle"></i> Found ${universitiesWithMatchScores.length} Perfect Matches!
                 </h3>
                 <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
-                    Based on your academic profile for <strong>${profileData.course}</strong>, here are the universities that best match your qualifications.
+                    Based on your academic profile for <strong>${profileData.course}</strong>, here are the universities ranked by compatibility.
                 </p>
                 
                 <!-- Reset Button -->
@@ -1601,6 +1622,28 @@ function showResults(profileData) {
         <div class="results-content">
             ${resultsHtml}
         </div>
+        
+        <style>
+            .match-score.excellent { background: linear-gradient(135deg, #10b981, #059669); }
+            .match-score.good { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+            .match-score.fair { background: linear-gradient(135deg, #f59e0b, #d97706); }
+            .match-score.poor { background: linear-gradient(135deg, #ef4444, #dc2626); }
+            
+            .status-indicator {
+                font-size: 0.8rem;
+                padding: 0.2rem 0.5rem;
+                border-radius: 0.3rem;
+                margin-left: 0.5rem;
+            }
+            .status-indicator.success {
+                background: rgba(16, 185, 129, 0.1);
+                color: #059669;
+            }
+            .status-indicator.warning {
+                background: rgba(245, 158, 11, 0.1);
+                color: #d97706;
+            }
+        </style>
     `;
     
     resultsSection.classList.add('show');
@@ -1619,7 +1662,246 @@ function showResults(profileData) {
             resetButton.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.3)';
         });
     }
+}
+
+// ===== ADD THESE HELPER FUNCTIONS =====
+
+function calculateMatchScore(profileData, university) {
+    let score = 0;
+    let totalCriteria = 0;
     
+    // Debug: Log profileData to see actual property names
+    console.log('Profile Data:', profileData);
+    
+    // CGPA matching (40% weight)
+    if (university.requirements.cgpa) {
+        totalCriteria += 40;
+        const userCGPA = parseFloat(profileData.cgpa) || 0;
+        const requiredCGPA = parseFloat(university.requirements.cgpa) || 0;
+        const cgpaRatio = userCGPA / requiredCGPA;
+        if (cgpaRatio >= 1.2) score += 40; // Exceeds requirement significantly
+        else if (cgpaRatio >= 1.1) score += 35; // Exceeds requirement
+        else if (cgpaRatio >= 1.0) score += 30; // Meets requirement
+        else if (cgpaRatio >= 0.9) score += 20; // Close to requirement
+        else score += 10; // Below requirement
+    }
+    
+    // GRE matching (30% weight) - Check multiple possible property names
+    if (university.requirements.gre) {
+        totalCriteria += 30;
+        
+        // Check for different possible GRE property names
+        const userGRE = parseFloat(profileData.gre) || 
+                       parseFloat(profileData.greScore) || 
+                       parseFloat(profileData.gre_score) || 
+                       parseFloat(profileData.GRE) || 
+                       parseFloat(profileData['gre']) ||
+                       0;
+        
+        console.log('User GRE:', userGRE, 'Required GRE:', university.requirements.gre);
+        
+        if (userGRE > 0) {
+            const requiredGRE = parseFloat(university.requirements.gre) || 0;
+            const greRatio = userGRE / requiredGRE;
+            if (greRatio >= 1.1) score += 30; // Exceeds requirement
+            else if (greRatio >= 1.0) score += 25; // Meets requirement
+            else if (greRatio >= 0.95) score += 20; // Close to requirement
+            else score += 10; // Below requirement
+        } else {
+            score += 5; // No GRE provided
+        }
+    }
+    
+    // Course matching (20% weight)
+    totalCriteria += 20;
+    if (university.program && profileData.course) {
+        const courseLower = profileData.course.toLowerCase();
+        const programLower = university.program.toLowerCase();
+        
+        if (programLower.includes(courseLower) || courseLower.includes(programLower)) {
+            score += 20; // Perfect course match
+        } else if (areRelatedFields(courseLower, programLower)) {
+            score += 15; // Related field
+        } else {
+            score += 8; // Different field
+        }
+    }
+    
+    // Additional factors (10% weight)
+    totalCriteria += 10;
+    
+    // Budget consideration
+    if (university.tuition && profileData.budget) {
+        const tuitionValue = parseTuitionValue(university.tuition);
+        if (tuitionValue <= profileData.budget) {
+            score += 5; // Within budget
+        } else if (tuitionValue <= profileData.budget * 1.2) {
+            score += 3; // Slightly over budget
+        } else {
+            score += 1; // Over budget
+        }
+    } else {
+        score += 3; // No budget constraint
+    }
+    
+    // Location preference (if available)
+    if (profileData.preferredLocation && university.location) {
+        if (university.location.toLowerCase().includes(profileData.preferredLocation.toLowerCase())) {
+            score += 5; // Preferred location
+        } else {
+            score += 2; // Different location
+        }
+    } else {
+        score += 2; // No location preference
+    }
+    
+    // Calculate final percentage
+    const finalScore = Math.round((score / totalCriteria) * 100);
+    
+    // Ensure score is between 45-95% for realism
+    return Math.max(45, Math.min(95, finalScore));
+}
+
+function areRelatedFields(course1, course2) {
+    const relatedFields = {
+        'computer science': ['software engineering', 'information technology', 'data science', 'artificial intelligence'],
+        'engineering': ['mechanical', 'electrical', 'civil', 'chemical', 'aerospace'],
+        'business': ['management', 'finance', 'marketing', 'economics'],
+        'medicine': ['healthcare', 'nursing', 'pharmacy', 'biology'],
+        'arts': ['design', 'fine arts', 'creative writing', 'literature']
+    };
+    
+    for (const [field, related] of Object.entries(relatedFields)) {
+        if ((course1.includes(field) || related.some(r => course1.includes(r))) &&
+            (course2.includes(field) || related.some(r => course2.includes(r)))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function parseTuitionValue(tuitionString) {
+    // Extract numeric value from tuition string (e.g., "$50,000/year" -> 50000)
+    const match = tuitionString.match(/[\d,]+/);
+    if (match) {
+        return parseInt(match[0].replace(/,/g, ''));
+    }
+    return 0;
+}
+
+function getUserGREScore(profileData) {
+    // Check for different possible GRE property names
+    return parseFloat(profileData.gre) || 
+           parseFloat(profileData.greScore) || 
+           parseFloat(profileData.gre_score) || 
+           parseFloat(profileData.GRE) || 
+           parseFloat(profileData['gre']) ||
+           null;
+}
+
+function getMatchScoreClass(score) {
+    if (score >= 85) return 'excellent';
+    if (score >= 75) return 'good';
+    if (score >= 65) return 'fair';
+    return 'poor';
+}
+
+function getCGPAStatusClass(userCGPA, requiredCGPA) {
+    return userCGPA >= requiredCGPA ? 'success' : 'warning';
+}
+
+function getGREStatusClass(profileData, requiredGRE) {
+    const userGRE = getUserGREScore(profileData);
+    if (!userGRE) return 'warning';
+    return userGRE >= requiredGRE ? 'success' : 'warning';
+}
+
+// ===== ADD THIS RESET FUNCTION =====
+function resetForm() {
+    // Hide results section - try multiple possible selectors
+    const resultsElements = [
+        document.querySelector('.results-section'),
+        document.querySelector('#results'),
+        document.querySelector('#resultsSection'),
+        document.querySelector('.results-content'),
+        document.querySelector('[class*="result"]')
+    ];
+    
+    resultsElements.forEach(element => {
+        if (element) {
+            element.classList.remove('show');
+            element.style.display = 'none';
+            element.innerHTML = '';
+        }
+    });
+    
+    // Reset all form inputs - try multiple form selectors
+    const forms = [
+        document.querySelector('form'),
+        document.querySelector('.form-container'),
+        document.querySelector('.profile-form'),
+        document.querySelector('#profileForm'),
+        document.querySelector('[class*="form"]')
+    ];
+    
+    const form = forms.find(f => f !== null);
+    
+    if (form) {
+        // Reset using native form reset if available
+        if (form.tagName === 'FORM') {
+            form.reset();
+        }
+        
+        // Manual reset for all inputs
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            if (input.type === 'checkbox' || input.type === 'radio') {
+                input.checked = false;
+            } else {
+                input.value = '';
+                input.selectedIndex = 0; // For select elements
+            }
+            
+            // Remove any validation classes
+            input.classList.remove('error', 'success', 'valid', 'invalid');
+        });
+        
+        // Reset any error messages
+        const errorMessages = document.querySelectorAll('.error-message, .validation-message');
+        errorMessages.forEach(msg => msg.remove());
+        
+        // Reset form validation state
+        form.classList.remove('was-validated');
+    } else {
+        // If no form found, reset all inputs on the page
+        const allInputs = document.querySelectorAll('input, select, textarea');
+        allInputs.forEach(input => {
+            if (input.type === 'checkbox' || input.type === 'radio') {
+                input.checked = false;
+            } else {
+                input.value = '';
+                if (input.selectedIndex !== undefined) {
+                    input.selectedIndex = 0;
+                }
+            }
+        });
+    }
+    
+    // Scroll back to top of page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Focus on first input field
+    setTimeout(() => {
+        const firstInput = document.querySelector('input:not([type="hidden"]), select');
+        if (firstInput) {
+            firstInput.focus();
+        }
+    }, 500);
+    
+    console.log('Form reset successfully');
+    
+    // Force page reload as fallback (uncomment if needed)
+    // window.location.reload();
 }
 
     // Generate university recommendations based on user profile

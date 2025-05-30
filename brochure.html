@@ -1,0 +1,2406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSetGo - Your Gateway to Global Education</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .brochure-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+        }
+
+        .page {
+            min-height: 100vh;
+            padding: 40px;
+            margin-bottom: 0;
+            position: relative;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.03) 0%, rgba(255, 87, 34, 0.03) 100%);
+            border-bottom: 1px solid #eee;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 15px 0;
+            border-bottom: 3px solid #4A90E2;
+            margin-bottom: 40px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: url('11.png') no-repeat center center;
+            background-size: contain;
+            border-radius: 15px;
+        }
+
+        /* Cover Page */
+        .cover-page {
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover-content {
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 80px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .cover-logo {
+            width: 200px;
+            height: 200px;
+            background: url('11.png') no-repeat center center;
+            background-size: contain;
+            border-radius: 20px;
+            margin: 0 auto 40px;
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3);
+        }
+
+        .main-title {
+            font-size: 52px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4A90E2 0%, #FF5722 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 25px;
+        }
+
+        .subtitle {
+            font-size: 26px;
+            color: #666;
+            margin-bottom: 35px;
+            font-weight: 300;
+        }
+
+        .cover-description {
+            font-size: 18px;
+            color: #555;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        /* Corner Images for Brochure Effect */
+.corner-images {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.corner-img {
+    position: absolute;
+    width: 180px;
+    height: 120px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    opacity: 0.85;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    object-fit: cover;
+}
+
+.corner-img:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* Top Left - Statue of Liberty */
+.corner-img.top-left {
+    top: 30px;
+    left: 40px;
+    transform: rotate(-8deg);
+    background: url('statue-of-liberty.jpg') no-repeat center center;
+    background-size: cover;
+}
+
+/* Top Right - Sydney Bridge */
+.corner-img.top-right {
+    top: 40px;
+    right: 30px;
+    transform: rotate(12deg);
+    background: url('sydney-bridge.jpg') no-repeat center center;
+    background-size: cover;
+}
+
+/* Bottom Left - University/Campus */
+.corner-img.bottom-left {
+    bottom: 50px;
+    left: 30px;
+    transform: rotate(6deg);
+    background: url('university-campus.jpg') no-repeat center center;
+    background-size: cover;
+}
+
+/* Bottom Right - Big Ben/London */
+.corner-img.bottom-right {
+    bottom: 40px;
+    right: 40px;
+    transform: rotate(-10deg);
+    background: url('big-ben-london.jpg') no-repeat center center;
+    background-size: cover;
+}
+
+/* Enhanced Cover Page */
+.cover-page {
+    background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Update cover content to ensure it's above images */
+.cover-content {
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 80px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+/* Logo without borders */
+.cover-logo {
+    width: 200px;
+    height: 200px;
+    background: url('11.png') no-repeat center center;
+    background-size: contain;
+    border-radius: 20px;
+    margin: 0 auto 40px;
+    /* Removed box-shadow for no borders effect */
+    filter: drop-shadow(0 5px 15px rgba(74, 144, 226, 0.2));
+}
+
+/* Decorative elements */
+.cover-page::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(74, 144, 226, 0.03) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+    z-index: 0;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .corner-img {
+        width: 120px;
+        height: 80px;
+    }
+    
+    .corner-img.top-left {
+        top: 20px;
+        left: 20px;
+        transform: rotate(-8deg) scale(0.8);
+    }
+    
+    .corner-img.top-right {
+        top: 25px;
+        right: 15px;
+        transform: rotate(12deg) scale(0.8);
+    }
+    
+    .corner-img.bottom-left {
+        bottom: 30px;
+        left: 15px;
+        transform: rotate(6deg) scale(0.8);
+    }
+    
+    .corner-img.bottom-right {
+        bottom: 25px;
+        right: 20px;
+        transform: rotate(-10deg) scale(0.8);
+    }
+}
+        /* Section Styles */
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #4A90E2;
+            background: linear-gradient(135deg, #4A90E2 0%, #FF5722 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 30px;
+        }
+
+        /* Table of Contents */
+        .toc-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 25px;
+            margin: 12px 0;
+            background: rgba(74, 144, 226, 0.06);
+            border-radius: 12px;
+            border-left: 5px solid #4A90E2;
+            transition: all 0.3s ease;
+        }
+
+        .toc-item:hover {
+            background: rgba(74, 144, 226, 0.12);
+            transform: translateX(8px);
+        }
+
+        .toc-title {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+
+        .toc-page {
+            background: linear-gradient(135deg, #4A90E2 0%, #FF5722 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Mission and Policies */
+        .mission-box {
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%);
+            padding: 35px;
+            border-radius: 15px;
+            border-left: 6px solid #4A90E2;
+            margin: 25px 0;
+        }
+
+        .mission-text {
+            font-size: 20px;
+            font-style: italic;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .bullet-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .bullet-list li {
+            padding: 12px 0;
+            padding-left: 35px;
+            position: relative;
+            color: #444;
+            font-size: 16px;
+        }
+
+        .bullet-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4A90E2;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Policy Cards */
+        .policy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 35px 0;
+        }
+
+        .policy-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid #4A90E2;
+            transition: transform 0.3s ease;
+        }
+
+        .policy-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .policy-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 18px;
+        }
+
+        /* Country Pages */
+        .country-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 35px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%);
+            border-radius: 15px;
+        }
+
+        .country-map {
+            width: 100%;
+            max-width: 700px;
+            height: 350px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 3px solid #4A90E2;
+            margin: 25px auto;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .country-map img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: white;
+        }
+
+        .country-flag {
+            width: 90px;
+            height: 70px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 3px solid #4A90E2;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+        }
+
+        .country-name {
+            font-size: 40px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 35px 0;
+        }
+
+        .info-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #4A90E2;
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card h4 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+
+        .info-list {
+            list-style: none;
+        }
+
+        .info-list li {
+            padding: 8px 0;
+            color: #555;
+            font-size: 15px;
+        }
+
+        /* Tables */
+        .fee-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .fee-table th {
+            background: linear-gradient(135deg, #4A90E2 0%, #FF5722 100%);
+            color: white;
+            padding: 18px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .fee-table td {
+            padding: 15px 18px;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        .fee-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        /* Contact Page */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin: 35px 0;
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%);
+            padding: 35px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .contact-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #4A90E2 0%, #FF5722 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            color: white;
+            font-size: 28px;
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
+        }
+
+       .qr-code {
+    width: 160px;
+    height: 160px;
+    background: #f0f0f0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: #666;
+    border: 2px solid #4A90E2;
+    overflow: hidden;
+}
+
+.qr-code img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+        /* Download Button */
+        .download-section {
+            text-align: center;
+            padding: 70px 30px;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%);
+            border-radius: 20px;
+            margin: 50px 0;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #4A90E2 0%, #FF5722 100%);
+            color: white;
+            padding: 22px 45px;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 12px 30px rgba(74, 144, 226, 0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 40px rgba(74, 144, 226, 0.4);
+        }
+
+        .download-icon {
+            margin-right: 12px;
+            font-size: 22px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page {
+                padding: 25px;
+            }
+            
+            .main-title {
+                font-size: 40px;
+            }
+            
+            .cover-content {
+                padding: 50px 30px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .country-map {
+                height: 250px;
+            }
+
+            .country-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+
+            .cover-logo {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        @media print {
+            .page {
+                page-break-after: always;
+                min-height: auto;
+                padding: 20mm;
+            }
+            
+            .page:last-child {
+                page-break-after: auto;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <div class="brochure-container" id="brochure">
+
+        <!-- Page 1: Cover Page -->
+        <div class="page cover-page" id="page1">
+            <!-- Add this inside your .cover-page div, before .cover-content -->
+<div class="corner-images">
+    <!-- Top Left - Statue of Liberty -->
+    <div class="corner-img top-left"></div>
+    
+    <!-- Top Right - Sydney Bridge -->
+    <div class="corner-img top-right"></div>
+    
+    <!-- Bottom Left - University Campus -->
+    <div class="corner-img bottom-left"></div>
+    
+    <!-- Bottom Right - Big Ben/London -->
+    <div class="corner-img bottom-right"></div>
+</div>
+
+<!-- Your existing cover-content div stays the same -->
+<div class="cover-content">
+    <div class="cover-logo"></div>
+    <h1 class="main-title">EduSetGo</h1>
+    <h2 class="subtitle">Study Abroad Consultancy</h2>
+    <p class="cover-description">
+        Empowering Indian students to achieve their international education dreams through expert guidance, comprehensive support, and personalized pathways to success at top universities worldwide.
+    </p>
+</div>
+
+        <!-- Page 2: Download Page -->
+        <div class="page" id="page2">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <div class="download-section">
+                <h2 class="section-title">Download Complete Brochure</h2>
+                <p style="font-size: 20px; margin-bottom: 50px; color: #666;">
+                    Get the complete EduSetGo brochure as a PDF file for offline viewing and sharing.
+                </p>
+                <button class="download-btn" onclick="downloadPDF()">
+                    <span class="download-icon">📥</span>
+                    Download PDF Brochure
+                </button>
+                <p style="margin-top: 40px; color: #888; font-size: 16px;">
+                    The PDF includes all sections: country guides, policies, services, and contact information.
+                </p>
+            </div>
+        </div>
+
+        <!-- Page 3: Table of Contents -->
+        <div class="page" id="page3">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <h2 class="section-title">Table of Contents</h2>
+            
+            <div class="toc-item">
+                <span class="toc-title">About EduSetGo</span>
+                <span class="toc-page">4</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Our Mission</span>
+                <span class="toc-page">5</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Our Policies</span>
+                <span class="toc-page">6</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Study in USA</span>
+                <span class="toc-page">7</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Study in Canada</span>
+                <span class="toc-page">8</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Study in UK</span>
+                <span class="toc-page">9</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Study in Australia</span>
+                <span class="toc-page">10</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Study in Germany</span>
+                <span class="toc-page">11</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Study in Ireland</span>
+                <span class="toc-page">12</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Study in France</span>
+                <span class="toc-page">13</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Study in China</span>
+                <span class="toc-page">14</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Study in New Zealand</span>
+                <span class="toc-page">15</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Study in Singapore</span>
+                <span class="toc-page">16</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Study in UAE</span>
+                <span class="toc-page">17</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Student Services</span>
+                <span class="toc-page">18</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Contact Information</span>
+                <span class="toc-page">19</span>
+            </div>
+        </div>
+
+        <!-- Page 4: About EduSetGo -->
+        <div class="page" id="page4">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <h2 class="section-title">About EduSetGo</h2>
+            
+            <div class="section-content">
+                <p style="font-size: 20px; margin-bottom: 30px; color: #2c3e50; font-weight: 600;">
+                    EduSetGo is India's premier overseas education consultancy, dedicated to transforming the dreams of Indian students into reality through world-class international education opportunities.
+                </p>
+                
+                <p style="font-size: 17px; margin-bottom: 30px;">
+                    Founded with the vision of making quality international education accessible to every deserving student, EduSetGo has established itself as a trusted partner for thousands of students seeking to study abroad. Our comprehensive approach combines personalized counseling, expert guidance, and unwavering support throughout the entire education journey.
+                </p>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>🎯 Our Vision</h4>
+                        <p>To be the most trusted bridge connecting Indian students with world-renowned universities, fostering global citizens who contribute meaningfully to society.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>🌟 Our Expertise</h4>
+                        <p>With years of experience and partnerships with over 500+ universities across 10+ countries, we provide unmatched expertise in international education.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>👥 Our Team</h4>
+                        <p>Our team of certified counselors, visa experts, and education consultants brings together decades of experience in international education.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>🏆 Our Success</h4>
+                        <p>We have successfully placed over 10,000+ students in top universities worldwide with a 95% visa success rate and 100% customer satisfaction.</p>
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%); padding: 30px; border-radius: 15px; margin-top: 35px;">
+                    <h4 style="color: #2c3e50; margin-bottom: 20px; font-size: 22px;">Why Choose EduSetGo?</h4>
+                    <ul class="bullet-list">
+                        <li>Personalized counseling based on individual profiles and career goals</li>
+                        <li>End-to-end support from course selection to post-arrival assistance</li>
+                        <li>Strong partnerships with top-ranked universities worldwide</li>
+                        <li>Expert visa guidance with high success rates</li>
+                        <li>Scholarship assistance and financial planning support</li>
+                        <li>24/7 student support and mentorship programs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 5: Our Mission -->
+        <div class="page" id="page5">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <h2 class="section-title">Our Mission</h2>
+            
+            <div class="mission-box">
+                <p class="mission-text">
+                    "At EduSetGo India, we are dedicated to making international education accessible and achievable for every Indian student. We believe that quality education is the cornerstone of personal and professional growth, and our mission is to bridge the gap between ambitious students and world-class educational institutions."
+                </p>
+            </div>
+            
+            <div class="section-content">
+                <h3 style="color: #2c3e50; margin-bottom: 25px; font-size: 26px;">Our Core Values</h3>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>🎯 Excellence</h4>
+                        <ul class="bullet-list">
+                            <li>Maintaining the highest standards in counseling and support services</li>
+                            <li>Continuous improvement in our processes and methodologies</li>
+                            <li>Striving for exceptional outcomes for every student</li>
+                            <li>Building partnerships with only the finest educational institutions</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>🤝 Integrity</h4>
+                        <ul class="bullet-list">
+                            <li>Providing honest and transparent guidance to all our students</li>
+                            <li>Ethical practices in all our business dealings</li>
+                            <li>Building trust through consistent and reliable service</li>
+                            <li>Maintaining confidentiality and respecting student privacy</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>💪 Commitment</h4>
+                        <ul class="bullet-list">
+                            <li>Dedicated support throughout the entire education journey</li>
+                            <li>Personalized attention to each student's unique needs</li>
+                            <li>Unwavering support even after successful university placement</li>
+                            <li>Commitment to student success and career development</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>🌍 Global Perspective</h4>
+                        <ul class="bullet-list">
+                            <li>Understanding diverse educational systems worldwide</li>
+                            <li>Cultural sensitivity and cross-cultural communication</li>
+                            <li>Preparing students for global citizenship</li>
+                            <li>Building international networks and partnerships</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #4A90E2 0%, #FF5722 100%); color: white; padding: 35px; border-radius: 15px; margin-top: 35px; text-align: center;">
+                    <h4 style="font-size: 24px; margin-bottom: 20px;">Our Promise</h4>
+                    <p style="font-size: 17px; line-height: 1.8;">
+                        We promise to be your trusted partner in achieving your international education goals. From the first consultation to graduation day and beyond, EduSetGo will be with you every step of the way, ensuring your success and helping you build a bright future.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 6: Our Policies -->
+        <div class="page" id="page6">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <h2 class="section-title">Our Policies</h2>
+            
+            <div class="policy-grid">
+                <div class="policy-card">
+                    <h3 class="policy-title">🔒 Privacy Policy</h3>
+                    <p style="margin-bottom: 15px;">We are committed to protecting your personal information and maintaining the highest standards of data security.</p>
+                    <ul class="bullet-list">
+                        <li>Strict confidentiality of all student information</li>
+                        <li>Secure data storage and transmission protocols</li>
+                        <li>No sharing of personal data without explicit consent</li>
+                        <li>Compliance with international data protection standards</li>
+                    </ul>
+                </div>
+                
+                <div class="policy-card">
+                    <h3 class="policy-title">💰 Refund Policy</h3>
+                    <p style="margin-bottom: 15px;">Our transparent refund policy ensures fair treatment for all our students in various circumstances.</p>
+                    <ul class="bullet-list">
+                        <li>Full refund if visa is rejected due to our error</li>
+                        <li>Service fee refundable within 7 days of agreement</li>
+                        <li>Partial refund based on services rendered</li>
+                        <li>Clear terms and conditions provided upfront</li>
+                    </ul>
+                </div>
+                
+                <div class="policy-card">
+                    <h3 class="policy-title">⚖️ Code of Ethics</h3>
+                    <p style="margin-bottom: 15px;">We adhere to the highest ethical standards in all our interactions and business practices.</p>
+                    <ul class="bullet-list">
+                        <li>Honest representation of university requirements</li>
+                        <li>No false promises or misleading information</li>
+                        <li>Fair and equal treatment for all students</li>
+                        <li>Transparent fee structure with no hidden costs</li>
+                    </ul>
+                </div>
+                
+                <div class="policy-card">
+                    <h3 class="policy-title">✅ Quality Assurance</h3>
+                    <p style="margin-bottom: 15px;">Continuous quality improvement ensures the best possible service for our students.</p>
+                    <ul class="bullet-list">
+                        <li>Regular training for all counselors and staff</li>
+                        <li>Feedback collection and implementation</li>
+                        <li>Standardized processes and procedures</li>
+                        <li>Regular audit and quality reviews</li>
+                    </ul>
+                </div>
+                
+                <div class="policy-card">
+                    <h3 class="policy-title">🎓 Student Support</h3>
+                    <p style="margin-bottom: 15px;">Comprehensive support system to ensure student success throughout their journey.</p>
+                    <ul class="bullet-list">
+                        <li>24/7 emergency support for students abroad</li>
+                        <li>Regular check-ins and progress monitoring</li>
+                        <li>Career counseling and job placement assistance</li>
+                        <li>Alumni network and mentorship programs</li>
+                    </ul>
+                </div>
+                
+                <div class="policy-card">
+                    <h3 class="policy-title">🤝 Partnership Ethics</h3>
+                    <p style="margin-bottom: 15px;">Ethical partnerships with universities and service providers for mutual benefit.</p>
+                    <ul class="bullet-list">
+                        <li>Partnerships based on quality and reputation</li>
+                        <li>No compromising on university standards</li>
+                        <li>Regular evaluation of partner institutions</li>
+                        <li>Transparent commission and fee structures</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 7: Study in USA -->
+        <div class="page" id="page7">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <div class="country-header">
+                <div class="country-flag">🇺🇸</div>
+                <div>
+                    <h2 class="country-name">Study in USA</h2>
+                    <p style="color: #666; font-size: 18px;">Home to world's top universities and innovation hubs</p>
+                </div>
+            </div>
+
+            <div class="country-map">
+                <img src="usa.jpg" alt="USA Map" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div style="display:none; width:100%; height:100%; background:#f0f8ff; align-items:center; justify-content:center; color:#4A90E2; font-size:24px; font-weight:bold;">🇺🇸 United States of America</div>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>🏙️ Top Cities</h4>
+                    <ul class="info-list">
+                        <li>• New York City</li>
+                        <li>• Los Angeles</li>
+                        <li>• Boston</li>
+                        <li>• San Francisco</li>
+                        <li>• Chicago</li>
+                        <li>• Washington DC</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>🎓 Top Universities</h4>
+                    <ul class="info-list">
+                        <li>• Harvard University</li>
+                        <li>• Stanford University</li>
+                        <li>• MIT</li>
+                        <li>• Princeton University</li>
+                        <li>• Yale University</li>
+                        <li>• University of California</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>📚 Popular Courses</h4>
+                    <ul class="info-list">
+                        <li>• Computer Science</li>
+                        <li>• Business Administration</li>
+                        <li>• Engineering</li>
+                        <li>• Medicine</li>
+                        <li>• Data Science</li>
+                        <li>• Finance</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>💼 Career Opportunities</h4>
+                    <ul class="info-list">
+                        <li>• Silicon Valley Tech Giants</li>
+                        <li>• Wall Street Finance</li>
+                        <li>• Healthcare Industry</li>
+                        <li>• Research & Development</li>
+                        <li>• Start-up Ecosystem</li>
+                        <li>• Entertainment Industry</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <table class="fee-table">
+                <thead>
+                    <tr>
+                        <th>Program Type</th>
+                        <th>Annual Tuition (USD)</th>
+                        <th>Living Cost (USD)</th>
+                        <th>Total Cost (USD)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bachelor's Degree</td>
+                        <td>$25,000 - $55,000</td>
+                        <td>$15,000 - $25,000</td>
+                        <td>$40,000 - $80,000</td>
+                    </tr>
+                    <tr>
+                        <td>Master's Degree</td>
+                        <td>$30,000 - $70,000</td>
+                        <td>$15,000 - $25,000</td>
+                        <td>$45,000 - $95,000</td>
+                    </tr>
+                    <tr>
+                        <td>PhD Programs</td>
+                        <td>$20,000 - $50,000</td>
+                        <td>$15,000 - $25,000</td>
+                        <td>$35,000 - $75,000</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%); padding: 25px; border-radius: 15px;">
+                <h4 style="color: #2c3e50; margin-bottom: 18px; font-size: 20px;">🛂 Post-Study Work Visa</h4>
+                <p style="font-size: 16px; margin-bottom: 10px;"><strong>OPT (Optional Practical Training):</strong> 12-36 months work authorization after graduation. STEM graduates get 24-month extension.</p>
+                <p style="font-size: 16px;"><strong>Part-time Work:</strong> 20 hours/week on-campus during studies, unlimited during breaks.</p>
+            </div>
+        </div>
+
+        <!-- Page 8: Study in Canada -->
+        <div class="page" id="page8">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <div class="country-header">
+                <div class="country-flag">🇨🇦</div>
+                <div>
+                    <h2 class="country-name">Study in Canada</h2>
+                    <p style="color: #666; font-size: 18px;">Quality education with pathway to permanent residency</p>
+                </div>
+            </div>
+
+            <div class="country-map">
+                <img src="can.jpg" alt="Canada Map" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div style="display:none; width:100%; height:100%; background:#f0f8ff; align-items:center; justify-content:center; color:#4A90E2; font-size:24px; font-weight:bold;">🇨🇦 Canada</div>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>🏙️ Top Cities</h4>
+                    <ul class="info-list">
+                        <li>• Toronto</li>
+                        <li>• Vancouver</li>
+                        <li>• Montreal</li>
+                        <li>• Calgary</li>
+                        <li>• Ottawa</li>
+                        <li>• Quebec City</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>🎓 Top Universities</h4>
+                    <ul class="info-list">
+                        <li>• University of Toronto</li>
+                        <li>• McGill University</li>
+                        <li>• University of British Columbia</li>
+                        <li>• University of Alberta</li>
+                        <li>• McMaster University</li>
+                        <li>• Queen's University</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>📚 Popular Courses</h4>
+                    <ul class="info-list">
+                        <li>• Information Technology</li>
+                        <li>• Business Management</li>
+                        <li>• Healthcare</li>
+                        <li>• Engineering</li>
+                        <li>• Natural Resources</li>
+                        <li>• Hospitality</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>💼 Career Opportunities</h4>
+                    <ul class="info-list">
+                        <li>• Technology Sector</li>
+                        <li>• Natural Resources</li>
+                        <li>• Healthcare</li>
+                        <li>• Finance & Banking</li>
+                        <li>• Manufacturing</li>
+                        <li>• Government Sector</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <table class="fee-table">
+                <thead>
+                    <tr>
+                        <th>Program Type</th>
+                        <th>Annual Tuition (CAD)</th>
+                        <th>Living Cost (CAD)</th>
+                        <th>Total Cost (CAD)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Diploma Programs</td>
+                        <td>$15,000 - $20,000</td>
+                        <td>$12,000 - $18,000</td>
+                        <td>$27,000 - $38,000</td>
+                    </tr>
+                    <tr>
+                        <td>Bachelor's Degree</td>
+                        <td>$20,000 - $35,000</td>
+                        <td>$12,000 - $18,000</td>
+                        <td>$32,000 - $53,000</td>
+                    </tr>
+                    <tr>
+                        <td>Master's Degree</td>
+                        <td>$25,000 - $40,000</td>
+                        <td>$12,000 - $18,000</td>
+                        <td>$37,000 - $58,000</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%); padding: 25px; border-radius: 15px;">
+                <h4 style="color: #2c3e50; margin-bottom: 18px; font-size: 20px;">🛂 Post-Study Work Visa</h4>
+                <p style="font-size: 16px; margin-bottom: 10px;"><strong>PGWP:</strong> Up to 3 years work permit depending on program length. Pathway to permanent residency available.</p>
+                <p style="font-size: 16px;"><strong>Part-time Work:</strong> 20 hours/week off-campus during studies, unlimited during breaks.</p>
+            </div>
+        </div>
+
+        <!-- Page 9: Study in UK -->
+        <div class="page" id="page9">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <div class="country-header">
+                <div class="country-flag">🇬🇧</div>
+                <div>
+                    <h2 class="country-name">Study in UK</h2>
+                    <p style="color: #666; font-size: 18px;">Historic excellence in education and research</p>
+                </div>
+            </div>
+
+            <div class="country-map">
+                <img src="uk.jpg" alt="UK Map" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div style="display:none; width:100%; height:100%; background:#f0f8ff; align-items:center; justify-content:center; color:#4A90E2; font-size:24px; font-weight:bold;">🇬🇧 United Kingdom</div>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>🏙️ Top Cities</h4>
+                    <ul class="info-list">
+                        <li>• London</li>
+                        <li>• Edinburgh</li>
+                        <li>• Manchester</li>
+                        <li>• Birmingham</li>
+                        <li>• Cambridge</li>
+                        <li>• Oxford</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>🎓 Top Universities</h4>
+                    <ul class="info-list">
+                        <li>• University of Oxford</li>
+                        <li>• University of Cambridge</li>
+                        <li>• Imperial College London</li>
+                        <li>• London School of Economics</li>
+                        <li>• University College London</li>
+                        <li>• King's College London</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>📚 Popular Courses</h4>
+                    <ul class="info-list">
+                        <li>• Business & Management</li>
+                        <li>• Engineering</li>
+                        <li>• Law</li>
+                        <li>• Medicine</li>
+                        <li>• Arts & Humanities</li>
+                        <li>• Computer Science</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>💼 Career Opportunities</h4>
+                    <ul class="info-list">
+                        <li>• Financial Services</li>
+                        <li>• Technology</li>
+                        <li>• Healthcare</li>
+                        <li>• Creative Industries</li>
+                        <li>• Legal Services</li>
+                        <li>• Research & Academia</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <table class="fee-table">
+                <thead>
+                    <tr>
+                        <th>Program Type</th>
+                        <th>Annual Tuition (GBP)</th>
+                        <th>Living Cost (GBP)</th>
+                        <th>Total Cost (GBP)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bachelor's Degree</td>
+                        <td>£18,000 - £35,000</td>
+                        <td>£12,000 - £18,000</td>
+                        <td>£30,000 - £53,000</td>
+                    </tr>
+                    <tr>
+                        <td>Master's Degree</td>
+                        <td>£20,000 - £40,000</td>
+                        <td>£12,000 - £18,000</td>
+                        <td>£32,000 - £58,000</td>
+                    </tr>
+                    <tr>
+                        <td>PhD Programs</td>
+                        <td>£15,000 - £25,000</td>
+                        <td>£12,000 - £18,000</td>
+                        <td>£27,000 - £43,000</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%); padding: 25px; border-radius: 15px;">
+                <h4 style="color: #2c3e50; margin-bottom: 18px; font-size: 20px;">🛂 Post-Study Work Visa</h4>
+                <p style="font-size: 16px; margin-bottom: 10px;"><strong>Graduate Route:</strong> 2 years for Bachelor's/Master's graduates, 3 years for PhD graduates.</p>
+                <p style="font-size: 16px;"><strong>Part-time Work:</strong> 20 hours/week during studies, unlimited during holidays.</p>
+            </div>
+        </div>
+
+        <!-- Page 10: Study in Australia -->
+        <div class="page" id="page10">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <div class="country-header">
+                <div class="country-flag">🇦🇺</div>
+                <div>
+                    <h2 class="country-name">Study in Australia</h2>
+                    <p style="color: #666; font-size: 18px;">World-class education in a multicultural environment</p>
+                </div>
+            </div>
+
+            <div class="country-map">
+                <img src="aus.jpg" alt="Australia Map" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div style="display:none; width:100%; height:100%; background:#f0f8ff; align-items:center; justify-content:center; color:#4A90E2; font-size:24px; font-weight:bold;">🇦🇺 Australia</div>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>🏙️ Top Cities</h4>
+                    <ul class="info-list">
+                        <li>• Sydney</li>
+                        <li>• Melbourne</li>
+                        <li>• Brisbane</li>
+                        <li>• Perth</li>
+                        <li>• Adelaide</li>
+                        <li>• Canberra</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>🎓 Top Universities</h4>
+                    <ul class="info-list">
+                        <li>• University of Melbourne</li>
+                        <li>• Australian National University</li>
+                        <li>• University of Sydney</li>
+                        <li>• University of Queensland</li>
+                        <li>• Monash University</li>
+                        <li>• University of New South Wales</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>📚 Popular Courses</h4>
+                    <ul class="info-list">
+                        <li>• Engineering</li>
+                        <li>• Business & Management</li>
+                        <li>• Information Technology</li>
+                        <li>• Healthcare</li>
+                        <li>• Mining & Resources</li>
+                        <li>• Environmental Science</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>💼 Career Opportunities</h4>
+                    <ul class="info-list">
+                        <li>• Mining & Resources</li>
+                        <li>• Healthcare</li>
+                        <li>• Technology</li>
+                        <li>• Tourism & Hospitality</li>
+                        <li>• Agriculture</li>
+                        <li>• Education</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <table class="fee-table">
+                <thead>
+                    <tr>
+                        <th>Program Type</th>
+                        <th>Annual Tuition (AUD)</th>
+                        <th>Living Cost (AUD)</th>
+                        <th>Total Cost (AUD)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bachelor's Degree</td>
+                        <td>$25,000 - $45,000</td>
+                        <td>$20,000 - $27,000</td>
+                        <td>$45,000 - $72,000</td>
+                    </tr>
+                    <tr>
+                        <td>Master's Degree</td>
+                        <td>$30,000 - $50,000</td>
+                        <td>$20,000 - $27,000</td>
+                        <td>$50,000 - $77,000</td>
+                    </tr>
+                    <tr>
+                        <td>PhD Programs</td>
+                        <td>$25,000 - $40,000</td>
+                        <td>$20,000 - $27,000</td>
+                        <td>$45,000 - $67,000</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%); padding: 25px; border-radius: 15px;">
+                <h4 style="color: #2c3e50; margin-bottom: 18px; font-size: 20px;">🛂 Post-Study Work Visa</h4>
+                <p style="font-size: 16px; margin-bottom: 10px;"><strong>Temporary Graduate Visa:</strong> 2-4 years depending on qualification and study location.</p>
+                <p style="font-size: 16px;"><strong>Part-time Work:</strong> 48 hours per fortnight during studies, unlimited during breaks.</p>
+            </div>
+        </div>
+
+        <!-- Page 11: Study in Germany -->
+        <div class="page" id="page11">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <div class="country-header">
+                <div class="country-flag">🇩🇪</div>
+                <div>
+                    <h2 class="country-name">Study in Germany</h2>
+                    <p style="color: #666; font-size: 18px;">Engineering excellence and tuition-free education</p>
+                </div>
+            </div>
+
+            <div class="country-map">
+                <img src="ger.jpg" alt="Germany Map" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div style="display:none; width:100%; height:100%; background:#f0f8ff; align-items:center; justify-content:center; color:#4A90E2; font-size:24px; font-weight:bold;">🇩🇪 Germany</div>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>🏙️ Top Cities</h4>
+                    <ul class="info-list">
+                        <li>• Berlin</li>
+                        <li>• Munich</li>
+                        <li>• Hamburg</li>
+                        <li>• Frankfurt</li>
+                        <li>• Stuttgart</li>
+                        <li>• Cologne</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>🎓 Top Universities</h4>
+                    <ul class="info-list">
+                        <li>• Technical University of Munich</li>
+                        <li>• LMU Munich</li>
+                        <li>• Heidelberg University</li>
+                        <li>• Humboldt University Berlin</li>
+                        <li>• RWTH Aachen</li>
+                        <li>• University of Freiburg</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>📚 Popular Courses</h4>
+                    <ul class="info-list">
+                        <li>• Mechanical Engineering</li>
+                        <li>• Computer Science</li>
+                        <li>• Automotive Engineering</li>
+                        <li>• Business Administration</li>
+                        <li>• Medicine</li>
+                        <li>• Economics</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>💼 Career Opportunities</h4>
+                    <ul class="info-list">
+                        <li>• Automotive Industry</li>
+                        <li>• Engineering & Manufacturing</li>
+                        <li>• Technology & Software</li>
+                        <li>• Renewable Energy</li>
+                        <li>• Finance & Banking</li>
+                        <li>• Research & Development</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <table class="fee-table">
+                <thead>
+                    <tr>
+                        <th>Program Type</th>
+                        <th>Annual Tuition (EUR)</th>
+                        <th>Living Cost (EUR)</th>
+                        <th>Total Cost (EUR)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bachelor's Degree</td>
+                        <td>€0 - €3,000</td>
+                        <td>€10,000 - €15,000</td>
+                        <td>€10,000 - €18,000</td>
+                    </tr>
+                    <tr>
+                        <td>Master's Degree</td>
+                        <td>€0 - €5,000</td>
+                        <td>€10,000 - €15,000</td>
+                        <td>€10,000 - €20,000</td>
+                    </tr>
+                    <tr>
+                        <td>PhD Programs</td>
+                        <td>€0 - €500</td>
+                        <td>€10,000 - €15,000</td>
+                        <td>€10,000 - €15,500</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%); padding: 25px; border-radius: 15px;">
+                <h4 style="color: #2c3e50; margin-bottom: 18px; font-size: 20px;">🛂 Post-Study Work Visa</h4>
+                <p style="font-size: 16px; margin-bottom: 10px;"><strong>Job Seeker Visa:</strong> 18 months to find employment after graduation. Work permit available upon job offer.</p>
+                <p style="font-size: 16px;"><strong>Part-time Work:</strong> 120 full days or 240 half days per year during studies.</p>
+            </div>
+        </div>
+
+        <!-- Page 12: Study in Ireland -->
+        <div class="page" id="page12">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <div class="country-header">
+                <div class="country-flag">🇮🇪</div>
+                <div>
+                    <h2 class="country-name">Study in Ireland</h2>
+                    <p style="color: #666; font-size: 18px;">EU education with English instruction</p>
+                </div>
+            </div>
+
+            <div class="country-map">
+                <img src="ire.gif" alt="Ireland Map">
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>🏙️ Top Cities</h4>
+                    <ul class="info-list">
+                        <li>• Dublin</li>
+                        <li>• Cork</li>
+                        <li>• Galway</li>
+                        <li>• Limerick</li>
+                        <li>• Waterford</li>
+                        <li>• Maynooth</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>🎓 Top Universities</h4>
+                    <ul class="info-list">
+                        <li>• Trinity College Dublin</li>
+                        <li>• University College Dublin</li>
+                        <li>• University College Cork</li>
+                        <li>• National University of Ireland</li>
+                        <li>• Dublin City University</li>
+                        <li>• University of Limerick</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>📚 Popular Courses</h4>
+                    <ul class="info-list">
+                        <li>• Information Technology</li>
+                        <li>• Business Studies</li>
+                        <li>• Pharmaceutical Sciences</li>
+                        <li>• Engineering</li>
+                        <li>• Finance</li>
+                        <li>• Biotechnology</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>💼 Career Opportunities</h4>
+                    <ul class="info-list">
+                        <li>• Technology & Software</li>
+                        <li>• Pharmaceutical Industry</li>
+                        <li>• Financial Services</li>
+                        <li>• Biotechnology</li>
+                        <li>• Medical Devices</li>
+                        <li>• Digital Marketing</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <table class="fee-table">
+                <thead>
+                    <tr>
+                        <th>Program Type</th>
+                        <th>Annual Tuition (EUR)</th>
+                        <th>Living Cost (EUR)</th>
+                        <th>Total Cost (EUR)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bachelor's Degree</td>
+                        <td>€12,000 - €25,000</td>
+                        <td>€10,000 - €15,000</td>
+                        <td>€22,000 - €40,000</td>
+                    </tr>
+                    <tr>
+                        <td>Master's Degree</td>
+                        <td>€15,000 - €30,000</td>
+                        <td>€10,000 - €15,000</td>
+                        <td>€25,000 - €45,000</td>
+                    </tr>
+                    <tr>
+                        <td>PhD Programs</td>
+                        <td>€10,000 - €20,000</td>
+                        <td>€10,000 - €15,000</td>
+                        <td>€20,000 - €35,000</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%); padding: 25px; border-radius: 15px;">
+                <h4 style="color: #2c3e50; margin-bottom: 18px; font-size: 20px;">🛂 Post-Study Work Visa</h4>
+                <p style="font-size: 16px; margin-bottom: 10px;"><strong>Stay Back Option:</strong> 24 months for Level 9 graduates, 12 months for Level 8 graduates.</p>
+                <p style="font-size: 16px;"><strong>Part-time Work:</strong> 20 hours/week during studies, 40 hours/week during holidays.</p>
+            </div>
+        </div>
+
+        <!-- Page 13: Study in France -->
+        <div class="page" id="page13">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <div class="country-header">
+                <div class="country-flag">🇫🇷</div>
+                <div>
+                    <h2 class="country-name">Study in France</h2>
+                    <p style="color: #666; font-size: 18px;">Art, culture and world-renowned education</p>
+                </div>
+            </div>
+
+            <div class="country-map">
+                <img src="france(1).jpg" alt="France Map">
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>🏙️ Top Cities</h4>
+                    <ul class="info-list">
+                        <li>• Paris</li>
+                        <li>• Lyon</li>
+                        <li>• Marseille</li>
+                        <li>• Toulouse</li>
+                        <li>• Nice</li>
+                        <li>• Bordeaux</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>🎓 Top Universities</h4>
+                    <ul class="info-list">
+                        <li>• Sorbonne University</li>
+                        <li>• École Polytechnique</li>
+                        <li>• École Normale Supérieure</li>
+                        <li>• Sciences Po</li>
+                        <li>• University of Paris</li>
+                        <li>• Lyon University</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>📚 Popular Courses</h4>
+                    <ul class="info-list">
+                        <li>• Business & Management</li>
+                        <li>• Fashion & Design</li>
+                        <li>• Culinary Arts</li>
+                        <li>• Engineering</li>
+                        <li>• Art & Literature</li>
+                        <li>• International Relations</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>💼 Career Opportunities</h4>
+                    <ul class="info-list">
+                        <li>• Fashion & Luxury</li>
+                        <li>• Technology</li>
+                        <li>• Hospitality & Tourism</li>
+                        <li>• Aerospace</li>
+                        <li>• Arts & Culture</li>
+                        <li>• International Business</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <table class="fee-table">
+                <thead>
+                    <tr>
+                        <th>Program Type</th>
+                        <th>Annual Tuition (EUR)</th>
+                        <th>Living Cost (EUR)</th>
+                        <th>Total Cost (EUR)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bachelor's Degree</td>
+                        <td>€2,770 - €10,000</td>
+                        <td>€9,000 - €15,000</td>
+                        <td>€11,770 - €25,000</td>
+                    </tr>
+                    <tr>
+                        <td>Master's Degree</td>
+                        <td>€3,770 - €15,000</td>
+                        <td>€9,000 - €15,000</td>
+                        <td>€12,770 - €30,000</td>
+                    </tr>
+                    <tr>
+                        <td>PhD Programs</td>
+                        <td>€380 - €3,000</td>
+                        <td>€9,000 - €15,000</td>
+                        <td>€9,380 - €18,000</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%); padding: 25px; border-radius: 15px;">
+                <h4 style="color: #2c3e50; margin-bottom: 18px; font-size: 20px;">🛂 Post-Study Work Visa</h4>
+                <p style="font-size: 16px; margin-bottom: 10px;"><strong>APS Visa:</strong> 12-24 months to find employment after graduation in France.</p>
+                <p style="font-size: 16px;"><strong>Part-time Work:</strong> 20 hours/week during studies with work permit.</p>
+            </div>
+        </div>
+
+        <!-- Page 14: Study in China -->
+        <div class="page" id="page14">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <div class="country-header">
+                <div class="country-flag">🇨🇳</div>
+                <div>
+                    <h2 class="country-name">Study in China</h2>
+                    <p style="color: #666; font-size: 18px;">Ancient culture meets modern innovation</p>
+                </div>
+            </div>
+
+            <div class="country-map">
+                <img src="china.jpg" alt="China Map">
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>🏙️ Top Cities</h4>
+                    <ul class="info-list">
+                        <li>• Beijing</li>
+                        <li>• Shanghai</li>
+                        <li>• Guangzhou</li>
+                        <li>• Shenzhen</li>
+                        <li>• Nanjing</li>
+                        <li>• Hangzhou</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>🎓 Top Universities</h4>
+                    <ul class="info-list">
+                        <li>• Tsinghua University</li>
+                        <li>• Peking University</li>
+                        <li>• Fudan University</li>
+                        <li>• Shanghai Jiao Tong University</li>
+                        <li>• Zhejiang University</li>
+                        <li>• University of Science & Technology</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>📚 Popular Courses</h4>
+                    <ul class="info-list">
+                        <li>• Engineering</li>
+                        <li>• Business Administration</li>
+                        <li>• Computer Science</li>
+                        <li>• Traditional Chinese Medicine</li>
+                        <li>• Chinese Language & Literature</li>
+                        <li>• International Relations</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>💼 Career Opportunities</h4>
+                    <ul class="info-list">
+                        <li>• Technology & AI</li>
+                        <li>• Manufacturing</li>
+                        <li>• International Trade</li>
+                        <li>• E-commerce</li>
+                        <li>• Language Teaching</li>
+                        <li>• Research & Development</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <table class="fee-table">
+                <thead>
+                    <tr>
+                        <th>Program Type</th>
+                        <th>Annual Tuition (CNY)</th>
+                        <th>Living Cost (CNY)</th>
+                        <th>Total Cost (CNY)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bachelor's Degree</td>
+                        <td>¥15,000 - ¥50,000</td>
+                        <td>¥15,000 - ¥30,000</td>
+                        <td>¥30,000 - ¥80,000</td>
+                    </tr>
+                    <tr>
+                        <td>Master's Degree</td>
+                        <td>¥20,000 - ¥70,000</td>
+                        <td>¥15,000 - ¥30,000</td>
+                        <td>¥35,000 - ¥100,000</td>
+                    </tr>
+                    <tr>
+                        <td>PhD Programs</td>
+                        <td>¥30,000 - ¥80,000</td>
+                        <td>¥15,000 - ¥30,000</td>
+                        <td>¥45,000 - ¥110,000</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%); padding: 25px; border-radius: 15px;">
+                <h4 style="color: #2c3e50; margin-bottom: 18px; font-size: 20px;">🛂 Post-Study Work Visa</h4>
+                <p style="font-size: 16px; margin-bottom: 10px;"><strong>Work Permit:</strong> Available upon graduation with job offer from Chinese employer.</p>
+                <p style="font-size: 16px;"><strong>Part-time Work:</strong> Limited part-time work with approval during studies.</p>
+            </div>
+        </div>
+
+        <!-- Page 15: Study in New Zealand -->
+        <div class="page" id="page15">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <div class="country-header">
+                <div class="country-flag">🇳🇿</div>
+                <div>
+                    <h2 class="country-name">Study in New Zealand</h2>
+                    <p style="color: #666; font-size: 18px;">Natural beauty with world-class education</p>
+                </div>
+            </div>
+
+            <div class="country-map">
+                <img src="new(1).jpg" alt="New Zealand Map">
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>🏙️ Top Cities</h4>
+                    <ul class="info-list">
+                        <li>• Auckland</li>
+                        <li>• Wellington</li>
+                        <li>• Christchurch</li>
+                        <li>• Hamilton</li>
+                        <li>• Dunedin</li>
+                        <li>• Palmerston North</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>🎓 Top Universities</h4>
+                    <ul class="info-list">
+                        <li>• University of Auckland</li>
+                        <li>• University of Otago</li>
+                        <li>• Victoria University of Wellington</li>
+                        <li>• University of Canterbury</li>
+                        <li>• Massey University</li>
+                        <li>• Auckland University of Technology</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>📚 Popular Courses</h4>
+                    <ul class="info-list">
+                        <li>• Agriculture & Viticulture</li>
+                        <li>• Tourism & Hospitality</li>
+                        <li>• Information Technology</li>
+                        <li>• Environmental Science</li>
+                        <li>• Business Management</li>
+                        <li>• Healthcare</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>💼 Career Opportunities</h4>
+                    <ul class="info-list">
+                        <li>• Agriculture & Farming</li>
+                        <li>• Tourism Industry</li>
+                        <li>• Technology</li>
+                        <li>• Healthcare</li>
+                        <li>• Education</li>
+                        <li>• Film & Creative Industries</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <table class="fee-table">
+                <thead>
+                    <tr>
+                        <th>Program Type</th>
+                        <th>Annual Tuition (NZD)</th>
+                        <th>Living Cost (NZD)</th>
+                        <th>Total Cost (NZD)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bachelor's Degree</td>
+                        <td>$22,000 - $32,000</td>
+                        <td>$15,000 - $20,000</td>
+                        <td>$37,000 - $52,000</td>
+                    </tr>
+                    <tr>
+                        <td>Master's Degree</td>
+                        <td>$26,000 - $37,000</td>
+                        <td>$15,000 - $20,000</td>
+                        <td>$41,000 - $57,000</td>
+                    </tr>
+                    <tr>
+                        <td>PhD Programs</td>
+                        <td>$6,500 - $9,000</td>
+                        <td>$15,000 - $20,000</td>
+                        <td>$21,500 - $29,000</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%); padding: 25px; border-radius: 15px;">
+                <h4 style="color: #2c3e50; margin-bottom: 18px; font-size: 20px;">🛂 Post-Study Work Visa</h4>
+                <p style="font-size: 16px; margin-bottom: 10px;"><strong>Post-Study Work Visa:</strong> 1-3 years depending on qualification level and study location.</p>
+                <p style="font-size: 16px;"><strong>Part-time Work:</strong> 20 hours/week during studies, unlimited during holidays.</p>
+            </div>
+        </div>
+
+        <!-- Page 16: Study in Singapore -->
+        <div class="page" id="page16">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <div class="country-header">
+                <div class="country-flag">🇸🇬</div>
+                <div>
+                    <h2 class="country-name">Study in Singapore</h2>
+                    <p style="color: #666; font-size: 18px;">Asia's education hub with global outlook</p>
+                </div>
+            </div>
+
+            <div class="country-map">
+                <img src="sing(1).png" alt="Singapore Map">
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>🏙️ Key Areas</h4>
+                    <ul class="info-list">
+                        <li>• Central Business District</li>
+                        <li>• Orchard Road</li>
+                        <li>• Marina Bay</li>
+                        <li>• Sentosa Island</li>
+                        <li>• Jurong East</li>
+                        <li>• Tampines</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>🎓 Top Universities</h4>
+                    <ul class="info-list">
+                        <li>• National University of Singapore</li>
+                        <li>• Nanyang Technological University</li>
+                        <li>• Singapore Management University</li>
+                        <li>• Singapore Institute of Technology</li>
+                        <li>• Singapore University of Social Sciences</li>
+                        <li>• INSEAD Asia Campus</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>📚 Popular Courses</h4>
+                    <ul class="info-list">
+                        <li>• Business & Finance</li>
+                        <li>• Engineering</li>
+                        <li>• Computer Science</li>
+                        <li>• Biotechnology</li>
+                        <li>• International Relations</li>
+                        <li>• Maritime Studies</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>💼 Career Opportunities</h4>
+                    <ul class="info-list">
+                        <li>• Financial Services</li>
+                        <li>• Technology</li>
+                        <li>• Shipping & Logistics</li>
+                        <li>• Biotechnology</li>
+                        <li>• Tourism & Hospitality</li>
+                        <li>• Regional Business Hub</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <table class="fee-table">
+                <thead>
+                    <tr>
+                        <th>Program Type</th>
+                        <th>Annual Tuition (SGD)</th>
+                        <th>Living Cost (SGD)</th>
+                        <th>Total Cost (SGD)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bachelor's Degree</td>
+                        <td>$17,000 - $25,000</td>
+                        <td>$12,000 - $18,000</td>
+                        <td>$29,000 - $43,000</td>
+                    </tr>
+                    <tr>
+                        <td>Master's Degree</td>
+                        <td>$20,000 - $35,000</td>
+                        <td>$12,000 - $18,000</td>
+                        <td>$32,000 - $53,000</td>
+                    </tr>
+                    <tr>
+                        <td>PhD Programs</td>
+                        <td>$15,000 - $25,000</td>
+                        <td>$12,000 - $18,000</td>
+                        <td>$27,000 - $43,000</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%); padding: 25px; border-radius: 15px;">
+                <h4 style="color: #2c3e50; margin-bottom: 18px; font-size: 20px;">🛂 Post-Study Work Visa</h4>
+                <p style="font-size: 16px; margin-bottom: 10px;"><strong>Work Visa:</strong> Available upon job offer with approved employer in Singapore.</p>
+                <p style="font-size: 16px;"><strong>Part-time Work:</strong> 16 hours/week during studies with approval.</p>
+            </div>
+        </div>
+
+        <!-- Page 17: Study in UAE -->
+        <div class="page" id="page17">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <div class="country-header">
+                <div class="country-flag">🇦🇪</div>
+                <div>
+                    <h2 class="country-name">Study in UAE</h2>
+                    <p style="color: #666; font-size: 18px;">Modern education in the heart of the Middle East</p>
+                </div>
+            </div>
+
+            <div class="country-map">
+                <img src="uae.jpg" alt="UAE Map">
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>🏙️ Top Cities</h4>
+                    <ul class="info-list">
+                        <li>• Dubai</li>
+                        <li>• Abu Dhabi</li>
+                        <li>• Sharjah</li>
+                        <li>• Al Ain</li>
+                        <li>• Fujairah</li>
+                        <li>• Ras Al Khaimah</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>🎓 Top Universities</h4>
+                    <ul class="info-list">
+                        <li>• American University of Sharjah</li>
+                        <li>• United Arab Emirates University</li>
+                        <li>• Khalifa University</li>
+                        <li>• American University of Dubai</li>
+                        <li>• Zayed University</li>
+                        <li>• NYU Abu Dhabi</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>📚 Popular Courses</h4>
+                    <ul class="info-list">
+                        <li>• Business Administration</li>
+                        <li>• Engineering</li>
+                        <li>• Information Technology</li>
+                        <li>• Hospitality Management</li>
+                        <li>• International Business</li>
+                        <li>• Aviation & Logistics</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h4>💼 Career Opportunities</h4>
+                    <ul class="info-list">
+                        <li>• Oil & Gas Industry</li>
+                        <li>• Tourism & Hospitality</li>
+                        <li>• Financial Services</li>
+                        <li>• Aviation</li>
+                        <li>• Real Estate</li>
+                        <li>• International Trade</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <table class="fee-table">
+                <thead>
+                    <tr>
+                        <th>Program Type</th>
+                        <th>Annual Tuition (AED)</th>
+                        <th>Living Cost (AED)</th>
+                        <th>Total Cost (AED)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bachelor's Degree</td>
+                        <td>40,000 - 80,000</td>
+                        <td>25,000 - 40,000</td>
+                        <td>65,000 - 120,000</td>
+                    </tr>
+                    <tr>
+                        <td>Master's Degree</td>
+                        <td>50,000 - 100,000</td>
+                        <td>25,000 - 40,000</td>
+                        <td>75,000 - 140,000</td>
+                    </tr>
+                    <tr>
+                        <td>PhD Programs</td>
+                        <td>60,000 - 120,000</td>
+                        <td>25,000 - 40,000</td>
+                        <td>85,000 - 160,000</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(255, 87, 34, 0.08) 100%); padding: 25px; border-radius: 15px;">
+                <h4 style="color: #2c3e50; margin-bottom: 18px; font-size: 20px;">🛂 Post-Study Work Visa</h4>
+                <p style="font-size: 16px; margin-bottom: 10px;"><strong>Golden Visa:</strong> 5-10 year visa available for graduates in specific fields.</p>
+                <p style="font-size: 16px;"><strong>Part-time Work:</strong> 20 hours/week with university approval during studies.</p>
+            </div>
+        </div>
+
+        <!-- Page 18: Student Services -->
+        <div class="page" id="page18">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <h2 class="section-title">Student Services</h2>
+            
+            <div class="section-content">
+                <p style="font-size: 20px; margin-bottom: 35px; color: #2c3e50; text-align: center; font-weight: 500;">
+                    Our comprehensive range of services ensures your success from the initial consultation to graduation and beyond.
+                </p>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>🎯 Counseling & Guidance</h4>
+                        <ul class="bullet-list">
+                            <li>Personalized career counseling sessions</li>
+                            <li>Course and university selection guidance</li>
+                            <li>Academic pathway planning</li>
+                            <li>Profile evaluation and enhancement</li>
+                            <li>Regular progress monitoring</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>📝 Application Assistance</h4>
+                        <ul class="bullet-list">
+                            <li>University application preparation</li>
+                            <li>Statement of Purpose writing</li>
+                            <li>Letter of Recommendation support</li>
+                            <li>Resume/CV optimization</li>
+                            <li>Portfolio development</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>📋 Test Preparation</h4>
+                        <ul class="bullet-list">
+                            <li>IELTS/TOEFL preparation classes</li>
+                            <li>GRE/GMAT coaching</li>
+                            <li>SAT preparation</li>
+                            <li>Mock tests and practice sessions</li>
+                            <li>Individual tutoring support</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>🛂 Visa Support</h4>
+                        <ul class="bullet-list">
+                            <li>Visa application assistance</li>
+                            <li>Document preparation guidance</li>
+                            <li>Interview preparation</li>
+                            <li>Financial documentation support</li>
+                            <li>Visa tracking and follow-up</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>💰 Financial Planning</h4>
+                        <ul class="bullet-list">
+                            <li>Education loan assistance</li>
+                            <li>Scholarship identification</li>
+                            <li>Financial aid application support</li>
+                            <li>Budget planning guidance</li>
+                            <li>Cost estimation services</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>🏠 Pre-Departure Services</h4>
+                        <ul class="bullet-list">
+                            <li>Accommodation assistance</li>
+                            <li>Travel arrangements</li>
+                            <li>Pre-departure orientation</li>
+                            <li>Cultural adaptation guidance</li>
+                            <li>Airport pickup coordination</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>🌍 Post-Arrival Support</h4>
+                        <ul class="bullet-list">
+                            <li>24/7 emergency assistance</li>
+                            <li>Bank account opening support</li>
+                            <li>Mobile connection assistance</li>
+                            <li>Local registration guidance</li>
+                            <li>Part-time job search support</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h4>👥 Ongoing Mentorship</h4>
+                        <ul class="bullet-list">
+                            <li>Alumni network access</li>
+                            <li>Career development workshops</li>
+                            <li>Internship placement assistance</li>
+                            <li>Job search guidance</li>
+                            <li>Professional networking opportunities</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #4A90E2 0%, #FF5722 100%); color: white; padding: 35px; border-radius: 15px; margin-top: 40px; text-align: center;">
+                    <h4 style="font-size: 24px; margin-bottom: 20px;">Your Success is Our Priority</h4>
+                    <p style="font-size: 17px; line-height: 1.8;">
+                        At EduSetGo, we believe that every student deserves personalized attention and comprehensive support. Our dedicated team of experts is committed to helping you achieve your international education goals with confidence and success.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 19: Contact Information -->
+        <div class="page" id="page19">
+            <div class="header">
+                <div class="logo-container">
+                    <div class="logo"></div>
+                </div>
+            </div>
+            
+            <h2 class="section-title">Contact Information</h2>
+            
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon">📞</div>
+                    <h4 style="font-size: 20px; margin-bottom: 15px;">Phone</h4>
+                    <p style="font-size: 16px;">+91 80192 6878</p>
+                    <p style="font-size: 16px;">+1 425 961 3320</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">✉️</div>
+                    <h4 style="font-size: 20px; margin-bottom: 15px;">Email</h4>
+                    <p style="font-size: 16px;">info@edusetgo.com</p>
+                    <p style="font-size: 16px;">admissions@edusetgo.com</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">🌐</div>
+                    <h4 style="font-size: 20px; margin-bottom: 15px;">Website</h4>
+                    <p style="font-size: 16px;">www.edusetgo.com</p>
+                    <p style="font-size: 16px;">Apply online 24/7</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">📍</div>
+                    <h4 style="font-size: 20px; margin-bottom: 15px;">Address</h4>
+                    <p style="font-size: 16px;">123 Education Hub</p>
+                    <p style="font-size: 16px;">New Delhi, India 110001</p>
+                </div>
+                
+                <div class="contact-card">
+    <div class="contact-icon">💬</div>
+    <h4 style="font-size: 20px; margin-bottom: 15px;">WhatsApp</h4>
+    <div class="qr-code">
+        <img src="wp.jpeg" alt="WhatsApp QR Code">
+    </div>
+    <p style="font-size: 16px; margin-top: 15px;">Scan for instant chat</p>
+</div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">📱</div>
+                    <h4 style="font-size: 20px; margin-bottom: 15px;">Social Media</h4>
+                    <p style="font-size: 16px;">Facebook • Instagram</p>
+                    <p style="font-size: 16px;">LinkedIn • Twitter</p>
+                </div>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #4A90E2 0%, #FF5722 100%); color: white; padding: 35px; border-radius: 15px; margin-top: 35px; text-align: center;">
+                <h3 style="margin-bottom: 18px; font-size: 26px;">Ready to Start Your Journey?</h3>
+                <p style="font-size: 18px; margin-bottom: 30px;">
+                    Book your free consultation today and take the first step towards your international education dream.
+                </p>
+                <button style="background: white; color: #4A90E2; padding: 18px 35px; border: none; border-radius: 30px; font-weight: 600; font-size: 18px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.2);">
+                    Schedule Free Consultation
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Download PDF function
+        async function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            // Show loading message
+            const downloadBtn = document.querySelector('.download-btn');
+            const originalText = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '<span class="download-icon">⏳</span>Generating PDF...';
+            downloadBtn.disabled = true;
+
+            try {
+                const pages = document.querySelectorAll('.page');
+
+                // Capture each page
+                for (let i = 0; i < pages.length; i++) {
+                    if (i > 0) {
+                        pdf.addPage();
+                    }
+                    
+                    const canvas = await html2canvas(pages[i], {
+                        scale: 1.5,
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: '#ffffff',
+                        height: pages[i].scrollHeight,
+                        windowHeight: pages[i].scrollHeight
+                    });
+                    
+                    const imgData = canvas.toDataURL('image/png');
+                    const imgWidth = 210;
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    
+                    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                }
+
+                // Download the PDF
+                pdf.save('EduSetGo-Brochure.pdf');
+                
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('Error generating PDF. Please try again.');
+            } finally {
+                // Restore button
+                downloadBtn.innerHTML = originalText;
+                downloadBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
