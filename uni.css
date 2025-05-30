@@ -53,7 +53,21 @@ body {
     overflow-x: hidden;
     padding-top: 80px;
 }
+.disclaimer-text {
+    font-size: 0.9em;
+    color: #f39c12; /* Orange color for warning */
+    margin-top: 8px;
+    padding: 8px 12px;
+    background-color: #fef9e7;
+    border-left: 3px solid #f39c12;
+    border-radius: 4px;
+    font-style: italic;
+}
 
+.disclaimer-text i {
+    margin-right: 5px;
+    color: #e67e22;
+}
 /* ===== HEADER STYLES ===== */
 header {
     background: linear-gradient(135deg, #011e3e 0%, #00a0e3 100%);

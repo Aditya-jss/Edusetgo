@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - EduSetGo India</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+    --primary-color: #0056b3;
+    --secondary-color: #00a0e3;
+    --accent-color: #ff6b6b;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --text-color: #212529;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: #fff;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ===== HEADER STYLES - VERSION 1 ===== */
+header {
+    background: linear-gradient(135deg, #011e3e 0%, #00a0e3 100%);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.header-container {
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    min-height: 64px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.logo-link:hover {
+    transform: scale(1.03);
+}
+
+.logo-map {
+    width: 40px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 12px;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.logo-link:hover .logo-map {
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo span {
+    color: #ff6b6b;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 0.5rem;
+}
+
+.nav-menu li {
+    position: relative;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    position: relative;
+    display: block;
+    white-space: nowrap;
+}
+
+.nav-menu a:hover {
+    color: #ff6b6b;
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px) scale(1.02);
+}
+
+.nav-menu a.active {
+    color: #ff6b6b;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.nav-menu a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background-color: #ff6b6b;
+    border-radius: 2px;
+}
+
+.mobile-toggle {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #ffffff;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    border: none;
+    background: none;
+}
+
+.mobile-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+}
+
+/* ===== DROPDOWN STYLES ===== */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    content: " ▼";
+    font-size: 0.625rem;
+    margin-left: 0.375rem;
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.dropdown:hover .dropdown-toggle::after {
+    transform: rotate(180deg);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    min-width: 180px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+    top: 100%;
+    left: 0;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    margin-top: 0.25rem;
+}
+
+.dropdown-content a {
+    color: #333 !important;
+    padding: 0.75rem 1.25rem;
+    text-decoration: none;
+    display: block;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-content a:last-child {
+    border-bottom: none;
+}
+
+.dropdown-content a:hover {
+    background-color: #011e3e;
+    color: #ffffff !important;
+    transform: translateX(3px) scale(1.01);
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    animation: fadeInDown 0.3s ease;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ===== BACKGROUND ANIMATION ===== */
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.floating-shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+    width: 80px;
+    height: 80px;
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    width: 120px;
+    height: 120px;
+    top: 60%;
+    right: 10%;
+    animation-delay: 2s;
+}
+
+.shape-3 {
+    width: 60px;
+    height: 60px;
+    bottom: 20%;
+    left: 70%;
+    animation-delay: 4s;
+}
+
+.shape-4 {
+    width: 100px;
+    height: 100px;
+    top: 10%;
+    right: 30%;
+    animation-delay: 1s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg) scale(1);
+    }
+    50% {
+        transform: translateY(-20px) rotate(180deg) scale(1.05);
+    }
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+@media screen and (max-width: 768px) {
+    .dropdown-content {
+        position: static;
+        display: none;
+        box-shadow: none;
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: none;
+        border: none;
+        border-radius: 0;
+    }
+    
+    .dropdown-content a {
+        color: #ffffff !important;
+        padding-left: 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        background-color: transparent;
+    }
+    
+    .dropdown-content a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #ff6b6b !important;
+        transform: translateX(0) scale(1);
+    }
+    
+    .dropdown.active .dropdown-content {
+        display: block;
+    }
+}
+.highlight {
+  color: #ff6b6b;
+}
+
+
+   .hero-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 80px 0;
+  text-align: center;
+  flex-wrap: wrap; /* Responsive for small screens */
+}
+
+.hero-section .left-img {
+  background: url('12.jpg') no-repeat center center;
+  background-size: cover;
+  width: 300px;
+  height: 300px;
+  flex-shrink: 0;
+}
+
+.hero-section .center-text {
+  padding: 0 40px;
+  max-width: 400px;
+}
+
+.hero-section .center-text h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  animation: fadeInUp 1s ease-out;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.hero-section .center-text p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  animation: fadeInUp 1s ease-out 0.2s both;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.hero-section .right-img {
+  background: url('13.jpg') no-repeat center center;
+  background-size: cover;
+  width: 300px;
+  height: 300px;
+  flex-shrink: 0;
+
+}
+        /* Mission Section */
+        .mission-section {
+            padding: 80px 0;
+            background: #f8fafc;
+        }
+
+        .mission-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .mission-text h2 {
+            font-size: 2.5rem;
+            color: var(--dark-color);
+            margin-bottom: 25px;
+        }
+
+        .mission-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .mission-values {
+            display: grid;
+            gap: 20px;
+        }
+
+        .value-card {
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            align-items: start;
+            gap: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .value-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.1);
+            padding: 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 60px;
+            height: 60px;
+        }
+
+        .value-content h3 {
+            font-size: 1.3rem;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .value-content p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Policies Section */
+        .policies-section {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-heading h2 {
+            font-size: 2.5rem;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+        }
+
+        .section-heading p {
+            font-size: 1.1rem;
+            color: #6b7280;
+        }
+
+        .policies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .policy-card {
+            background: #f8fafc;
+            padding: 35px;
+            border-radius: var(--border-radius);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .policy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-color);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .policy-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .policy-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .policy-card h3 {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+        }
+
+        .policy-card p {
+            color: #6b7280;
+            line-height: 1.8;
+        }
+
+        /* Team Section */
+        .team-section {
+            padding: 80px 0;
+            background: #f8fafc;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .team-member {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .member-image {
+            width: 100%;
+            height: 320px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .member-image i {
+            font-size: 5rem;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .member-info {
+            padding: 30px;
+        }
+
+        .member-info h3 {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .member-info .position {
+            color: var(--primary-color);
+            font-weight: 500;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .member-info p {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .member-social {
+            margin-top: 20px;
+        }
+
+        .member-social a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            background: #f3f4f6;
+            color: var(--dark-color);
+            border-radius: 50%;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .member-social a:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .footer-column p {
+            color: #9ca3af;
+            line-height: 1.8;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .footer-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #9ca3af;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .mission-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo-link">
+                    <img src="4.png" alt="EduSetGo India World Map Logo" class="logo-map">
+                    <span class="logo">Edu<span>Set</span>Go</span>
+                </a>
+            </div>
+            <div class="mobile-toggle">☰</div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="index.html#packages">Packages</a></li>
+                <li><a href="index.html#testimonials">Testimonials</a></li>
+                <li class="dropdown">
+                    <a href="#services" class="dropdown-toggle">Services</a>
+                    <div class="dropdown-content">
+                        <a href="study.html">Resources</a>
+                        <a href="visa.html">Visa Help</a>
+                    </div>
+                </li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+
+   <!-- Hero Section -->
+<section class="hero-section">
+    <div class="left-img"></div>
+
+    <div class="center-text">
+        <h1>Edu<span class="highlight">Set</span>Go India</h1>
+        <p>Empowering students to achieve their global education dreams</p>
+    </div>
+
+    <div class="right-img"></div>
+</section>
+
+
+
+    <!-- Mission Section -->
+    <section class="mission-section">
+        <div class="container">
+            <div class="mission-content">
+                <div class="mission-text">
+                    <h2>Our Mission</h2>
+                    <p>At EduSetGo India, we are dedicated to making international education accessible and achievable for every Indian student. Our mission is to bridge the gap between ambitious students and world-class universities, providing comprehensive guidance and support throughout the entire journey.</p>
+                    <p>We believe that every student deserves the opportunity to pursue their dreams, regardless of their background. Through personalized counseling, expert guidance, and unwavering support, we transform the complex process of studying abroad into a smooth and exciting adventure.</p>
+                </div>
+                <div class="mission-values">
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="value-content">
+                            <h3>Excellence</h3>
+                            <p>We strive for excellence in every aspect of our service, ensuring the highest quality guidance for our students.</p>
+                        </div>
+                    </div>
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <div class="value-content">
+                            <h3>Integrity</h3>
+                            <p>We maintain the highest standards of honesty and transparency in all our dealings with students and partners.</p>
+                        </div>
+                    </div>
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="value-content">
+                            <h3>Commitment</h3>
+                            <p>Your success is our success. We are committed to supporting you every step of the way.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Policies Section -->
+    <section class="policies-section">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Our Policies</h2>
+                <p>Transparent, ethical, and student-focused approach to education consulting</p>
+            </div>
+            <div class="policies-grid">
+                <div class="policy-card">
+                    <h3>Privacy Policy</h3>
+                    <p>We respect and protect the privacy of our students. All personal information shared with us is kept strictly confidential and is used only for the purpose of facilitating your education abroad journey. We never share your data with third parties without your explicit consent.</p>
+                </div>
+                <div class="policy-card">
+                    <h3>Refund Policy</h3>
+                    <p>We offer a fair and transparent refund policy. If you're not satisfied with our services within the first 30 days, we provide a full refund. For visa-related services, refunds are processed according to the specific terms agreed upon at the time of enrollment.</p>
+                </div>
+                <div class="policy-card">
+                    <h3>Code of Ethics</h3>
+                    <p>We adhere to the highest ethical standards in education consulting. We provide honest advice, accurate information, and never make false promises. Our recommendations are based solely on what's best for the student's academic and career goals.</p>
+                </div>
+                <div class="policy-card">
+                    <h3>Quality Assurance</h3>
+                    <p>We maintain rigorous quality standards in all our services. Our counselors undergo regular training, and we continuously update our knowledge base to provide the most current and accurate information about universities, programs, and visa requirements.</p>
+                </div>
+                <div class="policy-card">
+                    <h3>Student Support</h3>
+                    <p>Our commitment doesn't end with admission. We provide ongoing support throughout your education journey, including pre-departure briefings, arrival assistance, and continued guidance during your studies abroad.</p>
+                </div>
+                <div class="policy-card">
+                    <h3>Partnership Ethics</h3>
+                    <p>We partner only with accredited and recognized educational institutions. All our university partnerships are transparent, and we never compromise on quality for commercial gains. Student welfare always comes first.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Meet Our Team</h2>
+                <p>Experienced professionals dedicated to your success</p>
+            </div>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-image">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="member-info">
+                        <h3>J.Aditya</h3>
+                        <span class="position">Founder & CEO</span>
+                        <p>With over 15 years of experience in international education, J.Aditya has helped thousands of students achieve their dreams of studying abroad.</p>
+                        <div class="member-social">
+                            <a href="https://linked" target="_blank" aria-label="LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="mailto:rajesh@edusetgo.com" aria-label="Email">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="member-info">
+                        <h3>Sameer Sohaiel</h3>
+                        <span class="position">Director of Counseling</span>
+                        <p>Sameer specializes in career counseling and has extensive knowledge of global university programs. He ensures each student finds their perfect fit.</p>
+                        <div class="member-social">
+                            <a href="https://linkedin.com/in" target="_blank" aria-label="LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="mailto:priya@edusetgo.com" aria-label="Email">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="member-info">
+                        <h3>M.Pooja Prabhath</h3>
+                        <span class="position">Co-Founder</span>
+                        <p>Prabhath brings 10+ years of visa processing expertise, ensuring smooth and successful visa applications for all our students.</p>
+                        <div class="member-social">
+                            <a href="https://linkedin.c" target="_blank" aria-label="LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="mailto:amit@edusetgo.com" aria-label="Email">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="member-info">
+                        <h3>V.Gopi</h3>
+                        <span class="position">Student Relations Manager</span>
+                        <p>Gopi ensures every student receives personalized attention and support throughout their journey with EduSetGo India.</p>
+                        <div class="member-social">
+                            <a href="https://linkedin" target="_blank" aria-label="LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="mailto:sneha@edusetgo.com" aria-label="Email">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>EduSetGo India</h3>
+                    <p>Your gateway to studying abroad. We help Indian students achieve their dreams of international education.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="index.html#packages">Packages</a></li>
+                        <li><a href="index.html#testimonials">Testimonials</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Services</h3>
+                    <ul class="footer-links">
+                        <li><a href="Listofuni.html">University Selection</a></li>
+                        <li><a href="study.html">Admission Guidance</a></li>
+                        <li><a href="visa.html">Visa Assistance</a></li>
+                        <li><a href="index.html#contact">SOP & LOR Support</a></li>
+                        <li><a href="index.html#contact">Pre-Departure Briefing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Connect With Us</h3>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Follow us on Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Follow us on Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Follow us on Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Connect with us on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 EduSetGo India. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileToggle = document.querySelector('.mobile-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+
+        mobileToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+            } else {
+                header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+            }
+        });
+    </script>
+</body>
+</html>
