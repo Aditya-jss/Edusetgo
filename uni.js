@@ -1,4 +1,937 @@
-// ===== MOBILE NAVIGATION =====
+function generateUniversityRecommendations(profileData) {
+    const fieldOfStudy = profileData.course;
+    
+    // Define which universities are strong in which fields
+    const universityStrengths = {
+        // STEM Fields
+        'Computer Science': [
+            'Massachusetts Institute of Technology (MIT)',
+            'Stanford University',
+            'California Institute of Technology (Caltech)',
+            'Carnegie Mellon University',
+            'University of California, Berkeley',
+            'Georgia Institute of Technology',
+            'University of Illinois at Urbana-Champaign',
+            'University of Washington',
+            'Cornell University',
+            'Princeton University',
+            'Harvard University',
+            'Columbia University',
+            'University of Toronto',
+            'ETH Zurich',
+            'Technical University of Munich (TUM)',
+            'Delft University of Technology',
+            'University of Cambridge',
+            'Imperial College London',
+            'University of Edinburgh',
+            'Tsinghua University',
+            'Peking University'
+        ],
+        
+        'Information Technology': [
+            'Carnegie Mellon University',
+            'Massachusetts Institute of Technology (MIT)',
+            'Stanford University',
+            'University of California, Berkeley',
+            'Georgia Institute of Technology',
+            'University of Illinois at Urbana-Champaign',
+            'University of Washington',
+            'Cornell University',
+            'University of Toronto',
+            'University of British Columbia',
+            'Technical University of Munich (TUM)',
+            'ETH Zurich',
+            'Delft University of Technology',
+            'Imperial College London',
+            'University of Cambridge',
+            'King\'s College London',
+            'RMIT University',
+            'University of Technology Sydney',
+            'Arizona State University',
+            'University of Central Florida'
+        ],
+        
+        'Data Science': [
+            'Stanford University',
+            'Massachusetts Institute of Technology (MIT)',
+            'Harvard University',
+            'University of California, Berkeley',
+            'Carnegie Mellon University',
+            'University of Washington',
+            'Columbia University',
+            'New York University',
+            'University of Chicago',
+            'Northwestern University',
+            'University of Toronto',
+            'McGill University',
+            'ETH Zurich',
+            'Technical University of Munich (TUM)',
+            'University of Cambridge',
+            'Imperial College London',
+            'University of Edinburgh',
+            'Tsinghua University',
+            'University of Melbourne',
+            'Australian National University'
+        ],
+        
+        'Artificial Intelligence': [
+            'Stanford University',
+            'Massachusetts Institute of Technology (MIT)',
+            'Carnegie Mellon University',
+            'University of California, Berkeley',
+            'Harvard University',
+            'Princeton University',
+            'Columbia University',
+            'Cornell University',
+            'University of Washington',
+            'Georgia Institute of Technology',
+            'University of Toronto',
+            'McGill University',
+            'ETH Zurich',
+            'University of Cambridge',
+            'Imperial College London',
+            'University of Edinburgh',
+            'Tsinghua University',
+            'Peking University',
+            'University of Melbourne',
+            'Australian National University'
+        ],
+        
+        'Engineering': [
+            'Massachusetts Institute of Technology (MIT)',
+            'Stanford University',
+            'California Institute of Technology (Caltech)',
+            'Georgia Institute of Technology',
+            'University of California, Berkeley',
+            'Cornell University',
+            'University of Michigan - Ann Arbor',
+            'Carnegie Mellon University',
+            'Purdue University',
+            'University of Illinois at Urbana-Champaign',
+            'University of Toronto',
+            'University of British Columbia',
+            'ETH Zurich',
+            'Technical University of Munich (TUM)',
+            'RWTH Aachen University',
+            'Delft University of Technology',
+            'Imperial College London',
+            'University of Cambridge',
+            'Tsinghua University',
+            'University of Melbourne'
+        ],
+        
+        'Mechanical Engineering': [
+            'Massachusetts Institute of Technology (MIT)',
+            'Stanford University',
+            'California Institute of Technology (Caltech)',
+            'Georgia Institute of Technology',
+            'University of Michigan - Ann Arbor',
+            'Cornell University',
+            'Carnegie Mellon University',
+            'Purdue University',
+            'University of Illinois at Urbana-Champaign',
+            'Pennsylvania State University',
+            'University of Toronto',
+            'McGill University',
+            'ETH Zurich',
+            'Technical University of Munich (TUM)',
+            'RWTH Aachen University',
+            'Imperial College London',
+            'University of Cambridge',
+            'University of Melbourne',
+            'University of New South Wales (UNSW)',
+            'Virginia Tech'
+        ],
+        
+        'Civil Engineering': [
+            'Massachusetts Institute of Technology (MIT)',
+            'Stanford University',
+            'University of California, Berkeley',
+            'Georgia Institute of Technology',
+            'University of Illinois at Urbana-Champaign',
+            'Cornell University',
+            'University of Michigan - Ann Arbor',
+            'Purdue University',
+            'Pennsylvania State University',
+            'University of Texas at Austin',
+            'University of Toronto',
+            'University of British Columbia',
+            'ETH Zurich',
+            'Technical University of Munich (TUM)',
+            'Delft University of Technology',
+            'Imperial College London',
+            'University of Cambridge',
+            'University of Melbourne',
+            'University of Sydney',
+            'University of New South Wales (UNSW)'
+        ],
+        
+        'Electrical Engineering': [
+            'Massachusetts Institute of Technology (MIT)',
+            'Stanford University',
+            'University of California, Berkeley',
+            'California Institute of Technology (Caltech)',
+            'Georgia Institute of Technology',
+            'Carnegie Mellon University',
+            'Cornell University',
+            'University of Illinois at Urbana-Champaign',
+            'University of Michigan - Ann Arbor',
+            'Purdue University',
+            'University of Toronto',
+            'McGill University',
+            'ETH Zurich',
+            'Technical University of Munich (TUM)',
+            'Imperial College London',
+            'University of Cambridge',
+            'Tsinghua University',
+            'University of Melbourne',
+            'University of New South Wales (UNSW)',
+            'Delft University of Technology'
+        ],
+        
+        'Chemical Engineering': [
+            'Massachusetts Institute of Technology (MIT)',
+            'Stanford University',
+            'University of California, Berkeley',
+            'California Institute of Technology (Caltech)',
+            'University of Minnesota Twin Cities',
+            'University of Wisconsin-Madison',
+            'University of Delaware',
+            'Carnegie Mellon University',
+            'Princeton University',
+            'Cornell University',
+            'University of Toronto',
+            'McGill University',
+            'ETH Zurich',
+            'University of Cambridge',
+            'Imperial College London',
+            'Delft University of Technology',
+            'University of Melbourne',
+            'University of Sydney',
+            'Technical University of Munich (TUM)',
+            'RWTH Aachen University'
+        ],
+        
+        'Aerospace Engineering': [
+            'Massachusetts Institute of Technology (MIT)',
+            'Stanford University',
+            'California Institute of Technology (Caltech)',
+            'Georgia Institute of Technology',
+            'University of Michigan - Ann Arbor',
+            'Purdue University',
+            'Cornell University',
+            'University of Colorado Boulder',
+            'University of Texas at Austin',
+            'Pennsylvania State University',
+            'University of Toronto',
+            'McGill University',
+            'ETH Zurich',
+            'Technical University of Munich (TUM)',
+            'Delft University of Technology',
+            'Imperial College London',
+            'University of Cambridge',
+            'Beihang University',
+            'University of Sydney',
+            'University of Melbourne'
+        ],
+        
+        // Business & Finance
+        'Business': [
+            'Harvard University',
+            'Stanford University',
+            'University of Pennsylvania (Wharton)',
+            'University of Chicago',
+            'Northwestern University',
+            'Columbia University',
+            'New York University',
+            'Duke University',
+            'University of Michigan - Ann Arbor',
+            'University of California, Berkeley',
+            'University of Toronto',
+            'McGill University',
+            'London School of Economics (LSE)',
+            'University of Cambridge',
+            'University of Oxford',
+            'INSEAD',
+            'London Business School',
+            'University of Melbourne',
+            'Australian National University',
+            'University of Sydney'
+        ],
+        
+        'Business Administration': [
+            'Harvard University',
+            'Stanford University',
+            'University of Pennsylvania (Wharton)',
+            'University of Chicago',
+            'Northwestern University',
+            'Columbia University',
+            'New York University',
+            'Duke University',
+            'University of Virginia',
+            'University of North Carolina at Chapel Hill',
+            'University of Toronto',
+            'Queen\'s University',
+            'London School of Economics (LSE)',
+            'University of Cambridge',
+            'University of Oxford',
+            'University of Melbourne',
+            'Australian National University',
+            'University of Sydney',
+            'Boston University',
+            'Northeastern University'
+        ],
+        
+        'Finance': [
+            'University of Pennsylvania (Wharton)',
+            'New York University',
+            'University of Chicago',
+            'Columbia University',
+            'Harvard University',
+            'Stanford University',
+            'Northwestern University',
+            'Duke University',
+            'Cornell University',
+            'University of Michigan - Ann Arbor',
+            'University of Toronto',
+            'McGill University',
+            'London School of Economics (LSE)',
+            'University of Cambridge',
+            'University of Oxford',
+            'Imperial College London',
+            'University of Melbourne',
+            'Australian National University',
+            'Boston University',
+            'Northeastern University'
+        ],
+        
+        'Accounting': [
+            'University of Pennsylvania (Wharton)',
+            'University of Chicago',
+            'New York University',
+            'University of Michigan - Ann Arbor',
+            'Cornell University',
+            'Northwestern University',
+            'Columbia University',
+            'Duke University',
+            'University of North Carolina at Chapel Hill',
+            'University of Texas at Austin',
+            'University of Toronto',
+            'Queen\'s University',
+            'London School of Economics (LSE)',
+            'University of Cambridge',
+            'University of Manchester',
+            'University of Melbourne',
+            'University of Sydney',
+            'Monash University',
+            'Boston University',
+            'Temple University'
+        ],
+        
+        'Economics': [
+            'Harvard University',
+            'Massachusetts Institute of Technology (MIT)',
+            'Stanford University',
+            'University of Chicago',
+            'Princeton University',
+            'Columbia University',
+            'Yale University',
+            'Northwestern University',
+            'University of California, Berkeley',
+            'Cornell University',
+            'University of Toronto',
+            'McGill University',
+            'London School of Economics (LSE)',
+            'University of Cambridge',
+            'University of Oxford',
+            'University College London (UCL)',
+            'University of Melbourne',
+            'Australian National University',
+            'University of Sydney',
+            'New York University'
+        ],
+        
+        'Marketing': [
+            'Northwestern University',
+            'University of Pennsylvania (Wharton)',
+            'Stanford University',
+            'Harvard University',
+            'Columbia University',
+            'New York University',
+            'Duke University',
+            'University of Michigan - Ann Arbor',
+            'University of California, Berkeley',
+            'University of North Carolina at Chapel Hill',
+            'University of Toronto',
+            'McGill University',
+            'London School of Economics (LSE)',
+            'University of Cambridge',
+            'University of Manchester',
+            'University of Melbourne',
+            'University of Sydney',
+            'Monash University',
+            'Arizona State University',
+            'University of Central Florida'
+        ],
+        
+        // Health & Life Sciences
+        'Medicine': [
+            'Harvard University',
+            'Johns Hopkins University',
+            'Stanford University',
+            'University of Pennsylvania',
+            'Yale University',
+            'Columbia University',
+            'Duke University',
+            'University of Chicago',
+            'Washington University in St. Louis',
+            'Cornell University',
+            'University of Toronto',
+            'McGill University',
+            'University of Oxford',
+            'University of Cambridge',
+            'Imperial College London',
+            'King\'s College London',
+            'University of Edinburgh',
+            'University of Melbourne',
+            'University of Sydney',
+            'Monash University'
+        ],
+        
+        'Nursing': [
+            'Johns Hopkins University',
+            'University of Pennsylvania',
+            'Duke University',
+            'Emory University',
+            'University of North Carolina at Chapel Hill',
+            'University of Michigan - Ann Arbor',
+            'University of Washington',
+            'Case Western Reserve University',
+            'Vanderbilt University',
+            'University of California, Los Angeles (UCLA)',
+            'University of Toronto',
+            'McGill University',
+            'University of Edinburgh',
+            'King\'s College London',
+            'University of Manchester',
+            'University of Sydney',
+            'University of Melbourne',
+            'Monash University',
+            'University of Technology Sydney',
+            'Queensland University of Technology'
+        ],
+        
+        'Pharmacy': [
+            'University of California, San Francisco',
+            'University of North Carolina at Chapel Hill',
+            'University of Minnesota Twin Cities',
+            'University of Kentucky',
+            'Purdue University',
+            'University of Michigan - Ann Arbor',
+            'University of Wisconsin-Madison',
+            'Ohio State University',
+            'University of Washington',
+            'University of Florida',
+            'University of Toronto',
+            'University of British Columbia',
+            'University of Bath',
+            'King\'s College London',
+            'University of Manchester',
+            'University of Sydney',
+            'University of Melbourne',
+            'Monash University',
+            'University of Queensland',
+            'Griffith University'
+        ],
+        
+        'Biology': [
+            'Harvard University',
+            'Massachusetts Institute of Technology (MIT)',
+            'Stanford University',
+            'California Institute of Technology (Caltech)',
+            'Yale University',
+            'Princeton University',
+            'Columbia University',
+            'Cornell University',
+            'University of California, Berkeley',
+            'University of Chicago',
+            'University of Toronto',
+            'McGill University',
+            'University of Cambridge',
+            'University of Oxford',
+            'Imperial College London',
+            'University of Edinburgh',
+            'ETH Zurich',
+            'University of Melbourne',
+            'Australian National University',
+            'University of Sydney'
+        ],
+        
+        'Chemistry': [
+            'Harvard University',
+            'Massachusetts Institute of Technology (MIT)',
+            'Stanford University',
+            'California Institute of Technology (Caltech)',
+            'University of California, Berkeley',
+            'Princeton University',
+            'Yale University',
+            'Columbia University',
+            'Cornell University',
+            'University of Chicago',
+            'University of Toronto',
+            'McGill University',
+            'University of Cambridge',
+            'University of Oxford',
+            'Imperial College London',
+            'ETH Zurich',
+            'Technical University of Munich (TUM)',
+            'University of Melbourne',
+            'Australian National University',
+            'University of Sydney'
+        ],
+        
+        'Psychology': [
+            'Harvard University',
+            'Stanford University',
+            'Yale University',
+            'University of California, Berkeley',
+            'University of Chicago',
+            'Columbia University',
+            'Princeton University',
+            'University of Michigan - Ann Arbor',
+            'University of Pennsylvania',
+            'Cornell University',
+            'University of Toronto',
+            'McGill University',
+            'University of Cambridge',
+            'University of Oxford',
+            'University College London (UCL)',
+            'University of Edinburgh',
+            'University of Melbourne',
+            'University of Sydney',
+            'Australian National University',
+            'New York University'
+        ],
+        
+        // Liberal Arts & Social Sciences
+        'Law': [
+            'Harvard University',
+            'Yale University',
+            'Stanford University',
+            'Columbia University',
+            'University of Chicago',
+            'New York University',
+            'University of Pennsylvania',
+            'University of Virginia',
+            'University of Michigan - Ann Arbor',
+            'Duke University',
+            'University of Toronto',
+            'McGill University',
+            'University of Oxford',
+            'University of Cambridge',
+            'London School of Economics (LSE)',
+            'King\'s College London',
+            'University College London (UCL)',
+            'University of Melbourne',
+            'University of Sydney',
+            'Australian National University'
+        ],
+        
+        'Political Science': [
+            'Harvard University',
+            'Stanford University',
+            'Princeton University',
+            'Yale University',
+            'Columbia University',
+            'University of Chicago',
+            'University of California, Berkeley',
+            'Cornell University',
+            'University of Michigan - Ann Arbor',
+            'Northwestern University',
+            'University of Toronto',
+            'McGill University',
+            'University of Oxford',
+            'University of Cambridge',
+            'London School of Economics (LSE)',
+            'Sciences Po',
+            'University of Melbourne',
+            'Australian National University',
+            'University of Sydney',
+            'New York University'
+        ],
+        
+        'International Relations': [
+            'Harvard University',
+            'Stanford University',
+            'Princeton University',
+            'Columbia University',
+            'Yale University',
+            'University of Chicago',
+            'Georgetown University',
+            'Tufts University',
+            'Johns Hopkins University',
+            'George Washington University',
+            'University of Toronto',
+            'McGill University',
+            'University of Oxford',
+            'University of Cambridge',
+            'London School of Economics (LSE)',
+            'Sciences Po',
+            'University of St. Andrews',
+            'Australian National University',
+            'University of Melbourne',
+            'University of Sydney'
+        ],
+        
+        'Communications': [
+            'Northwestern University',
+            'University of Southern California',
+            'Syracuse University',
+            'University of Pennsylvania',
+            'Columbia University',
+            'New York University',
+            'Boston University',
+            'University of North Carolina at Chapel Hill',
+            'University of Texas at Austin',
+            'Arizona State University',
+            'University of Toronto',
+            'McGill University',
+            'University of Leeds',
+            'University of Westminster',
+            'Goldsmiths, University of London',
+            'University of Melbourne',
+            'University of Sydney',
+            'Queensland University of Technology',
+            'RMIT University',
+            'University of Technology Sydney'
+        ],
+        
+        'Journalism': [
+            'Columbia University',
+            'Northwestern University',
+            'University of Missouri',
+            'Syracuse University',
+            'University of Southern California',
+            'New York University',
+            'Boston University',
+            'University of North Carolina at Chapel Hill',
+            'University of California, Berkeley',
+            'University of Texas at Austin',
+            'University of Toronto',
+            'Carleton University',
+            'City, University of London',
+            'University of Sheffield',
+            'Cardiff University',
+            'University of Melbourne',
+            'University of Technology Sydney',
+            'RMIT University',
+            'Queensland University of Technology',
+            'Curtin University'
+        ],
+        
+        'Education': [
+            'Harvard University',
+            'Stanford University',
+            'Teachers College, Columbia University',
+            'Vanderbilt University',
+            'University of Pennsylvania',
+            'University of Wisconsin-Madison',
+            'University of Michigan - Ann Arbor',
+            'Northwestern University',
+            'University of California, Los Angeles (UCLA)',
+            'New York University',
+            'University of Toronto',
+            'McGill University',
+            'University of Cambridge',
+            'University of Oxford',
+            'King\'s College London',
+            'University of Edinburgh',
+            'University of Melbourne',
+            'University of Sydney',
+            'Monash University',
+            'Deakin University'
+        ],
+        
+        'History': [
+            'Harvard University',
+            'Yale University',
+            'Princeton University',
+            'Stanford University',
+            'Columbia University',
+            'University of Chicago',
+            'University of California, Berkeley',
+            'Cornell University',
+            'University of Pennsylvania',
+            'Brown University',
+            'University of Toronto',
+            'McGill University',
+            'University of Oxford',
+            'University of Cambridge',
+            'University College London (UCL)',
+            'King\'s College London',
+            'University of Edinburgh',
+            'University of Melbourne',
+            'Australian National University',
+            'University of Sydney'
+        ],
+        
+        // Creative & Design
+        'Architecture': [
+            'Massachusetts Institute of Technology (MIT)',
+            'Harvard University',
+            'Columbia University',
+            'Cornell University',
+            'Yale University',
+            'Princeton University',
+            'University of California, Berkeley',
+            'University of Pennsylvania',
+            'Rice University',
+            'Virginia Tech',
+            'University of Toronto',
+            'McGill University',
+            'University of Cambridge',
+            'University College London (UCL)',
+            'Architectural Association School',
+            'ETH Zurich',
+            'Delft University of Technology',
+            'University of Melbourne',
+            'University of Sydney',
+            'RMIT University'
+        ],
+        
+        'Graphic Design': [
+            'Rhode Island School of Design',
+            'California Institute of the Arts',
+            'Pratt Institute',
+            'School of Visual Arts',
+            'Art Center College of Design',
+            'Carnegie Mellon University',
+            'Virginia Commonwealth University',
+            'University of Cincinnati',
+            'Arizona State University',
+            'Rochester Institute of Technology',
+            'OCAD University',
+            'Emily Carr University',
+            'Royal College of Art',
+            'Central Saint Martins',
+            'University of the Arts London',
+            'RMIT University',
+            'University of Technology Sydney',
+            'Queensland University of Technology',
+            'Swinburne University',
+            'Griffith University'
+        ],
+        
+        'Fine Arts': [
+            'Yale University',
+            'Rhode Island School of Design',
+            'School of the Art Institute of Chicago',
+            'California Institute of the Arts',
+            'Columbia University',
+            'Virginia Commonwealth University',
+            'Carnegie Mellon University',
+            'University of California, Los Angeles (UCLA)',
+            'New York University',
+            'Pratt Institute',
+            'OCAD University',
+            'Emily Carr University',
+            'Royal College of Art',
+            'Goldsmiths, University of London',
+            'University of the Arts London',
+            'Victorian College of the Arts',
+            'University of Melbourne',
+            'RMIT University',
+            'Queensland University of Technology',
+            'University of Technology Sydney'
+        ],
+        
+        'Fashion Design': [
+            'Parsons School of Design',
+            'Fashion Institute of Technology',
+            'Rhode Island School of Design',
+            'Pratt Institute',
+            'Savannah College of Art and Design',
+            'California College of the Arts',
+            'Art Institute of Chicago',
+            'Virginia Commonwealth University',
+            'Kent State University',
+            'Drexel University',
+            'Ryerson University',
+            'Central Saint Martins',
+            'London College of Fashion',
+            'Royal College of Art',
+            'Istituto Marangoni',
+            'RMIT University',
+            'Queensland University of Technology',
+            'University of Technology Sydney',
+            'Curtin University',
+            'Griffith University'
+        ],
+        
+        'Film Studies': [
+            'University of Southern California',
+            'New York University',
+            'American Film Institute',
+            'Columbia University',
+            'University of California, Los Angeles (UCLA)',
+            'Chapman University',
+            'Emerson College',
+            'Florida State University',
+            'Northwestern University',
+            'Syracuse University',
+            'York University',
+            'Concordia University',
+            'National Film and Television School',
+            'University of Westminster',
+            'Bournemouth University',
+            'Australian Film Television and Radio School',
+            'Griffith University',
+            'RMIT University',
+            'University of Technology Sydney',
+            'Queensland University of Technology'
+        ],
+        
+        'Music': [
+            'Juilliard School',
+            'Berklee College of Music',
+            'Yale University',
+            'Curtis Institute of Music',
+            'New England Conservatory',
+            'University of Rochester (Eastman)',
+            'Northwestern University',
+            'Indiana University Bloomington',
+            'University of Michigan - Ann Arbor',
+            'Oberlin College',
+            'University of Toronto',
+            'McGill University',
+            'Royal Academy of Music',
+            'Royal College of Music',
+            'Guildhall School of Music',
+            'University of Melbourne',
+            'Sydney Conservatorium of Music',
+            'Griffith University',
+            'Queensland Conservatorium',
+            'Australian National University'
+        ],
+        
+        // Specialized Fields
+        'Environmental Science': [
+            'Stanford University',
+            'Harvard University',
+            'Massachusetts Institute of Technology (MIT)',
+            'University of California, Berkeley',
+            'Yale University',
+            'Duke University',
+            'University of Michigan - Ann Arbor',
+            'Cornell University',
+            'Columbia University',
+            'University of Washington',
+            'University of Toronto',
+            'University of British Columbia',
+            'University of Cambridge',
+            'University of Oxford',
+            'Imperial College London',
+            'ETH Zurich',
+            'Wageningen University',
+            'University of Melbourne',
+            'Australian National University',
+            'University of Queensland'
+        ],
+        
+        'Agriculture': [
+            'Cornell University',
+            'University of California, Davis',
+            'Iowa State University',
+            'University of Illinois at Urbana-Champaign',
+            'Purdue University',
+            'Texas A&M University',
+            'Kansas State University',
+            'North Carolina State University',
+            'University of Florida',
+            'University of Wisconsin-Madison',
+            'University of Guelph',
+            'University of Saskatchewan',
+            'University of Alberta',
+            'Wageningen University',
+            'University of Reading',
+            'Harper Adams University',
+            'University of Melbourne',
+            'University of Queensland',
+            'University of Sydney',
+            'La Trobe University'
+        ],
+        
+        'Hospitality Management': [
+            'Cornell University',
+            'University of Nevada, Las Vegas',
+            'Florida International University',
+            'Penn State University',
+            'Rochester Institute of Technology',
+            'University of Central Florida',
+            'Virginia Tech',
+            'Purdue University',
+            'Johnson & Wales University',
+            'California State Polytechnic University',
+            'University of Guelph',
+            'Ryerson University',
+            'University of Surrey',
+            'Oxford Brookes University',
+            'Bournemouth University',
+            'Griffith University',
+            'University of Queensland',
+            'Southern Cross University',
+            'Victoria University',
+            'Blue Mountains International Hotel Management School'
+        ],
+        
+        'Sports Management': [
+            'University of Massachusetts Amherst',
+            'Syracuse University',
+            'University of Florida',
+            'Ohio University',
+            'University of Michigan - Ann Arbor',
+            'University of North Carolina at Chapel Hill',
+            'Arizona State University',
+            'University of Texas at Austin',
+            'Penn State University',
+            'University of Tennessee',
+            'University of Toronto',
+            'Brock University',
+            'Loughborough University',
+            'University of Birmingham',
+            'Manchester Metropolitan University',
+            'Deakin University',
+            'Griffith University',
+            'University of Technology Sydney',
+            'Victoria University',
+            'La Trobe University'
+        ],
+        
+        'Culinary Arts': [
+            'Culinary Institute of America',
+            'Johnson & Wales University',
+            'The Art Institute',
+            'Kendall College',
+            'Sullivan University',
+            'New England Culinary Institute',
+            'Institute of Culinary Education',
+            'Drexel University',
+            'University of Nevada, Las Vegas',
+            'Florida International University',
+            'George Brown College',
+            'Centennial College',
+            'University of West London',
+            'Westminster Kingsway College',
+            'Bournemouth University',
+            'William Angliss Institute',
+            'TAFE Queensland',
+            'Le Cordon Bleu Australia',
+            'Torrens University Australia',
+            'Blue Mountains International Hotel Management School'
+        ]
+    };
+}
+// ===== MOBILE NAVIGATION ===== (Keep your existing code)
 document.addEventListener('DOMContentLoaded', function() {
     const mobileToggle = document.getElementById('mobileToggle');
     const navMenu = document.getElementById('navMenu');
@@ -40,6 +973,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    // ===== ADD THIS: Auto-reset form on page load =====
+    setTimeout(() => {
+        const resultsSection = document.getElementById('resultsSection');
+        if (resultsSection) {
+            resultsSection.classList.remove('show');
+            resultsSection.innerHTML = '';
+        }
+    }, 100);
+
+    // ===== ADD THIS: Add reset button to form =====
+    setTimeout(addResetButtonToForm, 500);
 });
 
 // ===== FORM INTERACTIONS =====
@@ -252,12 +1197,18 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show loading state
             searchBtn.classList.add('loading');
             searchBtn.disabled = true;
+            searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching Universities...';
+
+            // Hide previous results
+            resultsSection.classList.remove('show');
+            resultsSection.innerHTML = '';
 
             // Simulate API call and show results
             setTimeout(() => {
                 showResults(profileData);
                 searchBtn.classList.remove('loading');
                 searchBtn.disabled = false;
+                searchBtn.innerHTML = '<i class="fas fa-search"></i> Find My Universities';
             }, 2500);
         });
     }
@@ -357,93 +1308,319 @@ document.addEventListener('DOMContentLoaded', function() {
         resultsSection.classList.add('show');
         resultsSection.scrollIntoView({ behavior: 'smooth' });
     }
+// ===== ADD THESE NEW FUNCTIONS =====
 
-    // Show university results
-    function showResults(profileData) {
-        const universities = generateUniversityRecommendations(profileData);
+// Main reset function
+function resetForm() {
+    if (confirm('Are you sure you want to reset the form and search again? All data will be cleared.')) {
+        const form = document.getElementById('profileForm');
+        const resultsSection = document.getElementById('resultsSection');
         
-        if (universities.length === 0) {
-            showNoResultsMessage(profileData);
-            return;
+        if (form) {
+            // Reset the form
+            form.reset();
+            
+            // Hide all conditional fields
+            const greScoreGroup = document.getElementById('greScoreGroup');
+            const englishTestGroup = document.getElementById('englishTestGroup');
+            const englishScoreGroup = document.getElementById('englishScoreGroup');
+            const standardizedTestGroup = document.getElementById('standardizedTestGroup');
+            const standardizedScoreGroup = document.getElementById('standardizedScoreGroup');
+            
+            if (greScoreGroup) greScoreGroup.style.display = 'none';
+            if (englishTestGroup) englishTestGroup.style.display = 'none';
+            if (englishScoreGroup) englishScoreGroup.style.display = 'none';
+            if (standardizedTestGroup) standardizedTestGroup.style.display = 'none';
+            if (standardizedScoreGroup) standardizedScoreGroup.style.display = 'none';
+            
+            // Reset help text
+            const englishHelp = document.getElementById('englishHelp');
+            const standardizedHelp = document.getElementById('standardizedHelp');
+            if (englishHelp) englishHelp.textContent = 'Select test type to see score range';
+            if (standardizedHelp) standardizedHelp.textContent = 'Select test type to see score range';
+            
+            // Clear validation classes from inputs
+            const inputs = form.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.classList.remove('valid', 'invalid');
+                // Reset required attributes
+                if (['cgpa', 'programLevel', 'course'].includes(input.id)) {
+                    input.required = true;
+                } else {
+                    input.required = false;
+                }
+            });
+            
+            // Hide results section
+            if (resultsSection) {
+                resultsSection.classList.remove('show');
+                setTimeout(() => {
+                    resultsSection.innerHTML = '';
+                }, 300);
+            }
+            
+            // Reset search button
+            const searchBtn = document.getElementById('searchBtn');
+            if (searchBtn) {
+                searchBtn.classList.remove('loading');
+                searchBtn.disabled = false;
+                searchBtn.innerHTML = '<i class="fas fa-search"></i> Find My Universities';
+            }
+            
+            // Scroll back to form
+            form.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            // Focus on first input after scroll
+            setTimeout(() => {
+                const firstInput = document.getElementById('cgpa');
+                if (firstInput) {
+                    firstInput.focus();
+                }
+            }, 500);
         }
+    }
+}
 
-        const resultsHtml = universities.map(university => `
-            <div class="university-card">
-                <div class="university-header">
-                    <div class="university-logo">
-                        ${university.name.charAt(0)}
-                    </div>
-                    <div class="university-info">
-                        <h3>${university.name}</h3>
-                        <p class="university-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            ${university.location}
-                        </p>
-                    </div>
-                    <div class="match-score">
-                        <i class="fas fa-percentage"></i>
-                        ${university.matchScore}% Match
-                    </div>
+// Perform the actual form reset
+function performFormReset() {
+    // Reset the form
+    const form = document.getElementById('profileForm');
+    if (form) {
+        form.reset();
+    }
+    
+    // Reset all conditional fields visibility
+    const greScoreGroup = document.getElementById('greScoreGroup');
+    const englishTestGroup = document.getElementById('englishTestGroup');
+    const englishScoreGroup = document.getElementById('englishScoreGroup');
+    const standardizedTestGroup = document.getElementById('standardizedTestGroup');
+    const standardizedScoreGroup = document.getElementById('standardizedScoreGroup');
+    
+    if (greScoreGroup) greScoreGroup.style.display = 'none';
+    if (englishTestGroup) englishTestGroup.style.display = 'none';
+    if (englishScoreGroup) englishScoreGroup.style.display = 'none';
+    if (standardizedTestGroup) standardizedTestGroup.style.display = 'none';
+    if (standardizedScoreGroup) standardizedScoreGroup.style.display = 'none';
+    
+    // Reset help text
+    const englishHelp = document.getElementById('englishHelp');
+    const standardizedHelp = document.getElementById('standardizedHelp');
+    if (englishHelp) englishHelp.textContent = 'Select test type to see score range';
+    if (standardizedHelp) standardizedHelp.textContent = 'Select test type to see score range';
+    
+    // Clear input values and validation classes
+    const inputs = form.querySelectorAll('input, select');
+    inputs.forEach(input => {
+        input.classList.remove('valid', 'invalid');
+        if (input.type === 'checkbox') {
+            input.checked = false;
+        } else {
+            input.value = '';
+        }
+        input.required = ['cgpa', 'programLevel', 'course'].includes(input.id);
+    });
+    
+    // Hide results section with animation
+    const resultsSection = document.getElementById('resultsSection');
+    if (resultsSection) {
+        resultsSection.classList.remove('show');
+        setTimeout(() => {
+            resultsSection.innerHTML = '';
+        }, 300);
+    }
+    
+    // Reset search button
+    const searchBtn = document.getElementById('searchBtn');
+    if (searchBtn) {
+        searchBtn.classList.remove('loading');
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = '<i class="fas fa-search"></i> Find My Universities';
+    }
+    
+    // Scroll back to form
+    const formSection = document.querySelector('.profile-builder') || form;
+    if (formSection) {
+        formSection.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+    
+    // Show success message
+    showSuccessMessage('Form reset successfully! You can now search again.', () => {
+        const firstInput = document.getElementById('cgpa');
+        if (firstInput) {
+            firstInput.focus();
+        }
+    });
+}
+
+// Add reset button to the form
+function addResetButtonToForm() {
+    const searchBtn = document.getElementById('searchBtn');
+    if (searchBtn && !document.getElementById('formResetBtn')) {
+        const resetBtn = document.createElement('button');
+        resetBtn.type = 'button';
+        resetBtn.id = 'formResetBtn';
+        resetBtn.className = 'reset-form-btn';
+        resetBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Clear Form';
+        resetBtn.style.cssText = `
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 1rem;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        `;
+        
+        resetBtn.addEventListener('click', resetForm);
+        
+        resetBtn.addEventListener('mouseenter', () => {
+            resetBtn.style.transform = 'translateY(-2px)';
+            resetBtn.style.boxShadow = '0 8px 20px rgba(239, 68, 68, 0.5)';
+        });
+        
+        resetBtn.addEventListener('mouseleave', () => {
+            resetBtn.style.transform = 'translateY(0)';
+            resetBtn.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
+        });
+        
+        searchBtn.parentNode.appendChild(resetBtn);
+    }
+}
+    // ===== REPLACE YOUR showResults FUNCTION WITH THIS =====
+function showResults(profileData) {
+    const universities = generateUniversityRecommendations(profileData);
+    
+    if (universities.length === 0) {
+        showNoResultsMessage(profileData);
+        return;
+    }
+
+    const resultsHtml = universities.map(university => `
+        <div class="university-card">
+            <div class="university-header">
+                <div class="university-logo">
+                    ${university.name.charAt(0)}
                 </div>
-                
-                <div class="university-details">
-                    <div class="detail-card">
-                        <h4><i class="fas fa-graduation-cap"></i> Program Information</h4>
-                        <ul class="requirements-list">
-                            <li><i class="fas fa-check"></i> ${university.program}</li>
-                            <li><i class="fas fa-check"></i> Duration: ${university.duration}</li>
-                            <li><i class="fas fa-check"></i> Tuition: ${university.tuition}</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="detail-card">
-                        <h4><i class="fas fa-clipboard-list"></i> Admission Requirements</h4>
-                        <ul class="requirements-list">
-                            <li><i class="fas fa-check"></i> Min CGPA: ${university.requirements.cgpa}</li>
-                            ${university.requirements.gre ? `<li><i class="fas fa-check"></i> Min GRE: ${university.requirements.gre}</li>` : ''}
-                            ${university.requirements.english ? `<li><i class="fas fa-check"></i> ${university.requirements.english}</li>` : ''}
-                            ${university.requirements.standardized ? `<li><i class="fas fa-check"></i> ${university.requirements.standardized}</li>` : ''}
-                        </ul>
-                    </div>
-                    
-                    <div class="detail-card">
-                        <h4><i class="fas fa-star"></i> University Highlights</h4>
-                        <ul class="requirements-list">
-                            ${university.highlights.map(highlight => `
-                                <li><i class="fas fa-star"></i> ${highlight}</li>
-                            `).join('')}
-                        </ul>
-                    </div>
+                <div class="university-info">
+                    <h3>${university.name}</h3>
+                    <p class="university-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        ${university.location}
+                    </p>
                 </div>
-                
-                <div class="university-actions">
-                    <button class="action-button primary" onclick="applyToUniversity('${university.name}')">
-                        <i class="fas fa-paper-plane"></i>
-                        Apply Now
-                    </button>
-                    <button class="action-button secondary" onclick="learnMore('${university.name}')">
-                        <i class="fas fa-info-circle"></i>
-                        Learn More
-                    </button>
+                <div class="match-score">
+                    <i class="fas fa-percentage"></i>
+                    ${university.matchScore}% Match
                 </div>
             </div>
-        `).join('');
+            
+            <div class="university-details">
+                <div class="detail-card">
+                    <h4><i class="fas fa-graduation-cap"></i> Program Information</h4>
+                    <ul class="requirements-list">
+                        <li><i class="fas fa-check"></i> ${university.program}</li>
+                        <li><i class="fas fa-check"></i> Duration: ${university.duration}</li>
+                        <li><i class="fas fa-check"></i> Tuition: ${university.tuition}</li>
+                    </ul>
+                </div>
+                
+                <div class="detail-card">
+                    <h4><i class="fas fa-clipboard-list"></i> Admission Requirements</h4>
+                    <ul class="requirements-list">
+                        <li><i class="fas fa-check"></i> Min CGPA: ${university.requirements.cgpa}</li>
+                        ${university.requirements.gre ? `<li><i class="fas fa-check"></i> Min GRE: ${university.requirements.gre}</li>` : ''}
+                        ${university.requirements.english ? `<li><i class="fas fa-check"></i> ${university.requirements.english}</li>` : ''}
+                        ${university.requirements.standardized ? `<li><i class="fas fa-check"></i> ${university.requirements.standardized}</li>` : ''}
+                    </ul>
+                </div>
+                
+                <div class="detail-card">
+                    <h4><i class="fas fa-star"></i> University Highlights</h4>
+                    <ul class="requirements-list">
+                        ${university.highlights.map(highlight => `
+                            <li><i class="fas fa-star"></i> ${highlight}</li>
+                        `).join('')}
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="university-actions">
+                <button class="action-button primary" onclick="applyToUniversity('${university.name}')">
+                    <i class="fas fa-paper-plane"></i>
+                    Apply Now
+                </button>
+                <button class="action-button secondary" onclick="learnMore('${university.name}')">
+                    <i class="fas fa-info-circle"></i>
+                    Learn More
+                </button>
+            </div>
+        </div>
+    `).join('');
 
-        resultsSection.innerHTML = `
+    resultsSection.innerHTML = `
+        <div class="results-header">
             <div style="padding: 2rem; text-align: center; border-bottom: 1px solid var(--border-color);">
                 <h3 style="color: var(--success-color); margin-bottom: 1rem;">
                     <i class="fas fa-check-circle"></i> Found ${universities.length} Perfect Matches!
                 </h3>
-                <p style="color: var(--text-secondary); margin-bottom: 0;">
-                    Based on your academic profile, here are the universities that best match your qualifications.
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Based on your academic profile for <strong>${profileData.course}</strong>, here are the universities that best match your qualifications.
                 </p>
+                
+                <!-- Reset Button -->
+                <button onclick="resetForm()" class="reset-button" style="
+                    background: linear-gradient(135deg, #f59e0b, #d97706);
+                    color: white;
+                    border: none;
+                    padding: 0.75rem 1.5rem;
+                    border-radius: 0.5rem;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                ">
+                    <i class="fas fa-redo"></i>
+                    Search Again
+                </button>
             </div>
+        </div>
+        <div class="results-content">
             ${resultsHtml}
-        `;
+        </div>
+    `;
+    
+    resultsSection.classList.add('show');
+    resultsSection.scrollIntoView({ behavior: 'smooth' });
+    
+    // Add hover effect for reset button
+    const resetButton = resultsSection.querySelector('.reset-button');
+    if (resetButton) {
+        resetButton.addEventListener('mouseenter', () => {
+            resetButton.style.transform = 'translateY(-2px)';
+            resetButton.style.boxShadow = '0 8px 20px rgba(245, 158, 11, 0.5)';
+        });
         
-        resultsSection.classList.add('show');
-        resultsSection.scrollIntoView({ behavior: 'smooth' });
+        resetButton.addEventListener('mouseleave', () => {
+            resetButton.style.transform = 'translateY(0)';
+            resetButton.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.3)';
+        });
     }
+    
+}
 
     // Generate university recommendations based on user profile
     function generateUniversityRecommendations(profileData) {
@@ -3205,55 +4382,54 @@ document.addEventListener('DOMContentLoaded', function() {
         return `${testType}: ${requirements[testType][level]}`;
     }
 
-    // Show no results message
     function showNoResultsMessage(profileData) {
-        const suggestions = [];
-        
-        if (parseFloat(profileData.cgpa) < 3.0) {
-            suggestions.push('Consider improving your CGPA through additional coursework or retaking courses');
-        }
-        if (profileData.greRequired === 'yes' && parseInt(profileData.greScore) < 300) {
-            suggestions.push('Retake the GRE to improve your score (aim for 300+ for better options)');
-        }
-        if (profileData.englishRequired === 'yes' && profileData.englishScore) {
-            const score = parseFloat(profileData.englishScore);
-            if (profileData.englishTest === 'IELTS' && score < 6.0) {
-                suggestions.push('Improve your IELTS score to at least 6.0 for more university options');
-            } else if (profileData.englishTest === 'TOEFL' && score < 80) {
-                suggestions.push('Improve your TOEFL score to at least 80 for more university options');
-            } else if (profileData.englishTest === 'Duolingo' && score < 105) {
-                suggestions.push('Improve your Duolingo score to at least 105 for more university options');
-            }
-        }
+    const suggestions = [];
 
-        const suggestionHtml = suggestions.length > 0 ? `
-            <div style="margin-top: 2rem; text-align: left; max-width: 500px; margin-left: auto; margin-right: auto;">
-                <h4 style="color: var(--primary-color); margin-bottom: 1rem;">
-                    <i class="fas fa-lightbulb"></i> Suggestions to improve your profile:
-                </h4>
-                <ul style="color: var(--text-secondary);">
-                    ${suggestions.map(suggestion => `<li style="margin: 0.5rem 0;">${suggestion}</li>`).join('')}
-                </ul>
-            </div>
-        ` : '';
-
-        resultsSection.innerHTML = `
-            <div class="error-message">
-                <h3><i class="fas fa-search"></i> No Perfect Matches Found</h3>
-                <p>Based on your current profile, we couldn't find universities that match your qualifications perfectly. Don't worry - this doesn't mean you can't get admitted!</p>
-                ${suggestionHtml}
-                <div style="margin-top: 2rem;">
-                    <button class="action-button primary" onclick="contactAdvisor()" style="display: inline-flex; max-width: 300px;">
-                        <i class="fas fa-phone"></i>
-                        Contact Academic Advisor
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        resultsSection.classList.add('show');
-        resultsSection.scrollIntoView({ behavior: 'smooth' });
+    if (parseFloat(profileData.cgpa) < 3.0) {
+        suggestions.push('No worries! You can strengthen your CGPA with additional coursework or by retaking some courses. Our consultants are here to help you succeed!');
     }
+    if (profileData.greRequired === 'yes' && parseInt(profileData.greScore) < 300) {
+        suggestions.push('You’re almost there! Retaking the GRE to aim for a score of 300+ can open more doors. Our team can guide you through the process!');
+    }
+    if (profileData.englishRequired === 'yes' && profileData.englishScore) {
+        const score = parseFloat(profileData.englishScore);
+        if (profileData.englishTest === 'IELTS' && score < 6.0) {
+            suggestions.push('Keep going! Boosting your IELTS score to 6.0 or higher will unlock more university options. Our consultants can support you every step of the way!');
+        } else if (profileData.englishTest === 'TOEFL' && score < 80) {
+            suggestions.push('You’ve got this! Aiming for a TOEFL score of 80 or above can expand your choices. Let our team help you reach your goal!');
+        } else if (profileData.englishTest === 'Duolingo' && score < 105) {
+            suggestions.push('Don’t stress! Improving your Duolingo score to 105 or higher can make your application shine. Our consultants are ready to assist!');
+        }
+    }
+
+    const suggestionHtml = suggestions.length > 0 ? `
+        <div style="margin-top: 2rem; text-align: left; max-width: 500px; margin-left: auto; margin-right: auto;">
+            <h4 style="color: var(--primary-color); margin-bottom: 1rem;">
+                <i class="fas fa-lightbulb"></i> Suggestions to improve your profile:
+            </h4>
+            <ul style="color: var(--text-secondary);">
+                ${suggestions.map(suggestion => `<li style="margin: 0.5rem 0;">${suggestion}</li>`).join('')}
+            </ul>
+        </div>
+    ` : '';
+
+    resultsSection.innerHTML = `
+        <div class="error-message">
+            <h3><i class="fas fa-search"></i> No Perfect Matches Found</h3>
+            <p>Don't worry! We're here to help you get into your dream university. Based on your profile, we couldn't find a perfect match, but our expert consultants can work with you to find the best options!</p>
+            ${suggestionHtml}
+            <div style="margin-top: 2rem;">
+                <button class="action-button primary" onclick="window.location.href='index.html#contact'" style="display: inline-flex; max-width: 300px;">
+                    <i class="fas fa-phone"></i>
+                    Need Help? Contact Our Consultants
+                </button>
+            </div>
+        </div>
+    `;
+
+    resultsSection.classList.add('show');
+    resultsSection.scrollIntoView({ behavior: 'smooth' });
+}
 });
 
 // ===== UTILITY FUNCTIONS =====
