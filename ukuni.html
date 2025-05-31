@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download UK Universities Data</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <h1>UK Universities Data Generator</h1>
+    <p>Click the button below to download an Excel file with 100+ UK universities data for international students.</p>
+    
+    <button id="downloadBtn" style="padding: 15px 30px; font-size: 18px; background-color: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 5px;">
+        Download UK Universities Excel File
+    </button>
+    
+    <p id="status" style="margin-top: 20px; font-weight: bold;"></p>
+
+    <script>
+        // UK University data - 100+ Universities
+        const universities = [
+            ["University Name", "Annual Fees (International)", "Minimum CGPA", "Minimum IELTS", "Minimum TOEFL", "Entry Requirements", "Acceptance Rate"],
+            
+            // Russell Group Universities (Top Research Universities)
+            ["University of Oxford", "£32,000-£47,000", "3.8", "7.0", "100", "A*A*A", "18%"],
+            ["University of Cambridge", "£32,000-£58,000", "3.8", "7.5", "110", "A*A*A", "21%"],
+            ["Imperial College London", "£35,000-£50,000", "3.7", "6.5", "92", "A*A*A", "14%"],
+            ["University College London", "£25,000-£47,000", "3.6", "6.5", "92", "A*AA", "48%"],
+            ["King's College London", "£23,000-£45,000", "3.5", "6.5", "92", "A*AA", "13%"],
+            ["London School of Economics", "£25,000-£39,000", "3.7", "7.0", "100", "A*AA", "8%"],
+            ["University of Edinburgh", "£24,000-£34,000", "3.5", "6.5", "92", "AAA", "44%"],
+            ["University of Manchester", "£22,000-£45,000", "3.4", "6.5", "90", "AAA", "56%"],
+            ["University of Warwick", "£22,000-£47,000", "3.5", "6.5", "92", "A*AA", "14%"],
+            ["University of Bristol", "£22,000-£40,000", "3.4", "6.5", "90", "A*AA", "63%"],
+            ["University of Glasgow", "£20,000-£47,000", "3.4", "6.5", "90", "AAA", "77%"],
+            ["Durham University", "£22,000-£32,000", "3.5", "6.5", "92", "A*AA", "41%"],
+            ["University of Sheffield", "£20,000-£40,000", "3.3", "6.0", "88", "AAA", "84%"],
+            ["University of Birmingham", "£20,000-£40,000", "3.3", "6.0", "88", "AAA", "86%"],
+            ["University of Nottingham", "£20,000-£40,000", "3.3", "6.0", "87", "AAA", "69%"],
+            ["University of Leeds", "£22,000-£40,000", "3.3", "6.0", "87", "AAA", "77%"],
+            ["University of Southampton", "£20,000-£40,000", "3.3", "6.0", "88", "AAA", "84%"],
+            ["Newcastle University", "£20,000-£35,000", "3.2", "6.0", "88", "AAB", "77%"],
+            ["University of York", "£21,000-£28,000", "3.3", "6.0", "87", "AAA", "68%"],
+            ["University of Exeter", "£22,000-£30,000", "3.3", "6.5", "90", "AAA", "73%"],
+            ["Cardiff University", "£20,000-£39,000", "3.2", "6.5", "90", "AAB", "85%"],
+            ["Queen Mary University London", "£20,000-£40,000", "3.2", "6.0", "88", "AAB", "41%"],
+            ["University of Liverpool", "£20,000-£35,000", "3.2", "6.0", "88", "AAB", "86%"],
+            ["Queen's University Belfast", "£18,000-£39,000", "3.2", "6.0", "88", "AAB", "83%"],
+            
+            // University of London Colleges
+            ["Birkbeck University of London", "£16,000-£20,000", "3.0", "6.5", "92", "BBC", "75%"],
+            ["City University of London", "£19,000-£42,000", "3.2", "6.0", "88", "AAB", "21%"],
+            ["Goldsmiths University of London", "£17,000-£25,000", "3.0", "6.5", "92", "BBB", "13%"],
+            ["Royal Holloway University", "£19,000-£25,000", "3.2", "6.5", "88", "AAB", "70%"],
+            ["SOAS University of London", "£19,000-£22,000", "3.3", "7.0", "100", "AAA", "44%"],
+            ["St George's University London", "£35,000-£45,000", "3.4", "7.0", "100", "AAA", "26%"],
+            
+            // Scottish Universities
+            ["University of St Andrews", "£26,000-£33,000", "3.6", "7.0", "100", "A*AA", "8%"],
+            ["University of Strathclyde", "£18,000-£25,000", "3.2", "6.0", "88", "AAB", "79%"],
+            ["University of Aberdeen", "£18,000-£24,000", "3.1", "6.0", "88", "ABB", "75%"],
+            ["University of Dundee", "£19,000-£45,000", "3.1", "6.0", "88", "ABB", "71%"],
+            ["Heriot-Watt University", "£17,000-£32,000", "3.1", "6.0", "88", "ABB", "34%"],
+            ["University of Stirling", "£16,000-£19,000", "3.0", "6.0", "88", "BBB", "45%"],
+            ["Glasgow Caledonian University", "£13,000-£16,000", "2.8", "6.0", "80", "CCC", "85%"],
+            ["Edinburgh Napier University", "£14,000-£17,000", "2.8", "6.0", "88", "CCC", "85%"],
+            ["University of the West of Scotland", "£13,000-£15,000", "2.8", "6.0", "80", "CCC", "92%"],
+            ["Robert Gordon University", "£15,000-£17,000", "3.0", "6.0", "88", "BBB", "78%"],
+            ["Queen Margaret University", "£15,000-£17,000", "2.8", "6.0", "88", "CCC", "87%"],
+            ["University of the Highlands", "£12,000-£15,000", "2.7", "6.0", "80", "CCC", "95%"],
+            
+            // Welsh Universities
+            ["Swansea University", "£18,000-£20,000", "3.1", "6.0", "88", "ABB", "76%"],
+            ["Bangor University", "£16,000-£18,000", "3.0", "6.0", "88", "BBB", "75%"],
+            ["Aberystwyth University", "£16,000-£18,000", "3.0", "6.0", "88", "BBB", "90%"],
+            ["Cardiff Metropolitan University", "£13,000-£15,000", "2.8", "6.0", "80", "CCC", "88%"],
+            ["University of South Wales", "£13,000-£15,000", "2.8", "6.0", "80", "CCC", "92%"],
+            ["Wrexham Glyndwr University", "£12,000-£14,000", "2.7", "6.0", "80", "CCC", "95%"],
+            
+            // Northern Ireland Universities
+            ["Ulster University", "£15,000-£18,000", "3.0", "6.0", "88", "BBB", "75%"],
+            ["Stranmillis University College", "£14,000-£16,000", "2.8", "6.0", "80", "CCC", "85%"],
+            
+            // Post-1992 Universities (Former Polytechnics)
+            ["University of Westminster", "£14,000-£18,000", "3.0", "6.0", "88", "BBB", "75%"],
+            ["London Metropolitan University", "£13,000-£15,000", "2.8", "6.0", "80", "CCC", "85%"],
+            ["University of Greenwich", "£14,000-£16,000", "2.8", "6.0", "80", "CCC", "78%"],
+            ["Middlesex University", "£14,000-£17,000", "2.8", "6.0", "80", "CCC", "82%"],
+            ["University of East London", "£13,000-£15,000", "2.7", "6.0", "80", "CCC", "88%"],
+            ["Kingston University", "£14,000-£18,000", "2.8", "6.0", "80", "CCC", "85%"],
+            ["University of Roehampton", "£13,000-£15,000", "2.8", "6.0", "80", "CCC", "90%"],
+            ["London South Bank University", "£13,000-£15,000", "2.7", "6.0", "80", "CCC", "92%"],
+            ["University of Hertfordshire", "£14,000-£18,000", "2.8", "6.0", "88", "CCC", "70%"],
+            ["Anglia Ruskin University", "£13,000-£16,000", "2.8", "6.0", "88", "CCC", "87%"],
+            ["University of Bedfordshire", "£13,000-£14,000", "2.7", "6.0", "80", "CCC", "92%"],
+            ["Coventry University", "£15,000-£18,000", "2.8", "6.0", "88", "CCC", "46%"],
+            ["De Montfort University", "£14,000-£16,000", "2.8", "6.0", "88", "CCC", "78%"],
+            ["University of Central Lancashire", "£14,000-£16,000", "2.8", "6.0", "88", "CCC", "85%"],
+            ["Manchester Metropolitan University", "£15,000-£17,000", "2.8", "6.0", "88", "CCC", "81%"],
+            ["Sheffield Hallam University", "£14,000-£16,000", "2.8", "6.0", "88", "CCC", "84%"],
+            ["Leeds Beckett University", "£14,000-£15,000", "2.8", "6.0", "88", "CCC", "87%"],
+            ["Nottingham Trent University", "£14,000-£16,000", "2.8", "6.0", "88", "CCC", "22%"],
+            ["Birmingham City University", "£13,000-£16,000", "2.8", "6.0", "88", "CCC", "71%"],
+            ["University of Wolverhampton", "£13,000-£14,000", "2.7", "6.0", "80", "CCC", "92%"],
+            ["Staffordshire University", "£14,000-£15,000", "2.7", "6.0", "80", "CCC", "95%"],
+            ["University of Derby", "£14,000-£15,000", "2.7", "6.0", "80", "CCC", "88%"],
+            ["University of Huddersfield", "£15,000-£17,000", "2.8", "6.0", "88", "CCC", "85%"],
+            ["University of Bradford", "£18,000-£20,000", "3.0", "6.0", "88", "BBB", "85%"],
+            ["University of Salford", "£15,000-£17,000", "2.8", "6.0", "88", "CCC", "85%"],
+            ["University of Bolton", "£12,000-£14,000", "2.7", "6.0", "80", "CCC", "95%"],
+            ["University of Chester", "£12,000-£14,000", "2.8", "6.0", "80", "CCC", "87%"],
+            ["University of Cumbria", "£12,000-£13,000", "2.7", "6.0", "80", "CCC", "95%"],
+            ["Edge Hill University", "£13,000-£14,000", "2.8", "6.0", "80", "CCC", "88%"],
+            ["Liverpool John Moores University", "£15,000-£16,000", "2.8", "6.0", "88", "CCC", "85%"],
+            ["Liverpool Hope University", "£12,000-£13,000", "2.8", "6.0", "80", "CCC", "92%"],
+            ["University of Portsmouth", "£16,000-£18,000", "2.8", "6.0", "88", "CCC", "77%"],
+            ["University of Brighton", "£14,000-£17,000", "2.8", "6.0", "88", "CCC", "75%"],
+            ["Canterbury Christ Church University", "£14,000-£15,000", "2.7", "6.0", "80", "CCC", "90%"],
+            ["University of Kent", "£17,000-£20,000", "3.1", "6.0", "90", "ABB", "76%"],
+            ["Oxford Brookes University", "£15,000-£16,000", "2.8", "6.0", "88", "CCC", "69%"],
+            ["Bournemouth University", "£16,000-£18,000", "2.8", "6.0", "88", "CCC", "77%"],
+            ["University of Plymouth", "£14,000-£16,000", "2.8", "6.0", "88", "CCC", "82%"],
+            ["University of the West of England", "£15,000-£16,000", "2.8", "6.0", "88", "CCC", "85%"],
+            ["Bath Spa University", "£14,000-£15,000", "2.8", "6.0", "88", "CCC", "85%"],
+            ["University of Gloucestershire", "£14,000-£15,000", "2.7", "6.0", "80", "CCC", "92%"],
+            ["University of Worcester", "£13,000-£14,000", "2.7", "6.0", "80", "CCC", "92%"],
+            ["University of Northampton", "£14,000-£15,000", "2.7", "6.0", "80", "CCC", "92%"],
+            ["University of Lincoln", "£15,000-£16,000", "2.8", "6.0", "88", "CCC", "85%"],
+            ["University of East Anglia", "£18,000-£24,000", "3.2", "6.5", "88", "AAB", "22%"],
+            ["University of Essex", "£18,000-£20,000", "3.1", "6.0", "88", "ABB", "67%"],
+            ["Brunel University London", "£17,000-£23,000", "3.0", "6.0", "88", "BBB", "64%"],
+            ["University of Surrey", "£19,000-£23,000", "3.2", "6.5", "88", "AAB", "77%"],
+            ["University of Sussex", "£19,000-£33,000", "3.2", "6.5", "88", "AAB", "29%"],
+            ["University of Bath", "£22,000-£45,000", "3.4", "6.5", "90", "A*AA", "67%"],
+            ["Loughborough University", "£22,000-£26,000", "3.3", "6.5", "90", "AAA", "69%"],
+            ["Lancaster University", "£21,000-£35,000", "3.3", "6.5", "87", "AAA", "78%"],
+            ["University of Reading", "£17,000-£27,000", "3.1", "6.5", "88", "ABB", "74%"],
+            ["Aston University", "£17,000-£22,000", "3.0", "6.0", "88", "BBB", "80%"],
+            ["University of Leicester", "£18,000-£21,000", "3.1", "6.0", "88", "ABB", "75%"],
+            ["Keele University", "£15,000-£17,000", "2.9", "6.0", "88", "BBB", "88%"],
+            
+            // Specialist Institutions
+            ["Royal College of Art", "£29,000-£32,000", "3.5", "6.5", "93", "Portfolio", "25%"],
+            ["University of the Arts London", "£19,000-£25,000", "3.0", "6.0", "92", "Portfolio", "36%"],
+            ["Royal College of Music", "£25,000-£29,000", "3.2", "5.5", "88", "Audition", "45%"],
+            ["Guildhall School of Music", "£22,000-£25,000", "3.0", "5.5", "88", "Audition", "50%"],
+            ["Royal Academy of Music", "£23,000-£28,000", "3.2", "5.5", "88", "Audition", "35%"],
+            ["London Business School", "£87,000", "3.5", "7.0", "100", "GMAT 700", "25%"],
+            ["Cranfield University", "£22,000-£38,000", "3.2", "6.5", "92", "ABB", "59%"],
+            ["Royal Agricultural University", "£25,000", "2.8", "6.0", "88", "CCC", "85%"],
+            ["Harper Adams University", "£11,000-£25,000", "2.8", "6.0", "88", "CCC", "85%"],
+            ["University for the Creative Arts", "£16,000-£17,000", "2.8", "6.0", "88", "Portfolio", "75%"],
+            ["Falmouth University", "£16,000-£17,000", "2.8", "6.0", "88", "CCC", "90%"],
+            ["Norwich University of the Arts", "£15,000-£16,000", "2.8", "6.0", "88", "Portfolio", "85%"],
+            ["Rose Bruford College", "£16,000", "2.8", "6.0", "88", "Audition", "75%"],
+            ["Trinity Laban Conservatoire", "£18,000-£25,000", "3.0", "6.0", "88", "Audition", "60%"],
+            ["LAMDA", "£19,000", "2.8", "6.0", "88", "Audition", "45%"],
+            ["Leeds College of Art", "£15,000", "2.8", "6.0", "88", "Portfolio", "85%"],
+            ["Cleveland College of Art", "£15,000", "2.7", "6.0", "80", "Portfolio", "92%"],
+            ["Hereford College of Arts", "£15,000", "2.7", "6.0", "80", "Portfolio", "90%"],
+            ["Ravensbourne University London", "£16,000", "2.8", "6.0", "88", "Portfolio", "88%"],
+            ["University of London Institute in Paris", "£9,250", "3.0", "6.5", "92", "BBB", "70%"],
+            ["Richmond University", "£14,750", "2.8", "6.0", "80", "CCC", "85%"],
+            ["Regent's University London", "£17,500", "2.8", "6.0", "80", "CCC", "75%"]
+        ];
+
+        function downloadExcel() {
+            const statusElement = document.getElementById('status');
+            const button = document.getElementById('downloadBtn');
+            
+            try {
+                statusElement.textContent = 'Creating Excel file...';
+                statusElement.style.color = 'blue';
+                button.disabled = true;
+                
+                // Create workbook and worksheet
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.aoa_to_sheet(universities);
+                
+                // Add worksheet to workbook
+                XLSX.utils.book_append_sheet(wb, ws, "UK Universities");
+                
+                // Write file
+                XLSX.writeFile(wb, "UK_Universities_Data.xlsx");
+                
+                statusElement.textContent = '✓ Excel file downloaded successfully!';
+                statusElement.style.color = 'green';
+                
+            } catch (error) {
+                console.error('Download error:', error);
+                statusElement.textContent = 'Error: ' + error.message;
+                statusElement.style.color = 'red';
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        // Add event listener when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.getElementById('downloadBtn');
+            const statusElement = document.getElementById('status');
+            
+            button.addEventListener('click', downloadExcel);
+            
+            // Check if XLSX library loaded
+            setTimeout(function() {
+                if (typeof XLSX !== 'undefined') {
+                    statusElement.textContent = 'Ready to download!';
+                    statusElement.style.color = 'green';
+                } else {
+                    statusElement.textContent = 'Error: Excel library failed to load';
+                    statusElement.style.color = 'red';
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

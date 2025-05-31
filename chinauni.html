@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Chinese Universities Data</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <h1>Chinese Universities Data Generator</h1>
+    <p>Click the button below to download an Excel file with 100+ Chinese universities data for international students.</p>
+    
+    <button id="downloadBtn" style="padding: 15px 30px; font-size: 18px; background-color: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 5px;">
+        Download Chinese Universities Excel File
+    </button>
+    
+    <p id="status" style="margin-top: 20px; font-weight: bold;"></p>
+
+    <script>
+        // Chinese University data - 100+ Universities
+        const universities = [
+            ["University Name", "Annual Fees (USD)", "Minimum CGPA", "Minimum IELTS", "Minimum TOEFL", "HSK Level", "Acceptance Rate"],
+            
+            // C9 League Universities (China's Ivy League)
+            ["Tsinghua University", "$4,600", "3.7", "6.5", "100", "HSK 5", "2%"],
+            ["Peking University", "$4,600", "3.7", "7.0", "100", "HSK 5", "1%"],
+            ["Fudan University", "$4,200", "3.6", "6.5", "90", "HSK 5", "3%"],
+            ["Shanghai Jiao Tong University", "$4,200", "3.6", "6.5", "90", "HSK 5", "5%"],
+            ["University of Science and Technology of China", "$4,000", "3.6", "6.5", "90", "HSK 5", "8%"],
+            ["Nanjing University", "$4,000", "3.5", "6.5", "90", "HSK 5", "6%"],
+            ["Zhejiang University", "$4,500", "3.6", "6.5", "90", "HSK 5", "4%"],
+            ["Harbin Institute of Technology", "$3,800", "3.5", "6.0", "85", "HSK 4", "10%"],
+            ["Xi'an Jiaotong University", "$3,600", "3.5", "6.0", "85", "HSK 4", "12%"],
+            
+            // Top 985 Project Universities
+            ["Beijing Institute of Technology", "$3,800", "3.4", "6.0", "85", "HSK 4", "15%"],
+            ["Beijing Normal University", "$3,500", "3.4", "6.5", "90", "HSK 4", "20%"],
+            ["Central South University", "$3,200", "3.3", "6.0", "80", "HSK 4", "25%"],
+            ["China Agricultural University", "$3,500", "3.2", "6.0", "80", "HSK 4", "30%"],
+            ["Chongqing University", "$3,000", "3.2", "6.0", "80", "HSK 4", "35%"],
+            ["Dalian University of Technology", "$3,200", "3.3", "6.0", "80", "HSK 4", "28%"],
+            ["East China Normal University", "$3,800", "3.4", "6.0", "85", "HSK 4", "25%"],
+            ["Huazhong University of Science", "$3,400", "3.3", "6.0", "80", "HSK 4", "30%"],
+            ["Jilin University", "$2,800", "3.2", "6.0", "80", "HSK 4", "40%"],
+            ["Lanzhou University", "$2,600", "3.1", "6.0", "80", "HSK 4", "45%"],
+            ["Nankai University", "$3,500", "3.4", "6.0", "85", "HSK 4", "22%"],
+            ["Northeastern University", "$2,800", "3.2", "6.0", "80", "HSK 4", "35%"],
+            ["Northwest A&F University", "$2,800", "3.1", "6.0", "80", "HSK 4", "40%"],
+            ["Northwestern Polytechnical University", "$3,200", "3.3", "6.0", "80", "HSK 4", "25%"],
+            ["Ocean University of China", "$3,200", "3.2", "6.0", "80", "HSK 4", "30%"],
+            ["Renmin University of China", "$4,200", "3.5", "6.5", "90", "HSK 5", "18%"],
+            ["Shandong University", "$3,000", "3.2", "6.0", "80", "HSK 4", "35%"],
+            ["South China University of Technology", "$3,400", "3.3", "6.0", "80", "HSK 4", "28%"],
+            ["Southeast University", "$3,600", "3.3", "6.0", "85", "HSK 4", "25%"],
+            ["Sun Yat-sen University", "$3,800", "3.4", "6.0", "85", "HSK 4", "20%"],
+            ["Tianjin University", "$3,500", "3.3", "6.0", "85", "HSK 4", "25%"],
+            ["Tongji University", "$4,000", "3.4", "6.0", "85", "HSK 4", "22%"],
+            ["University of Electronic Science", "$3,200", "3.3", "6.0", "80", "HSK 4", "30%"],
+            ["Wuhan University", "$3,200", "3.3", "6.0", "80", "HSK 4", "28%"],
+            ["Xiamen University", "$3,600", "3.3", "6.0", "85", "HSK 4", "25%"],
+            ["Sichuan University", "$3,000", "3.2", "6.0", "80", "HSK 4", "32%"],
+            
+            // 211 Project Universities
+            ["Beijing Foreign Studies University", "$3,500", "3.2", "6.5", "85", "HSK 4", "35%"],
+            ["Beijing Jiaotong University", "$3,200", "3.2", "6.0", "80", "HSK 4", "40%"],
+            ["Beijing University of Posts", "$3,200", "3.2", "6.0", "80", "HSK 4", "38%"],
+            ["Beijing University of Technology", "$3,000", "3.1", "6.0", "80", "HSK 4", "45%"],
+            ["Capital Medical University", "$4,500", "3.3", "6.0", "85", "HSK 4", "25%"],
+            ["China University of Political Science", "$3,800", "3.3", "6.0", "85", "HSK 4", "30%"],
+            ["Communication University of China", "$3,500", "3.2", "6.0", "80", "HSK 4", "35%"],
+            ["Donghua University", "$3,200", "3.1", "6.0", "80", "HSK 4", "40%"],
+            ["East China University of Science", "$3,200", "3.2", "6.0", "80", "HSK 4", "38%"],
+            ["Hohai University", "$3,000", "3.1", "6.0", "80", "HSK 4", "42%"],
+            ["Hunan University", "$2,800", "3.1", "6.0", "80", "HSK 4", "45%"],
+            ["Nanjing University of Aeronautics", "$3,200", "3.2", "6.0", "80", "HSK 4", "35%"],
+            ["Nanjing University of Science", "$3,000", "3.1", "6.0", "80", "HSK 4", "40%"],
+            ["Shanghai University", "$3,400", "3.2", "6.0", "80", "HSK 4", "38%"],
+            ["Southwest Jiaotong University", "$2,800", "3.1", "6.0", "80", "HSK 4", "42%"],
+            ["Southwest University", "$2,600", "3.0", "6.0", "80", "HSK 4", "50%"],
+            
+            // Beijing Universities
+            ["Beijing Language and Culture University", "$3,400", "3.0", "6.0", "80", "HSK 3", "55%"],
+            ["Beijing University of Chemical Technology", "$3,000", "3.1", "6.0", "80", "HSK 4", "45%"],
+            ["Beijing Forestry University", "$2,800", "3.0", "6.0", "80", "HSK 4", "50%"],
+            ["Capital University of Economics", "$3,200", "3.1", "6.0", "80", "HSK 4", "40%"],
+            ["Beijing Sport University", "$3,000", "2.8", "6.0", "75", "HSK 3", "60%"],
+            ["China University of Mining", "$2,800", "3.0", "6.0", "80", "HSK 4", "50%"],
+            ["China University of Petroleum Beijing", "$3,000", "3.1", "6.0", "80", "HSK 4", "45%"],
+            ["North China Electric Power University", "$3,000", "3.1", "6.0", "80", "HSK 4", "45%"],
+            ["Beijing Information Science", "$2,800", "3.0", "6.0", "75", "HSK 3", "55%"],
+            ["Beijing Union University", "$2,600", "2.8", "6.0", "75", "HSK 3", "65%"],
+            
+            // Shanghai Universities
+            ["Shanghai International Studies University", "$3,500", "3.2", "6.0", "80", "HSK 4", "35%"],
+            ["Shanghai University of Finance", "$3,800", "3.3", "6.0", "85", "HSK 4", "30%"],
+            ["East China University of Political Science", "$3,400", "3.2", "6.0", "80", "HSK 4", "35%"],
+            ["Shanghai Maritime University", "$3,000", "3.0", "6.0", "80", "HSK 4", "45%"],
+            ["Shanghai University of Engineering Science", "$2,800", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Shanghai Normal University", "$3,000", "3.0", "6.0", "80", "HSK 4", "50%"],
+            ["Shanghai Institute of Technology", "$2,800", "2.9", "6.0", "75", "HSK 3", "58%"],
+            ["Shanghai Second Polytechnic University", "$2,600", "2.8", "6.0", "75", "HSK 3", "65%"],
+            
+            // Guangdong Universities
+            ["Shenzhen University", "$3,200", "3.1", "6.0", "80", "HSK 4", "40%"],
+            ["Jinan University", "$3,400", "3.2", "6.0", "80", "HSK 4", "35%"],
+            ["South China Normal University", "$3,000", "3.0", "6.0", "80", "HSK 4", "45%"],
+            ["Guangdong University of Technology", "$2,800", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Guangzhou University", "$2,800", "2.9", "6.0", "75", "HSK 3", "58%"],
+            ["Southern Medical University", "$4,000", "3.2", "6.0", "80", "HSK 4", "35%"],
+            
+            // Jiangsu Universities
+            ["China Pharmaceutical University", "$3,200", "3.1", "6.0", "80", "HSK 4", "40%"],
+            ["Jiangnan University", "$3,000", "3.0", "6.0", "80", "HSK 4", "45%"],
+            ["Nanjing Agricultural University", "$2,800", "3.0", "6.0", "80", "HSK 4", "50%"],
+            ["Nanjing Normal University", "$2,800", "3.0", "6.0", "80", "HSK 4", "48%"],
+            ["Soochow University", "$3,000", "3.0", "6.0", "80", "HSK 4", "45%"],
+            ["Yangzhou University", "$2,600", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Jiangsu University", "$2,600", "2.9", "6.0", "75", "HSK 3", "58%"],
+            
+            // Zhejiang Universities
+            ["Zhejiang University of Technology", "$3,000", "3.0", "6.0", "80", "HSK 4", "45%"],
+            ["Hangzhou Dianzi University", "$2,800", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Zhejiang Normal University", "$2,600", "2.9", "6.0", "75", "HSK 3", "58%"],
+            ["Zhejiang University of Science", "$2,800", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Wenzhou Medical University", "$3,500", "3.1", "6.0", "80", "HSK 4", "40%"],
+            
+            // Shandong Universities
+            ["China University of Petroleum East China", "$3,000", "3.1", "6.0", "80", "HSK 4", "45%"],
+            ["Qingdao University", "$2,800", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Shandong University of Science", "$2,600", "2.8", "6.0", "75", "HSK 3", "60%"],
+            ["Yantai University", "$2,400", "2.8", "6.0", "75", "HSK 3", "65%"],
+            
+            // Hubei Universities
+            ["Huazhong Agricultural University", "$2,800", "3.0", "6.0", "80", "HSK 4", "50%"],
+            ["China University of Geosciences Wuhan", "$2,800", "3.0", "6.0", "80", "HSK 4", "48%"],
+            ["Wuhan University of Technology", "$2,800", "3.0", "6.0", "80", "HSK 4", "45%"],
+            ["Central China Normal University", "$2,800", "3.0", "6.0", "80", "HSK 4", "50%"],
+            ["Hubei University", "$2,400", "2.8", "6.0", "75", "HSK 3", "60%"],
+            
+            // Sichuan Universities
+            ["University of Electronic Science and Technology", "$3,000", "3.1", "6.0", "80", "HSK 4", "40%"],
+            ["Southwest University of Finance", "$3,200", "3.1", "6.0", "80", "HSK 4", "38%"],
+            ["Sichuan Normal University", "$2,600", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Chengdu University of Technology", "$2,400", "2.8", "6.0", "75", "HSK 3", "60%"],
+            
+            // Shaanxi Universities
+            ["Chang'an University", "$2,800", "3.0", "6.0", "80", "HSK 4", "48%"],
+            ["Shaanxi Normal University", "$2,600", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Xidian University", "$2,800", "3.0", "6.0", "80", "HSK 4", "45%"],
+            ["Xi'an University of Technology", "$2,400", "2.8", "6.0", "75", "HSK 3", "60%"],
+            
+            // Tianjin Universities
+            ["Tianjin Medical University", "$3,800", "3.2", "6.0", "80", "HSK 4", "35%"],
+            ["Tianjin University of Science", "$2,800", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Tianjin Normal University", "$2,600", "2.8", "6.0", "75", "HSK 3", "60%"],
+            
+            // Chongqing Universities
+            ["Southwest University of Political Science", "$2,800", "3.0", "6.0", "80", "HSK 4", "45%"],
+            ["Chongqing University of Posts", "$2,600", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Chongqing Medical University", "$3,500", "3.1", "6.0", "80", "HSK 4", "40%"],
+            
+            // Heilongjiang Universities
+            ["Northeast Forestry University", "$2,400", "2.8", "6.0", "75", "HSK 3", "60%"],
+            ["Harbin Engineering University", "$2,800", "3.0", "6.0", "80", "HSK 4", "45%"],
+            ["Harbin Medical University", "$3,500", "3.1", "6.0", "80", "HSK 4", "40%"],
+            
+            // Liaoning Universities
+            ["Dalian Maritime University", "$2,800", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Northeastern University Qinhuangdao", "$2,600", "2.9", "6.0", "75", "HSK 3", "58%"],
+            ["Shenyang University of Technology", "$2,400", "2.8", "6.0", "75", "HSK 3", "65%"],
+            
+            // Fujian Universities
+            ["Fuzhou University", "$2,800", "3.0", "6.0", "80", "HSK 4", "48%"],
+            ["Fujian Normal University", "$2,600", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Fujian Agriculture and Forestry University", "$2,400", "2.8", "6.0", "75", "HSK 3", "60%"],
+            
+            // Anhui Universities
+            ["Anhui University", "$2,600", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["University of Science and Technology of China", "$2,800", "3.0", "6.0", "80", "HSK 4", "45%"],
+            ["Anhui Medical University", "$3,200", "3.0", "6.0", "80", "HSK 4", "42%"],
+            
+            // Henan Universities
+            ["Zhengzhou University", "$2,600", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Henan University", "$2,400", "2.8", "6.0", "75", "HSK 3", "60%"],
+            ["Henan Normal University", "$2,200", "2.7", "6.0", "70", "HSK 3", "65%"],
+            
+            // Yunnan Universities
+            ["Yunnan University", "$2,600", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Kunming University of Science", "$2,400", "2.8", "6.0", "75", "HSK 3", "60%"],
+            ["Yunnan Normal University", "$2,200", "2.7", "6.0", "70", "HSK 3", "65%"],
+            
+            // Xinjiang Universities
+            ["Xinjiang University", "$2,200", "2.7", "6.0", "70", "HSK 3", "65%"],
+            ["Shihezi University", "$2,000", "2.6", "6.0", "70", "HSK 3", "70%"],
+            
+            // Inner Mongolia Universities
+            ["Inner Mongolia University", "$2,200", "2.7", "6.0", "70", "HSK 3", "65%"],
+            ["Inner Mongolia University of Technology", "$2,000", "2.6", "6.0", "70", "HSK 3", "70%"],
+            
+            // Gansu Universities
+            ["Northwest Normal University", "$2,200", "2.7", "6.0", "70", "HSK 3", "65%"],
+            ["Gansu Agricultural University", "$2,000", "2.6", "6.0", "70", "HSK 3", "70%"],
+            
+            // Jiangxi Universities
+            ["Nanchang University", "$2,600", "2.9", "6.0", "75", "HSK 3", "55%"],
+            ["Jiangxi Normal University", "$2,400", "2.8", "6.0", "75", "HSK 3", "60%"],
+            
+            // Guangxi Universities
+            ["Guangxi University", "$2,400", "2.8", "6.0", "75", "HSK 3", "60%"],
+            ["Guangxi Normal University", "$2,200", "2.7", "6.0", "70", "HSK 3", "65%"],
+            
+            // Hainan Universities
+            ["Hainan University", "$2,400", "2.8", "6.0", "75", "HSK 3", "60%"],
+            ["Hainan Medical University", "$3,000", "2.9", "6.0", "75", "HSK 3", "55%"],
+            
+            // Guizhou Universities
+            ["Guizhou University", "$2,200", "2.7", "6.0", "70", "HSK 3", "65%"],
+            ["Guizhou Normal University", "$2,000", "2.6", "6.0", "70", "HSK 3", "70%"]
+        ];
+
+        function downloadExcel() {
+            const statusElement = document.getElementById('status');
+            const button = document.getElementById('downloadBtn');
+            
+            try {
+                statusElement.textContent = 'Creating Excel file...';
+                statusElement.style.color = 'blue';
+                button.disabled = true;
+                
+                // Create workbook and worksheet
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.aoa_to_sheet(universities);
+                
+                // Add worksheet to workbook
+                XLSX.utils.book_append_sheet(wb, ws, "Chinese Universities");
+                
+                // Write file
+                XLSX.writeFile(wb, "Chinese_Universities_Data.xlsx");
+                
+                statusElement.textContent = '✓ Excel file downloaded successfully!';
+                statusElement.style.color = 'green';
+                
+            } catch (error) {
+                console.error('Download error:', error);
+                statusElement.textContent = 'Error: ' + error.message;
+                statusElement.style.color = 'red';
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        // Add event listener when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.getElementById('downloadBtn');
+            const statusElement = document.getElementById('status');
+            
+            button.addEventListener('click', downloadExcel);
+            
+            // Check if XLSX library loaded
+            setTimeout(function() {
+                if (typeof XLSX !== 'undefined') {
+                    statusElement.textContent = 'Ready to download!';
+                    statusElement.style.color = 'green';
+                } else {
+                    statusElement.textContent = 'Error: Excel library failed to load';
+                    statusElement.style.color = 'red';
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

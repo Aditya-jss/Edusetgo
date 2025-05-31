@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Southeast Asian Universities Data</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <h1>Southeast Asian Universities Data Generator</h1>
+    <p>Click the button below to download an Excel file with 100+ universities from Singapore, Malaysia, and Philippines for international students, organized by country.</p>
+    
+    <button id="downloadBtn" style="padding: 15px 30px; font-size: 18px; background-color: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 5px;">
+        Download Southeast Asian Universities Excel File
+    </button>
+    
+    <p id="status" style="margin-top: 20px; font-weight: bold;"></p>
+
+    <script>
+        // Southeast Asian University data - 100+ Universities organized by country
+        const universities = [
+            ["University Name", "Country", "Annual Fees", "Minimum CGPA", "Language Requirement", "IELTS", "TOEFL", "Acceptance Rate"],
+            
+            // SINGAPORE SECTION
+            ["=== SINGAPORE ===", "", "", "", "", "", "", ""],
+            ["National University of Singapore", "Singapore", "SGD $37,000-$50,000", "3.6", "English", "6.5", "88", "5%"],
+            ["Nanyang Technological University", "Singapore", "SGD $35,000-$48,000", "3.5", "English", "6.5", "88", "8%"],
+            ["Singapore Management University", "Singapore", "SGD $45,000-$55,000", "3.4", "English", "6.5", "88", "25%"],
+            ["Singapore University of Technology", "Singapore", "SGD $32,000-$42,000", "3.3", "English", "6.5", "88", "30%"],
+            ["Singapore Institute of Technology", "Singapore", "SGD $30,000-$38,000", "3.2", "English", "6.0", "80", "40%"],
+            ["Singapore University of Social Sciences", "Singapore", "SGD $28,000-$35,000", "3.1", "English", "6.0", "80", "50%"],
+            ["Nanyang Academy of Fine Arts", "Singapore", "SGD $25,000-$32,000", "3.0", "English", "6.0", "80", "45%"],
+            ["LASALLE College of the Arts", "Singapore", "SGD $27,000-$34,000", "3.0", "English", "6.0", "80", "50%"],
+            ["Singapore Polytechnic", "Singapore", "SGD $22,000-$28,000", "2.8", "English", "6.0", "79", "65%"],
+            ["Ngee Ann Polytechnic", "Singapore", "SGD $22,000-$28,000", "2.8", "English", "6.0", "79", "68%"],
+            ["Temasek Polytechnic", "Singapore", "SGD $22,000-$28,000", "2.8", "English", "6.0", "79", "70%"],
+            ["Republic Polytechnic", "Singapore", "SGD $22,000-$28,000", "2.8", "English", "6.0", "79", "72%"],
+            ["NYP (Nanyang Polytechnic)", "Singapore", "SGD $22,000-$28,000", "2.8", "English", "6.0", "79", "70%"],
+            ["Institute of Technical Education", "Singapore", "SGD $15,000-$20,000", "2.5", "English", "5.5", "70", "90%"],
+            ["Kaplan Singapore", "Singapore", "SGD $20,000-$30,000", "2.8", "English", "6.0", "79", "75%"],
+            ["PSB Academy", "Singapore", "SGD $18,000-$28,000", "2.7", "English", "6.0", "79", "80%"],
+            ["SIM Global Education", "Singapore", "SGD $20,000-$35,000", "2.8", "English", "6.0", "79", "75%"],
+            ["James Cook University Singapore", "Singapore", "SGD $35,000-$45,000", "3.0", "English", "6.0", "79", "60%"],
+            ["Curtin University Singapore", "Singapore", "SGD $30,000-$40,000", "3.0", "English", "6.0", "79", "65%"],
+            ["University of Newcastle Singapore", "Singapore", "SGD $28,000-$38,000", "2.9", "English", "6.0", "79", "70%"],
+            ["Murdoch University Singapore", "Singapore", "SGD $26,000-$35,000", "2.9", "English", "6.0", "79", "72%"],
+            ["RMIT University Singapore", "Singapore", "SGD $32,000-$42,000", "3.0", "English", "6.0", "79", "68%"],
+            ["University of Chicago Booth Singapore", "Singapore", "SGD $120,000", "3.5", "English", "7.0", "100", "25%"],
+            ["INSEAD Singapore", "Singapore", "SGD $120,000", "3.4", "English", "7.0", "100", "30%"],
+            ["SP Jain School of Global Management", "Singapore", "SGD $25,000-$35,000", "3.0", "English", "6.0", "79", "60%"],
+            
+            // MALAYSIA SECTION
+            ["=== MALAYSIA ===", "", "", "", "", "", "", ""],
+            ["University of Malaya", "Malaysia", "RM 15,000-35,000", "3.3", "English/Malay", "6.0", "80", "30%"],
+            ["Universiti Sains Malaysia", "Malaysia", "RM 12,000-30,000", "3.2", "English/Malay", "6.0", "80", "35%"],
+            ["Universiti Kebangsaan Malaysia", "Malaysia", "RM 12,000-28,000", "3.1", "English/Malay", "6.0", "80", "40%"],
+            ["Universiti Putra Malaysia", "Malaysia", "RM 12,000-25,000", "3.1", "English/Malay", "6.0", "80", "45%"],
+            ["Universiti Teknologi Malaysia", "Malaysia", "RM 12,000-28,000", "3.2", "English/Malay", "6.0", "80", "42%"],
+            ["Universiti Teknologi MARA", "Malaysia", "RM 10,000-22,000", "3.0", "English/Malay", "6.0", "80", "50%"],
+            ["International Islamic University Malaysia", "Malaysia", "RM 8,000-20,000", "3.0", "English/Arabic", "6.0", "80", "55%"],
+            ["Universiti Utara Malaysia", "Malaysia", "RM 8,000-18,000", "2.9", "English/Malay", "6.0", "80", "60%"],
+            ["Universiti Malaysia Pahang", "Malaysia", "RM 10,000-20,000", "2.9", "English/Malay", "6.0", "80", "58%"],
+            ["Universiti Malaysia Sarawak", "Malaysia", "RM 8,000-18,000", "2.9", "English/Malay", "6.0", "80", "62%"],
+            ["Universiti Malaysia Sabah", "Malaysia", "RM 8,000-16,000", "2.8", "English/Malay", "6.0", "80", "65%"],
+            ["Universiti Pendidikan Sultan Idris", "Malaysia", "RM 7,000-15,000", "2.8", "English/Malay", "6.0", "80", "68%"],
+            ["Universiti Sultan Zainal Abidin", "Malaysia", "RM 7,000-14,000", "2.7", "English/Malay", "6.0", "80", "70%"],
+            ["Taylor's University", "Malaysia", "RM 40,000-80,000", "3.0", "English", "6.0", "80", "60%"],
+            ["Sunway University", "Malaysia", "RM 35,000-70,000", "2.9", "English", "6.0", "80", "65%"],
+            ["Monash University Malaysia", "Malaysia", "RM 55,000-85,000", "3.2", "English", "6.5", "88", "45%"],
+            ["University of Nottingham Malaysia", "Malaysia", "RM 50,000-80,000", "3.1", "English", "6.0", "80", "50%"],
+            ["Curtin University Malaysia", "Malaysia", "RM 45,000-75,000", "3.0", "English", "6.0", "80", "55%"],
+            ["Swinburne University Malaysia", "Malaysia", "RM 40,000-65,000", "2.9", "English", "6.0", "80", "60%"],
+            ["INTI International University", "Malaysia", "RM 35,000-60,000", "2.8", "English", "6.0", "80", "70%"],
+            ["UCSI University", "Malaysia", "RM 30,000-55,000", "2.8", "English", "6.0", "80", "68%"],
+            ["Asia Pacific University", "Malaysia", "RM 32,000-58,000", "2.8", "English", "6.0", "80", "65%"],
+            ["Management & Science University", "Malaysia", "RM 25,000-45,000", "2.7", "English", "6.0", "80", "75%"],
+            ["Multimedia University", "Malaysia", "RM 28,000-50,000", "2.8", "English", "6.0", "80", "70%"],
+            ["Universiti Tunku Abdul Rahman", "Malaysia", "RM 20,000-40,000", "2.7", "English", "6.0", "80", "75%"],
+            ["HELP University", "Malaysia", "RM 25,000-45,000", "2.7", "English", "6.0", "80", "72%"],
+            ["Binary University", "Malaysia", "RM 20,000-35,000", "2.6", "English", "6.0", "80", "80%"],
+            ["Limkokwing University", "Malaysia", "RM 22,000-40,000", "2.6", "English", "6.0", "80", "78%"],
+            ["International Medical University", "Malaysia", "RM 80,000-150,000", "3.2", "English", "6.5", "88", "40%"],
+            ["MAHSA University", "Malaysia", "RM 30,000-80,000", "2.9", "English", "6.0", "80", "65%"],
+            ["University of Cyberjaya", "Malaysia", "RM 25,000-60,000", "2.8", "English", "6.0", "80", "70%"],
+            ["SEGi University", "Malaysia", "RM 22,000-45,000", "2.7", "English", "6.0", "80", "75%"],
+            ["Nilai University", "Malaysia", "RM 20,000-40,000", "2.7", "English", "6.0", "80", "78%"],
+            ["Perdana University", "Malaysia", "RM 40,000-100,000", "3.0", "English", "6.0", "80", "55%"],
+            ["Quest International University", "Malaysia", "RM 25,000-50,000", "2.7", "English", "6.0", "80", "75%"],
+            
+            // PHILIPPINES SECTION
+            ["=== PHILIPPINES ===", "", "", "", "", "", "", ""],
+            ["University of the Philippines Diliman", "Philippines", "PHP 120,000-250,000", "3.4", "English/Filipino", "6.5", "88", "8%"],
+            ["University of the Philippines Manila", "Philippines", "PHP 100,000-300,000", "3.3", "English/Filipino", "6.0", "80", "12%"],
+            ["University of the Philippines Los Baños", "Philippines", "PHP 80,000-200,000", "3.2", "English/Filipino", "6.0", "80", "15%"],
+            ["Ateneo de Manila University", "Philippines", "PHP 200,000-350,000", "3.4", "English", "6.5", "88", "20%"],
+            ["De La Salle University", "Philippines", "PHP 180,000-320,000", "3.3", "English", "6.0", "80", "25%"],
+            ["University of Santo Tomas", "Philippines", "PHP 120,000-250,000", "3.2", "English", "6.0", "80", "35%"],
+            ["Ateneo de Davao University", "Philippines", "PHP 100,000-200,000", "3.1", "English", "6.0", "80", "40%"],
+            ["Saint Louis University", "Philippines", "PHP 80,000-180,000", "3.0", "English", "6.0", "80", "45%"],
+            ["University of San Carlos", "Philippines", "PHP 80,000-160,000", "3.0", "English", "6.0", "80", "50%"],
+            ["Far Eastern University", "Philippines", "PHP 100,000-200,000", "3.0", "English", "6.0", "80", "55%"],
+            ["Mapúa University", "Philippines", "PHP 120,000-220,000", "3.1", "English", "6.0", "80", "50%"],
+            ["Adamson University", "Philippines", "PHP 90,000-180,000", "2.9", "English", "6.0", "80", "60%"],
+            ["University of the East", "Philippines", "PHP 70,000-150,000", "2.8", "English", "6.0", "80", "65%"],
+            ["Polytechnic University of the Philippines", "Philippines", "PHP 20,000-80,000", "2.8", "English/Filipino", "6.0", "80", "70%"],
+            ["Technological University of the Philippines", "Philippines", "PHP 25,000-90,000", "2.8", "English/Filipino", "6.0", "80", "68%"],
+            ["University of San Jose-Recoletos", "Philippines", "PHP 60,000-120,000", "2.8", "English", "6.0", "80", "65%"],
+            ["Central Philippine University", "Philippines", "PHP 50,000-100,000", "2.7", "English", "6.0", "80", "70%"],
+            ["Silliman University", "Philippines", "PHP 60,000-130,000", "2.9", "English", "6.0", "80", "60%"],
+            ["Xavier University", "Philippines", "PHP 70,000-140,000", "2.9", "English", "6.0", "80", "58%"],
+            ["University of San Agustin", "Philippines", "PHP 60,000-120,000", "2.8", "English", "6.0", "80", "62%"],
+            ["Lyceum of the Philippines University", "Philippines", "PHP 80,000-160,000", "2.8", "English", "6.0", "80", "65%"],
+            ["Centro Escolar University", "Philippines", "PHP 70,000-140,000", "2.7", "English", "6.0", "80", "68%"],
+            ["National University Philippines", "Philippines", "PHP 80,000-160,000", "2.8", "English", "6.0", "80", "65%"],
+            ["Arellano University", "Philippines", "PHP 60,000-120,000", "2.7", "English", "6.0", "80", "70%"],
+            ["Jose Rizal University", "Philippines", "PHP 50,000-100,000", "2.6", "English", "6.0", "80", "75%"],
+            ["Philippine Normal University", "Philippines", "PHP 30,000-80,000", "2.9", "English/Filipino", "6.0", "80", "60%"],
+            ["Mindanao State University", "Philippines", "PHP 20,000-60,000", "2.7", "English/Filipino", "6.0", "80", "75%"],
+            ["University of Northern Philippines", "Philippines", "PHP 25,000-70,000", "2.7", "English/Filipino", "6.0", "80", "78%"],
+            ["Bulacan State University", "Philippines", "PHP 15,000-50,000", "2.6", "English/Filipino", "6.0", "80", "80%"],
+            ["Cavite State University", "Philippines", "PHP 15,000-50,000", "2.6", "English/Filipino", "6.0", "80", "82%"],
+            ["University of Southeastern Philippines", "Philippines", "PHP 20,000-60,000", "2.6", "English/Filipino", "6.0", "80", "80%"],
+            ["Cebu Normal University", "Philippines", "PHP 25,000-70,000", "2.7", "English/Filipino", "6.0", "80", "75%"],
+            ["Batangas State University", "Philippines", "PHP 15,000-45,000", "2.6", "English/Filipino", "6.0", "80", "85%"],
+            ["Tarlac State University", "Philippines", "PHP 12,000-40,000", "2.5", "English/Filipino", "6.0", "80", "88%"],
+            ["Nueva Ecija University of Science", "Philippines", "PHP 12,000-35,000", "2.5", "English/Filipino", "6.0", "80", "90%"],
+            ["Pangasinan State University", "Philippines", "PHP 10,000-35,000", "2.5", "English/Filipino", "6.0", "80", "92%"],
+            ["Isabela State University", "Philippines", "PHP 10,000-30,000", "2.4", "English/Filipino", "6.0", "80", "95%"],
+            ["Mariano Marcos State University", "Philippines", "PHP 8,000-25,000", "2.4", "English/Filipino", "6.0", "80", "95%"],
+            ["Don Mariano Marcos Memorial State", "Philippines", "PHP 8,000-25,000", "2.4", "English/Filipino", "6.0", "80", "96%"],
+            ["Asian Institute of Management", "Philippines", "PHP 1,200,000-2,000,000", "3.3", "English", "7.0", "100", "35%"],
+            ["Enderun Colleges", "Philippines", "PHP 400,000-800,000", "3.0", "English", "6.0", "80", "55%"],
+            ["John B. Lacson Foundation Maritime", "Philippines", "PHP 80,000-150,000", "2.7", "English", "6.0", "80", "70%"],
+            ["AMA University", "Philippines", "PHP 60,000-120,000", "2.6", "English", "6.0", "80", "75%"],
+            ["STI College", "Philippines", "PHP 50,000-100,000", "2.5", "English", "6.0", "80", "80%"],
+            ["De La Salle Medical and Health Sciences", "Philippines", "PHP 300,000-600,000", "3.2", "English", "6.5", "88", "30%"],
+            ["Emilio Aguinaldo College", "Philippines", "PHP 150,000-300,000", "2.9", "English", "6.0", "80", "60%"]
+        ];
+
+        function downloadExcel() {
+            const statusElement = document.getElementById('status');
+            const button = document.getElementById('downloadBtn');
+            
+            try {
+                statusElement.textContent = 'Creating Excel file...';
+                statusElement.style.color = 'blue';
+                button.disabled = true;
+                
+                // Create workbook and worksheet
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.aoa_to_sheet(universities);
+                
+                // Style the country header rows
+                const range = XLSX.utils.decode_range(ws['!ref']);
+                for (let R = range.s.r; R <= range.e.r; ++R) {
+                    const cellAddress = XLSX.utils.encode_cell({r: R, c: 0});
+                    if (ws[cellAddress] && ws[cellAddress].v && ws[cellAddress].v.includes('===')) {
+                        // This is a country header row
+                        if (!ws[cellAddress].s) ws[cellAddress].s = {};
+                        ws[cellAddress].s.font = {bold: true, sz: 14};
+                        ws[cellAddress].s.fill = {fgColor: {rgb: "CCCCCC"}};
+                    }
+                }
+                
+                // Add worksheet to workbook
+                XLSX.utils.book_append_sheet(wb, ws, "Southeast Asian Universities");
+                
+                // Write file
+                XLSX.writeFile(wb, "Southeast_Asian_Universities_Data.xlsx");
+                
+                statusElement.textContent = '✓ Excel file downloaded successfully!';
+                statusElement.style.color = 'green';
+                
+            } catch (error) {
+                console.error('Download error:', error);
+                statusElement.textContent = 'Error: ' + error.message;
+                statusElement.style.color = 'red';
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        // Add event listener when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.getElementById('downloadBtn');
+            const statusElement = document.getElementById('status');
+            
+            button.addEventListener('click', downloadExcel);
+            
+            // Check if XLSX library loaded
+            setTimeout(function() {
+                if (typeof XLSX !== 'undefined') {
+                    statusElement.textContent = 'Ready to download!';
+                    statusElement.style.color = 'green';
+                } else {
+                    statusElement.textContent = 'Error: Excel library failed to load';
+                    statusElement.style.color = 'red';
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

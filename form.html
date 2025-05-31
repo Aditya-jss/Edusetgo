@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Application Form - EduSetGo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            max-width: 200px;
+            height: auto;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .form-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #34495e;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        .form-group {
+            flex: 1;
+        }
+        label {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-right: 10px;
+            min-width: 150px;
+        }
+        input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        .download-btn {
+            background-color: #27ae60;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .download-btn:hover {
+            background-color: #229954;
+        }
+        .required {
+            color: red;
+        }
+        .form-note {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container" id="formContainer">
+        <div class="logo-container">
+            <img src="edusetgo logo 11.jpg" alt="EduSetGo Logo" class="logo" onerror="this.style.display='none'">
+        </div>
+        
+        <h1>Student Application Form</h1>
+        
+        <div class="form-note">
+            Please fill out all the required fields marked with <span class="required">*</span>. This information will help us assist you in finding the best university options.
+        </div>
+
+        <form id="studentForm">
+            <!-- Personal Information Section -->
+            <div class="form-section">
+                <div class="section-title">Personal Information</div>
+                
+                <div class="form-row">
+                    <label for="fullName">Full Name <span class="required">*</span>:</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+                
+                <div class="form-row">
+                    <label for="phoneNumber">Phone Number <span class="required">*</span>:</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" required>
+                </div>
+                
+                <div class="form-row">
+                    <label for="email">Email Address <span class="required">*</span>:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-row">
+                    <label for="cityTown">City/Town <span class="required">*</span>:</label>
+                    <input type="text" id="cityTown" name="cityTown" required>
+                </div>
+                
+                <div class="form-row">
+                    <label for="currentCountry">Current Country <span class="required">*</span>:</label>
+                    <select id="currentCountry" name="currentCountry" required>
+                        <option value="">Select your country</option>
+                        <option value="India">India</option>
+                        <option value="Pakistan">Pakistan</option>
+                        <option value="Bangladesh">Bangladesh</option>
+                        <option value="Nepal">Nepal</option>
+                        <option value="Sri Lanka">Sri Lanka</option>
+                        <option value="China">China</option>
+                        <option value="South Korea">South Korea</option>
+                        <option value="Nigeria">Nigeria</option>
+                        <option value="Kenya">Kenya</option>
+                        <option value="Ghana">Ghana</option>
+                        <option value="Egypt">Egypt</option>
+                        <option value="Brazil">Brazil</option>
+                        <option value="Mexico">Mexico</option>
+                        <option value="Turkey">Turkey</option>
+                        <option value="Iran">Iran</option>
+                        <option value="Other">Other (please specify in additional info)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Academic Background Section -->
+            <div class="form-section">
+                <div class="section-title">Academic Background</div>
+                
+                <div class="form-row">
+                    <label for="cgpa">Current CGPA/GPA <span class="required">*</span>:</label>
+                    <input type="text" id="cgpa" name="cgpa" placeholder="e.g., 3.5 or 8.2" required>
+                </div>
+                
+                <div class="form-row">
+                    <label for="currentDegree">Current/Latest Degree:</label>
+                    <select id="currentDegree" name="currentDegree">
+                        <option value="">Select degree level</option>
+                        <option value="High School">High School</option>
+                        <option value="Diploma">Diploma</option>
+                        <option value="Bachelor's">Bachelor's Degree</option>
+                        <option value="Master's">Master's Degree</option>
+                        <option value="PhD">PhD</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label for="fieldOfStudy">Field of Study:</label>
+                    <input type="text" id="fieldOfStudy" name="fieldOfStudy" placeholder="e.g., Computer Science, Business, Medicine">
+                </div>
+            </div>
+
+            <!-- Test Scores Section -->
+            <div class="form-section">
+                <div class="section-title">English Proficiency & Test Scores</div>
+                
+                <div class="form-row">
+                    <label for="englishTest">English Test Type:</label>
+                    <select id="englishTest" name="englishTest">
+                        <option value="">Select test type</option>
+                        <option value="IELTS">IELTS</option>
+                        <option value="TOEFL">TOEFL</option>
+                        <option value="PTE">PTE</option>
+                        <option value="Duolingo">Duolingo</option>
+                        <option value="Not taken yet">Not taken yet</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label for="englishScore">English Test Score:</label>
+                    <input type="text" id="englishScore" name="englishScore" placeholder="e.g., 7.0 (IELTS) or 100 (TOEFL)">
+                </div>
+                
+                <div class="form-row">
+                    <label for="greScore">GRE Score:</label>
+                    <input type="text" id="greScore" name="greScore" placeholder="e.g., 320 (if applicable)">
+                </div>
+                
+                <div class="form-row">
+                    <label for="gmatScore">GMAT Score:</label>
+                    <input type="text" id="gmatScore" name="gmatScore" placeholder="e.g., 650 (if applicable)">
+                </div>
+            </div>
+
+            <!-- Study Preferences Section -->
+            <div class="form-section">
+                <div class="section-title">Study Preferences</div>
+                
+                <div class="form-row">
+                    <label for="interestedCountries">Countries Interested In <span class="required">*</span>:</label>
+                    <select id="interestedCountries" name="interestedCountries" required>
+                        <option value="">Select preferred country</option>
+                        <option value="USA">United States</option>
+                        <option value="Canada">Canada</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Germany">Germany</option>
+                        <option value="Netherlands">Netherlands</option>
+                        <option value="France">France</option>
+                        <option value="Sweden">Sweden</option>
+                        <option value="Norway">Norway</option>
+                        <option value="Denmark">Denmark</option>
+                        <option value="Singapore">Singapore</option>
+                        <option value="Malaysia">Malaysia</option>
+                        <option value="Philippines">Philippines</option>
+                        <option value="China">China</option>
+                        <option value="Multiple countries">Multiple countries (please specify in additional info)</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label for="preferredDegree">Preferred Degree Level:</label>
+                    <select id="preferredDegree" name="preferredDegree">
+                        <option value="">Select degree level</option>
+                        <option value="Bachelor's">Bachelor's Degree</option>
+                        <option value="Master's">Master's Degree</option>
+                        <option value="PhD">PhD</option>
+                        <option value="Diploma">Diploma/Certificate</option>
+                        <option value="Foundation">Foundation Program</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label for="preferredField">Preferred Field of Study:</label>
+                    <input type="text" id="preferredField" name="preferredField" placeholder="e.g., Computer Science, Business Administration">
+                </div>
+                
+                <div class="form-row">
+                    <label for="feesRange">Preferred Annual Fees Range <span class="required">*</span>:</label>
+                    <select id="feesRange" name="feesRange" required>
+                        <option value="">Select budget range</option>
+                        <option value="Under $10,000">Under $10,000</option>
+                        <option value="$10,000 - $20,000">$10,000 - $20,000</option>
+                        <option value="$20,000 - $30,000">$20,000 - $30,000</option>
+                        <option value="$30,000 - $40,000">$30,000 - $40,000</option>
+                        <option value="$40,000 - $50,000">$40,000 - $50,000</option>
+                        <option value="$50,000 - $60,000">$50,000 - $60,000</option>
+                        <option value="Above $60,000">Above $60,000</option>
+                        <option value="No specific budget">No specific budget</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Experience & Achievements Section -->
+            <div class="form-section">
+                <div class="section-title">Experience & Achievements</div>
+                
+                <div class="form-row">
+                    <label for="workExperience">Work Experience:</label>
+                    <textarea id="workExperience" name="workExperience" placeholder="Please describe your work experience (company, role, duration)"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <label for="internships">Internships:</label>
+                    <textarea id="internships" name="internships" placeholder="Please describe your internship experiences"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <label for="publications">Publications/Research:</label>
+                    <textarea id="publications" name="publications" placeholder="Please list any publications, research papers, or projects"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <label for="extracurricular">Extracurricular Activities:</label>
+                    <textarea id="extracurricular" name="extracurricular" placeholder="Please describe your extracurricular activities, leadership roles, volunteering"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <label for="awards">Awards & Achievements:</label>
+                    <textarea id="awards" name="awards" placeholder="Please list any awards, scholarships, or notable achievements"></textarea>
+                </div>
+            </div>
+
+            <!-- Additional Information Section -->
+            <div class="form-section">
+                <div class="section-title">Additional Information</div>
+                
+                <div class="form-row">
+                    <label for="specificRequirements">Specific Requirements:</label>
+                    <textarea id="specificRequirements" name="specificRequirements" placeholder="Any specific requirements or preferences (scholarships, campus location, etc.)"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <label for="howDidYouHear">How did you hear about us?:</label>
+                    <select id="howDidYouHear" name="howDidYouHear">
+                        <option value="">Select option</option>
+                        <option value="Google Search">Google Search</option>
+                        <option value="Social Media">Social Media</option>
+                        <option value="Friend/Family">Friend/Family Referral</option>
+                        <option value="Education Fair">Education Fair</option>
+                        <option value="Advertisement">Advertisement</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label for="additionalInfo">Additional Comments:</label>
+                    <textarea id="additionalInfo" name="additionalInfo" placeholder="Any additional information you'd like to share"></textarea>
+                </div>
+            </div>
+
+            <button type="button" class="download-btn" onclick="downloadPDF()">
+                Download Application Form as PDF
+            </button>
+        </form>
+    </div>
+
+    <script>
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Get form data
+            const formData = new FormData(document.getElementById('studentForm'));
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // Add EduSetGo header
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text('EduSetGo', 105, 20, { align: 'center' });
+            doc.setFontSize(16);
+            doc.text('Student Application Form', 105, 30, { align: 'center' });
+            
+            // Add a line
+            doc.setLineWidth(0.5);
+            doc.line(20, 35, 190, 35);
+            
+            let yPosition = 45;
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            
+            // Helper function to add text with wrapping
+            function addFormField(label, value, doc, yPos) {
+                doc.setFont(undefined, 'bold');
+                doc.text(label + ':', 20, yPos);
+                doc.setFont(undefined, 'normal');
+                
+                if (value && value.length > 50) {
+                    const lines = doc.splitTextToSize(value, 150);
+                    doc.text(lines, 20, yPos + 7);
+                    return yPos + 7 + (lines.length * 6);
+                } else {
+                    // Create much longer blank line for writing
+                    const blankLine = value || '________________________________________________________________________________________________________________________________';
+                    doc.text(blankLine, 20, yPos + 7);
+                    return yPos + 15;
+                }
+            }
+            
+            // Helper function for multi-line text areas
+            function addTextAreaField(label, value, doc, yPos) {
+                doc.setFont(undefined, 'bold');
+                doc.text(label + ':', 20, yPos);
+                doc.setFont(undefined, 'normal');
+                
+                if (value && value.trim()) {
+                    const lines = doc.splitTextToSize(value, 150);
+                    doc.text(lines, 20, yPos + 7);
+                    return yPos + 7 + (lines.length * 6) + 5;
+                } else {
+                    // Create multiple long blank lines for writing
+                    const blankLine1 = '________________________________________________________________________________________________________________________________';
+                    const blankLine2 = '________________________________________________________________________________________________________________________________';
+                    const blankLine3 = '________________________________________________________________________________________________________________________________';
+                    doc.text(blankLine1, 20, yPos + 7);
+                    doc.text(blankLine2, 20, yPos + 14);
+                    doc.text(blankLine3, 20, yPos + 21);
+                    return yPos + 30;
+                }
+            }
+            
+            // Add form sections
+            doc.setFont(undefined, 'bold');
+            doc.setFontSize(14);
+            doc.text('PERSONAL INFORMATION', 20, yPosition);
+            yPosition += 10;
+            doc.setFontSize(12);
+            
+            yPosition = addFormField('Full Name', data.fullName, doc, yPosition);
+            yPosition = addFormField('Phone Number', data.phoneNumber, doc, yPosition);
+            yPosition = addFormField('Email Address', data.email, doc, yPosition);
+            yPosition = addFormField('City/Town', data.cityTown, doc, yPosition);
+            yPosition = addFormField('Current Country', data.currentCountry, doc, yPosition);
+            
+            yPosition += 5;
+            doc.setFont(undefined, 'bold');
+            doc.setFontSize(14);
+            doc.text('ACADEMIC BACKGROUND', 20, yPosition);
+            yPosition += 10;
+            doc.setFontSize(12);
+            
+            yPosition = addFormField('Current CGPA/GPA', data.cgpa, doc, yPosition);
+            yPosition = addFormField('Current/Latest Degree', data.currentDegree, doc, yPosition);
+            yPosition = addFormField('Field of Study', data.fieldOfStudy, doc, yPosition);
+            
+            // Check if we need a new page
+            if (yPosition > 230) {
+                doc.addPage();
+                yPosition = 20;
+            }
+            
+            yPosition += 5;
+            doc.setFont(undefined, 'bold');
+            doc.setFontSize(14);
+            doc.text('TEST SCORES', 20, yPosition);
+            yPosition += 10;
+            doc.setFontSize(12);
+            
+            yPosition = addFormField('English Test Type', data.englishTest, doc, yPosition);
+            yPosition = addFormField('English Test Score', data.englishScore, doc, yPosition);
+            yPosition = addFormField('GRE Score', data.greScore, doc, yPosition);
+            yPosition = addFormField('GMAT Score', data.gmatScore, doc, yPosition);
+            
+            // Check if we need a new page
+            if (yPosition > 200) {
+                doc.addPage();
+                yPosition = 20;
+            }
+            
+            yPosition += 5;
+            doc.setFont(undefined, 'bold');
+            doc.setFontSize(14);
+            doc.text('STUDY PREFERENCES', 20, yPosition);
+            yPosition += 10;
+            doc.setFontSize(12);
+            
+            yPosition = addFormField('Countries Interested In', data.interestedCountries, doc, yPosition);
+            yPosition = addFormField('Preferred Degree Level', data.preferredDegree, doc, yPosition);
+            yPosition = addFormField('Preferred Field of Study', data.preferredField, doc, yPosition);
+            yPosition = addFormField('Preferred Annual Fees Range', data.feesRange, doc, yPosition);
+            
+            // Check if we need a new page
+            if (yPosition > 180) {
+                doc.addPage();
+                yPosition = 20;
+            }
+            
+            yPosition += 5;
+            doc.setFont(undefined, 'bold');
+            doc.setFontSize(14);
+            doc.text('EXPERIENCE & ACHIEVEMENTS', 20, yPosition);
+            yPosition += 10;
+            doc.setFontSize(12);
+            
+            yPosition = addTextAreaField('Work Experience', data.workExperience, doc, yPosition);
+            
+            if (yPosition > 200) {
+                doc.addPage();
+                yPosition = 20;
+            }
+            
+            yPosition = addTextAreaField('Internships', data.internships, doc, yPosition);
+            
+            if (yPosition > 200) {
+                doc.addPage();
+                yPosition = 20;
+            }
+            
+            yPosition = addTextAreaField('Publications/Research', data.publications, doc, yPosition);
+            
+            if (yPosition > 200) {
+                doc.addPage();
+                yPosition = 20;
+            }
+            
+            yPosition = addTextAreaField('Extracurricular Activities', data.extracurricular, doc, yPosition);
+            
+            if (yPosition > 200) {
+                doc.addPage();
+                yPosition = 20;
+            }
+            
+            yPosition = addTextAreaField('Awards & Achievements', data.awards, doc, yPosition);
+            
+            if (yPosition > 180) {
+                doc.addPage();
+                yPosition = 20;
+            }
+            
+            yPosition += 5;
+            doc.setFont(undefined, 'bold');
+            doc.setFontSize(14);
+            doc.text('ADDITIONAL INFORMATION', 20, yPosition);
+            yPosition += 10;
+            doc.setFontSize(12);
+            
+            yPosition = addTextAreaField('Specific Requirements', data.specificRequirements, doc, yPosition);
+            yPosition = addFormField('How did you hear about us', data.howDidYouHear, doc, yPosition);
+            yPosition = addTextAreaField('Additional Comments', data.additionalInfo, doc, yPosition);
+            
+            // Add footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(10);
+                doc.text('EduSetGo Student Application Form', 105, 290, { align: 'center' });
+                doc.text(`Page ${i} of ${pageCount}`, 190, 290, { align: 'right' });
+            }
+            
+            // Generate filename with student name and date
+            const studentName = data.fullName || 'Student';
+            const currentDate = new Date().toISOString().slice(0, 10);
+            const filename = `EduSetGo_Application_${studentName.replace(/\s+/g, '_')}_${currentDate}.pdf`;
+            
+            doc.save(filename);
+        }
+        
+        // Validate required fields before download
+        document.querySelector('.download-btn').addEventListener('click', function(e) {
+            const requiredFields = document.querySelectorAll('[required]');
+            let allValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#e74c3c';
+                    allValid = false;
+                } else {
+                    field.style.borderColor = '#ddd';
+                }
+            });
+            
+            if (!allValid) {
+                alert('Please fill in all required fields marked with *');
+                return;
+            }
+            
+            downloadPDF();
+        });
+    </script>
+</body>
+</html>

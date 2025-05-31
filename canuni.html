@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Canadian Universities Data</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <h1>Canadian Universities Data Generator</h1>
+    <button onclick="downloadExcel()">Download Canadian Universities Excel File</button>
+
+    <script>
+        const canadianUniversitiesData = [
+            // Top Tier Canadian Universities
+            { name: "University of Toronto", fees: "CAD $58,000", minCGPA: "3.7", minIELTS: "6.5", minTOEFL: "100", minGRE: "310", acceptanceRate: "43%" },
+            { name: "University of British Columbia", fees: "CAD $45,000", minCGPA: "3.5", minIELTS: "6.5", minTOEFL: "90", minGRE: "305", acceptanceRate: "52%" },
+            { name: "McGill University", fees: "CAD $42,000", minCGPA: "3.7", minIELTS: "6.5", minTOEFL: "90", minGRE: "310", acceptanceRate: "46%" },
+            { name: "University of Alberta", fees: "CAD $28,000", minCGPA: "3.3", minIELTS: "6.5", minTOEFL: "90", minGRE: "300", acceptanceRate: "58%" },
+            { name: "University of Waterloo", fees: "CAD $35,000", minCGPA: "3.5", minIELTS: "6.5", minTOEFL: "90", minGRE: "310", acceptanceRate: "53%" },
+            { name: "McMaster University", fees: "CAD $32,000", minCGPA: "3.5", minIELTS: "6.5", minTOEFL: "92", minGRE: "305", acceptanceRate: "58%" },
+            { name: "Queen's University", fees: "CAD $48,000", minCGPA: "3.5", minIELTS: "7.0", minTOEFL: "88", minGRE: "305", acceptanceRate: "42%" },
+            { name: "University of Calgary", fees: "CAD $25,000", minCGPA: "3.2", minIELTS: "6.5", minTOEFL: "83", minGRE: "300", acceptanceRate: "65%" },
+            { name: "Simon Fraser University", fees: "CAD $28,000", minCGPA: "3.3", minIELTS: "6.5", minTOEFL: "88", minGRE: "300", acceptanceRate: "59%" },
+            { name: "University of Ottawa", fees: "CAD $35,000", minCGPA: "3.2", minIELTS: "6.5", minTOEFL: "86", minGRE: "295", acceptanceRate: "67%" },
+
+            // Ontario Universities
+            { name: "York University", fees: "CAD $27,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "83", minGRE: "290", acceptanceRate: "62%" },
+            { name: "University of Western Ontario", fees: "CAD $32,000", minCGPA: "3.4", minIELTS: "6.5", minTOEFL: "83", minGRE: "300", acceptanceRate: "58%" },
+            { name: "Carleton University", fees: "CAD $26,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "86", minGRE: "290", acceptanceRate: "73%" },
+            { name: "University of Windsor", fees: "CAD $22,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "83", minGRE: "285", acceptanceRate: "83%" },
+            { name: "Ryerson University", fees: "CAD $28,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "92", minGRE: "290", acceptanceRate: "77%" },
+            { name: "University of Guelph", fees: "CAD $25,000", minCGPA: "3.2", minIELTS: "6.5", minTOEFL: "89", minGRE: "295", acceptanceRate: "68%" },
+            { name: "Wilfrid Laurier University", fees: "CAD $26,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "83", minGRE: "290", acceptanceRate: "75%" },
+            { name: "University of Waterloo", fees: "CAD $35,000", minCGPA: "3.5", minIELTS: "6.5", minTOEFL: "90", minGRE: "310", acceptanceRate: "53%" },
+            { name: "Brock University", fees: "CAD $22,000", minCGPA: "2.8", minIELTS: "6.0", minTOEFL: "80", minGRE: "285", acceptanceRate: "85%" },
+            { name: "Trent University", fees: "CAD $23,000", minCGPA: "2.8", minIELTS: "6.0", minTOEFL: "80", minGRE: "285", acceptanceRate: "87%" },
+
+            // British Columbia Universities
+            { name: "University of Victoria", fees: "CAD $24,000", minCGPA: "3.2", minIELTS: "6.5", minTOEFL: "90", minGRE: "295", acceptanceRate: "63%" },
+            { name: "University of Northern British Columbia", fees: "CAD $20,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "88", minGRE: "285", acceptanceRate: "75%" },
+            { name: "Thompson Rivers University", fees: "CAD $18,000", minCGPA: "2.8", minIELTS: "6.0", minTOEFL: "80", minGRE: "280", acceptanceRate: "92%" },
+            { name: "University of the Fraser Valley", fees: "CAD $16,000", minCGPA: "2.5", minIELTS: "6.0", minTOEFL: "80", minGRE: "275", acceptanceRate: "95%" },
+            { name: "Capilano University", fees: "CAD $18,000", minCGPA: "2.8", minIELTS: "6.0", minTOEFL: "83", minGRE: "280", acceptanceRate: "88%" },
+            { name: "Vancouver Island University", fees: "CAD $17,000", minCGPA: "2.7", minIELTS: "6.0", minTOEFL: "80", minGRE: "275", acceptanceRate: "90%" },
+            { name: "Trinity Western University", fees: "CAD $35,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "88", minGRE: "290", acceptanceRate: "70%" },
+            { name: "Emily Carr University", fees: "CAD $21,000", minCGPA: "2.8", minIELTS: "6.5", minTOEFL: "84", minGRE: "N/A", acceptanceRate: "75%" },
+
+            // Alberta Universities
+            { name: "University of Lethbridge", fees: "CAD $19,000", minCGPA: "3.0", minIELTS: "6.0", minTOEFL: "80", minGRE: "285", acceptanceRate: "78%" },
+            { name: "Athabasca University", fees: "CAD $16,000", minCGPA: "2.7", minIELTS: "6.0", minTOEFL: "86", minGRE: "280", acceptanceRate: "85%" },
+            { name: "MacEwan University", fees: "CAD $17,000", minCGPA: "2.8", minIELTS: "6.5", minTOEFL: "86", minGRE: "280", acceptanceRate: "82%" },
+            { name: "Mount Royal University", fees: "CAD $19,000", minCGPA: "2.8", minIELTS: "6.0", minTOEFL: "83", minGRE: "280", acceptanceRate: "80%" },
+            { name: "SAIT Polytechnic", fees: "CAD $16,000", minCGPA: "2.5", minIELTS: "6.0", minTOEFL: "80", minGRE: "275", acceptanceRate: "90%" },
+
+            // Quebec Universities
+            { name: "Concordia University", fees: "CAD $25,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "90", minGRE: "290", acceptanceRate: "65%" },
+            { name: "Université de Montréal", fees: "CAD $20,000", minCGPA: "3.2", minIELTS: "6.5", minTOEFL: "90", minGRE: "295", acceptanceRate: "55%" },
+            { name: "Université Laval", fees: "CAD $18,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "88", minGRE: "290", acceptanceRate: "70%" },
+            { name: "Université du Québec à Montréal", fees: "CAD $16,000", minCGPA: "2.8", minIELTS: "6.0", minTOEFL: "85", minGRE: "285", acceptanceRate: "75%" },
+            { name: "Université de Sherbrooke", fees: "CAD $18,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "88", minGRE: "290", acceptanceRate: "68%" },
+            { name: "HEC Montréal", fees: "CAD $22,000", minCGPA: "3.2", minIELTS: "6.5", minTOEFL: "90", minGRE: "300", acceptanceRate: "45%" },
+            { name: "École Polytechnique de Montréal", fees: "CAD $20,000", minCGPA: "3.3", minIELTS: "6.5", minTOEFL: "90", minGRE: "305", acceptanceRate: "52%" },
+            { name: "Université du Québec à Trois-Rivières", fees: "CAD $15,000", minCGPA: "2.7", minIELTS: "6.0", minTOEFL: "80", minGRE: "280", acceptanceRate: "85%" },
+
+            // Manitoba Universities
+            { name: "University of Manitoba", fees: "CAD $19,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "86", minGRE: "290", acceptanceRate: "72%" },
+            { name: "University of Winnipeg", fees: "CAD $16,000", minCGPA: "2.8", minIELTS: "6.5", minTOEFL: "80", minGRE: "285", acceptanceRate: "78%" },
+            { name: "Brandon University", fees: "CAD $14,000", minCGPA: "2.5", minIELTS: "6.0", minTOEFL: "80", minGRE: "275", acceptanceRate: "92%" },
+
+            // Saskatchewan Universities
+            { name: "University of Saskatchewan", fees: "CAD $20,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "86", minGRE: "290", acceptanceRate: "70%" },
+            { name: "University of Regina", fees: "CAD $18,000", minCGPA: "2.8", minIELTS: "6.5", minTOEFL: "80", minGRE: "285", acceptanceRate: "85%" },
+
+            // Maritime Universities
+            { name: "Dalhousie University", fees: "CAD $22,000", minCGPA: "3.2", minIELTS: "6.5", minTOEFL: "90", minGRE: "295", acceptanceRate: "65%" },
+            { name: "University of New Brunswick", fees: "CAD $18,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "85", minGRE: "290", acceptanceRate: "75%" },
+            { name: "Saint Mary's University", fees: "CAD $17,000", minCGPA: "2.8", minIELTS: "6.0", minTOEFL: "80", minGRE: "285", acceptanceRate: "80%" },
+            { name: "Acadia University", fees: "CAD $19,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "85", minGRE: "290", acceptanceRate: "75%" },
+            { name: "Cape Breton University", fees: "CAD $15,000", minCGPA: "2.5", minIELTS: "6.0", minTOEFL: "80", minGRE: "275", acceptanceRate: "88%" },
+            { name: "Mount Allison University", fees: "CAD $20,000", minCGPA: "3.1", minIELTS: "6.5", minTOEFL: "85", minGRE: "290", acceptanceRate: "68%" },
+            { name: "St. Francis Xavier University", fees: "CAD $19,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "83", minGRE: "285", acceptanceRate: "72%" },
+            { name: "University of Prince Edward Island", fees: "CAD $16,000", minCGPA: "2.8", minIELTS: "6.5", minTOEFL: "80", minGRE: "280", acceptanceRate: "85%" },
+
+            // Newfoundland Universities
+            { name: "Memorial University", fees: "CAD $12,000", minCGPA: "2.8", minIELTS: "6.5", minTOEFL: "79", minGRE: "285", acceptanceRate: "78%" },
+
+            // Additional Ontario Universities
+            { name: "Lakehead University", fees: "CAD $21,000", minCGPA: "2.8", minIELTS: "6.0", minTOEFL: "80", minGRE: "285", acceptanceRate: "83%" },
+            { name: "Laurentian University", fees: "CAD $22,000", minCGPA: "2.7", minIELTS: "6.0", minTOEFL: "80", minGRE: "280", acceptanceRate: "88%" },
+            { name: "Nipissing University", fees: "CAD $20,000", minCGPA: "2.7", minIELTS: "6.0", minTOEFL: "80", minGRE: "280", acceptanceRate: "90%" },
+            { name: "Algoma University", fees: "CAD $18,000", minCGPA: "2.5", minIELTS: "6.0", minTOEFL: "79", minGRE: "275", acceptanceRate: "95%" },
+            { name: "University of Ontario Institute", fees: "CAD $30,000", minCGPA: "3.3", minIELTS: "6.5", minTOEFL: "88", minGRE: "305", acceptanceRate: "60%" },
+
+            // Specialized and Private Universities
+            { name: "OCAD University", fees: "CAD $25,000", minCGPA: "2.8", minIELTS: "6.5", minTOEFL: "84", minGRE: "N/A", acceptanceRate: "70%" },
+            { name: "Royal Military College", fees: "CAD $15,000", minCGPA: "3.2", minIELTS: "6.5", minTOEFL: "86", minGRE: "300", acceptanceRate: "25%" },
+            { name: "Canadian Mennonite University", fees: "CAD $16,000", minCGPA: "2.8", minIELTS: "6.0", minTOEFL: "80", minGRE: "285", acceptanceRate: "85%" },
+            { name: "Redeemer University", fees: "CAD $28,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "88", minGRE: "290", acceptanceRate: "78%" },
+            { name: "King's University College", fees: "CAD $25,000", minCGPA: "2.8", minIELTS: "6.0", minTOEFL: "83", minGRE: "285", acceptanceRate: "80%" },
+
+            // Technical and Applied Universities
+            { name: "University of Ontario Tech", fees: "CAD $28,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "83", minGRE: "295", acceptanceRate: "75%" },
+            { name: "British Columbia Institute of Technology", fees: "CAD $18,000", minCGPA: "2.8", minIELTS: "6.0", minTOEFL: "83", minGRE: "280", acceptanceRate: "85%" },
+            { name: "Southern Alberta Institute", fees: "CAD $16,000", minCGPA: "2.5", minIELTS: "6.0", minTOEFL: "80", minGRE: "275", acceptanceRate: "90%" },
+            { name: "Northern Alberta Institute", fees: "CAD $15,000", minCGPA: "2.5", minIELTS: "6.0", minTOEFL: "79", minGRE: "275", acceptanceRate: "92%" },
+
+            // Additional Quebec Universities
+            { name: "Université du Québec à Chicoutimi", fees: "CAD $15,000", minCGPA: "2.7", minIELTS: "6.0", minTOEFL: "80", minGRE: "280", acceptanceRate: "88%" },
+            { name: "Université du Québec en Outaouais", fees: "CAD $16,000", minCGPA: "2.8", minIELTS: "6.0", minTOEFL: "80", minGRE: "285", acceptanceRate: "82%" },
+            { name: "Université du Québec à Rimouski", fees: "CAD $14,000", minCGPA: "2.7", minIELTS: "6.0", minTOEFL: "80", minGRE: "280", acceptanceRate: "90%" },
+            { name: "Université de Moncton", fees: "CAD $15,000", minCGPA: "2.8", minIELTS: "6.0", minTOEFL: "80", minGRE: "285", acceptanceRate: "85%" },
+
+            // Additional BC Universities
+            { name: "Kwantlen Polytechnic University", fees: "CAD $17,000", minCGPA: "2.7", minIELTS: "6.0", minTOEFL: "80", minGRE: "275", acceptanceRate: "88%" },
+            { name: "Royal Roads University", fees: "CAD $22,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "88", minGRE: "290", acceptanceRate: "70%" },
+            { name: "Quest University Canada", fees: "CAD $38,000", minCGPA: "3.2", minIELTS: "6.5", minTOEFL: "90", minGRE: "295", acceptanceRate: "75%" },
+
+            // Liberal Arts and Smaller Universities
+            { name: "Bishop's University", fees: "CAD $21,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "90", minGRE: "290", acceptanceRate: "70%" },
+            { name: "St. Thomas University", fees: "CAD $17,000", minCGPA: "2.8", minIELTS: "6.5", minTOEFL: "85", minGRE: "285", acceptanceRate: "78%" },
+            { name: "Huron University College", fees: "CAD $27,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "83", minGRE: "290", acceptanceRate: "75%" },
+            { name: "Brescia University College", fees: "CAD $26,000", minCGPA: "2.8", minIELTS: "6.0", minTOEFL: "83", minGRE: "285", acceptanceRate: "80%" },
+            { name: "King's University College UWO", fees: "CAD $27,000", minCGPA: "3.0", minIELTS: "6.5", minTOEFL: "83", minGRE: "290", acceptanceRate: "75%" },
+
+            // Graduate and Professional Schools
+            { name: "Rotman School of Management", fees: "CAD $65,000", minCGPA: "3.5", minIELTS: "7.0", minTOEFL: "100", minGRE: "320", acceptanceRate: "35%" },
+            { name: "Schulich School of Business", fees: "CAD $55,000", minCGPA: "3.4", minIELTS: "7.0", minTOEFL: "100", minGRE: "315", acceptanceRate: "40%" },
+            { name: "Desautels Faculty McGill", fees: "CAD $48,000", minCGPA: "3.4", minIELTS: "7.0", minTOEFL: "100", minGRE: "310", acceptanceRate: "45%" },
+            { name: "Sauder School of Business", fees: "CAD $52,000", minCGPA: "3.4", minIELTS: "7.0", minTOEFL: "100", minGRE: "315", acceptanceRate: "42%" },
+            { name: "Smith School of Business", fees: "CAD $48,000", minCGPA: "3.3", minIELTS: "7.0", minTOEFL: "100", minGRE: "310", acceptanceRate: "50%" },
+
+            // Health Sciences Universities
+            { name: "University of Toronto Medicine", fees: "CAD $24,000", minCGPA: "3.8", minIELTS: "7.0", minTOEFL: "100", minGRE: "N/A", acceptanceRate: "8%" },
+            { name: "UBC Faculty of Medicine", fees: "CAD $17,000", minCGPA: "3.7", minIELTS: "7.0", minTOEFL: "100", minGRE: "N/A", acceptanceRate: "12%" },
+            { name: "McGill Faculty of Medicine", fees: "CAD $5,000", minCGPA: "3.8", minIELTS: "7.0", minTOEFL: "100", minGRE: "N/A", acceptanceRate: "7%" },
+            { name: "University of Alberta Medicine", fees: "CAD $16,000", minCGPA: "3.6", minIELTS: "7.0", minTOEFL: "100", minGRE: "N/A", acceptanceRate: "15%" },
+            { name: "University of Calgary Medicine", fees: "CAD $17,000", minCGPA: "3.6", minIELTS: "7.0", minTOEFL: "100", minGRE: "N/A", acceptanceRate: "18%" },
+
+            // Engineering Focused Programs
+            { name: "Waterloo Engineering", fees: "CAD $58,000", minCGPA: "3.7", minIELTS: "6.5", minTOEFL: "90", minGRE: "315", acceptanceRate: "30%" },
+            { name: "U of T Engineering", fees: "CAD $60,000", minCGPA: "3.6", minIELTS: "6.5", minTOEFL: "100", minGRE: "315", acceptanceRate: "35%" },
+            { name: "UBC Engineering", fees: "CAD $48,000", minCGPA: "3.5", minIELTS: "6.5", minTOEFL: "90", minGRE: "310", acceptanceRate: "40%" },
+            { name: "McGill Engineering", fees: "CAD $45,000", minCGPA: "3.5", minIELTS: "6.5", minTOEFL: "90", minGRE: "310", acceptanceRate: "45%" },
+            { name: "École de technologie supérieure", fees: "CAD $18,000", minCGPA: "3.2", minIELTS: "6.5", minTOEFL: "88", minGRE: "300", acceptanceRate: "65%" },
+
+            // Final Universities to reach 100
+            { name: "Yukon University", fees: "CAD $14,000", minCGPA: "2.5", minIELTS: "6.0", minTOEFL: "79", minGRE: "275", acceptanceRate: "95%" },
+            { name: "Aurora College", fees: "CAD $12,000", minCGPA: "2.3", minIELTS: "6.0", minTOEFL: "79", minGRE: "270", acceptanceRate: "98%" },
+            { name: "Nunavut Arctic College", fees: "CAD $10,000", minCGPA: "2.3", minIELTS: "6.0", minTOEFL: "79", minGRE: "270", acceptanceRate: "100%" },
+            { name: "Confederation College", fees: "CAD $15,000", minCGPA: "2.5", minIELTS: "6.0", minTOEFL: "79", minGRE: "275", acceptanceRate: "92%" },
+            { name: "Cambrian College", fees: "CAD $14,000", minCGPA: "2.5", minIELTS: "6.0", minTOEFL: "79", minGRE: "275", acceptanceRate: "90%" }
+        ];
+
+        function downloadExcel() {
+            // Create a new workbook
+            const wb = XLSX.utils.book_new();
+            
+            // Create worksheet with university data
+            const ws = XLSX.utils.json_to_sheet(canadianUniversitiesData.map(uni => ({
+                "University Name": uni.name,
+                "Annual Fees": uni.fees,
+                "Minimum CGPA": uni.minCGPA,
+                "Minimum IELTS Score": uni.minIELTS,
+                "Minimum TOEFL Score": uni.minTOEFL,
+                "Minimum GRE Score": uni.minGRE,
+                "Acceptance Rate": uni.acceptanceRate
+            })));
+            
+            // Add the worksheet to the workbook
+            XLSX.utils.book_append_sheet(wb, ws, "Canadian Universities");
+            
+            // Create the Excel file and trigger download
+            XLSX.writeFile(wb, "Canadian_Universities_Data.xlsx");
+        }
+    </script>
+</body>
+</html>

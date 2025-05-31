@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download US Universities Data</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <h1>US Universities Data Generator</h1>
+    <p>Click the button below to download an Excel file with US universities data.</p>
+    
+    <button id="downloadBtn" style="padding: 15px 30px; font-size: 18px; background-color: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 5px;">
+        Download Universities Excel File
+    </button>
+    
+    <p id="status" style="margin-top: 20px; font-weight: bold;"></p>
+
+    <script>
+        // University data - 250+ Universities
+        const universities = [
+            ["University Name", "Annual Fees", "Minimum CGPA", "Minimum IELTS", "Minimum TOEFL", "Minimum GRE", "Acceptance Rate"],
+            
+            // University of California System (10 campuses)
+            ["UC Berkeley", "$44,000", "3.6", "6.5", "90", "310", "16.8%"],
+            ["UCLA", "$43,000", "3.6", "7.0", "100", "310", "12.3%"],
+            ["UC San Diego", "$42,000", "3.5", "6.5", "90", "305", "34.3%"],
+            ["UC Davis", "$42,000", "3.4", "6.5", "80", "300", "46.3%"],
+            ["UC Irvine", "$42,000", "3.5", "6.5", "80", "305", "28.8%"],
+            ["UC Santa Barbara", "$42,000", "3.5", "6.5", "80", "305", "32.2%"],
+            ["UC Riverside", "$42,000", "3.2", "6.5", "80", "295", "66.0%"],
+            ["UC Santa Cruz", "$42,000", "3.3", "6.5", "83", "300", "65.0%"],
+            ["UC Merced", "$42,000", "3.0", "6.0", "80", "285", "85.0%"],
+            ["UC San Francisco (Graduate)", "$45,000", "3.5", "7.0", "100", "310", "4.0%"],
+            
+            // California State University System (23 campuses)
+            ["San Jose State University", "$18,000", "3.0", "6.0", "61", "280", "70.0%"],
+            ["Cal State Long Beach", "$18,000", "3.0", "6.0", "61", "280", "31.0%"],
+            ["Cal State Fullerton", "$18,000", "3.0", "6.0", "61", "280", "67.0%"],
+            ["Cal Poly San Luis Obispo", "$23,000", "3.3", "6.5", "80", "300", "30.0%"],
+            ["San Diego State University", "$20,000", "3.2", "6.0", "80", "290", "37.0%"],
+            ["Cal State Los Angeles", "$18,000", "2.8", "6.0", "61", "275", "85.0%"],
+            ["Cal State Northridge", "$18,000", "2.8", "6.0", "61", "275", "91.0%"],
+            ["Cal State Sacramento", "$18,000", "2.8", "6.0", "61", "275", "85.0%"],
+            ["Cal State Fresno", "$18,000", "2.8", "6.0", "61", "275", "87.0%"],
+            ["Cal Poly Pomona", "$19,000", "3.0", "6.0", "71", "285", "55.0%"],
+            ["Cal State San Bernardino", "$18,000", "2.8", "6.0", "61", "275", "90.0%"],
+            ["Cal State Chico", "$18,000", "3.0", "6.0", "61", "280", "77.0%"],
+            ["Cal State San Marcos", "$18,000", "2.8", "6.0", "61", "275", "85.0%"],
+            ["Cal State East Bay", "$18,000", "2.8", "6.0", "61", "275", "88.0%"],
+            ["Cal State Bakersfield", "$18,000", "2.5", "6.0", "61", "270", "95.0%"],
+            ["Cal State Channel Islands", "$18,000", "2.8", "6.0", "61", "275", "89.0%"],
+            ["Cal State Dominguez Hills", "$18,000", "2.5", "6.0", "61", "270", "92.0%"],
+            ["Cal State Maritime", "$18,000", "2.8", "6.0", "61", "275", "78.0%"],
+            ["Cal State Monterey Bay", "$18,000", "2.8", "6.0", "61", "275", "86.0%"],
+            ["Cal State Stanislaus", "$18,000", "2.5", "6.0", "61", "270", "95.0%"],
+            ["Humboldt State University", "$18,000", "2.8", "6.0", "61", "275", "92.0%"],
+            ["Sonoma State University", "$18,000", "2.8", "6.0", "61", "275", "85.0%"],
+            ["Cal State San Francisco", "$18,000", "3.0", "6.0", "61", "280", "70.0%"],
+            
+            // Florida University System (12 major universities)
+            ["University of Florida", "$28,000", "3.4", "6.0", "80", "300", "31.1%"],
+            ["Florida State University", "$22,000", "3.3", "6.0", "80", "295", "36.0%"],
+            ["University of South Florida", "$17,000", "3.2", "6.5", "79", "290", "49.0%"],
+            ["Florida International University", "$19,000", "3.0", "6.0", "80", "285", "58.0%"],
+            ["University of Central Florida", "$23,000", "3.2", "6.5", "80", "290", "44.0%"],
+            ["Florida Atlantic University", "$17,000", "3.0", "6.0", "79", "285", "63.0%"],
+            ["Florida Agricultural & Mechanical", "$18,000", "2.8", "6.0", "79", "280", "75.0%"],
+            ["Florida Gulf Coast University", "$26,000", "3.0", "6.0", "79", "285", "73.0%"],
+            ["Florida Polytechnic University", "$13,000", "3.0", "6.0", "79", "290", "63.0%"],
+            ["Florida Institute of Technology", "$44,000", "3.3", "6.0", "79", "300", "58.0%"],
+            ["Nova Southeastern University", "$31,000", "3.2", "6.0", "79", "290", "76.0%"],
+            ["University of Miami", "$52,000", "3.5", "6.5", "80", "300", "27.1%"],
+            ["Florida International Institute", "$19,000", "3.0", "6.0", "79", "285", "65.0%"],
+            ["Rollins College", "$52,000", "3.4", "6.5", "80", "300", "58.0%"],
+            ["Stetson University", "$47,000", "3.2", "6.0", "79", "295", "65.0%"],
+            ["Barry University", "$30,000", "2.8", "6.0", "79", "280", "68.0%"],
+            
+            // Texas University System (25+ universities)
+            ["University of Texas at Austin", "$40,000", "3.4", "6.5", "79", "300", "31.8%"],
+            ["Texas A&M University", "$36,000", "3.3", "6.0", "80", "295", "63.0%"],
+            ["University of Houston", "$27,000", "3.0", "6.5", "79", "290", "66.0%"],
+            ["Texas Tech University", "$24,000", "3.0", "6.0", "79", "285", "70.0%"],
+            ["University of Texas Dallas", "$37,000", "3.2", "6.5", "80", "300", "85.0%"],
+            ["University of Texas Arlington", "$27,000", "3.0", "6.0", "79", "290", "81.0%"],
+            ["Texas State University", "$25,000", "2.8", "6.0", "78", "285", "78.0%"],
+            ["University of Texas San Antonio", "$22,000", "2.8", "6.0", "69", "280", "85.0%"],
+            ["University of Texas El Paso", "$20,000", "2.5", "6.0", "61", "275", "100%"],
+            ["University of North Texas", "$24,000", "3.0", "6.0", "79", "285", "71.0%"],
+            ["Sam Houston State University", "$22,000", "2.8", "6.0", "79", "280", "84.0%"],
+            ["Stephen F. Austin State University", "$20,000", "2.8", "6.0", "79", "280", "75.0%"],
+            ["Texas A&M Commerce", "$19,000", "2.8", "6.0", "79", "280", "85.0%"],
+            ["Texas A&M Corpus Christi", "$21,000", "2.8", "6.0", "79", "280", "88.0%"],
+            ["Texas A&M Kingsville", "$18,000", "2.5", "6.0", "79", "275", "92.0%"],
+            ["Texas A&M International", "$17,000", "2.5", "6.0", "79", "275", "95.0%"],
+            ["University of Houston Downtown", "$19,000", "2.8", "6.0", "79", "280", "90.0%"],
+            ["University of Houston Clear Lake", "$20,000", "2.8", "6.0", "79", "280", "85.0%"],
+            ["University of Houston Victoria", "$18,000", "2.8", "6.0", "79", "280", "92.0%"],
+            ["Prairie View A&M University", "$18,000", "2.5", "6.0", "79", "275", "88.0%"],
+            ["Lamar University", "$17,000", "2.5", "6.0", "79", "275", "95.0%"],
+            ["Sul Ross State University", "$15,000", "2.5", "6.0", "79", "275", "98.0%"],
+            ["Angelo State University", "$17,000", "2.5", "6.0", "79", "275", "90.0%"],
+            ["West Texas A&M University", "$16,000", "2.5", "6.0", "79", "275", "95.0%"],
+            ["Tarleton State University", "$18,000", "2.5", "6.0", "79", "275", "85.0%"],
+            
+            // SUNY System (25+ universities)
+            ["SUNY Stony Brook", "$26,000", "3.2", "6.5", "80", "295", "49.0%"],
+            ["SUNY Binghamton", "$25,000", "3.4", "6.5", "80", "300", "40.0%"],
+            ["SUNY University at Buffalo", "$28,000", "3.2", "6.5", "79", "295", "68.0%"],
+            ["SUNY Albany", "$24,000", "3.0", "6.0", "79", "285", "64.0%"],
+            ["SUNY Purchase", "$24,000", "2.8", "6.0", "80", "280", "76.0%"],
+            ["SUNY New Paltz", "$24,000", "3.0", "6.0", "80", "285", "63.0%"],
+            ["SUNY Oswego", "$24,000", "2.8", "6.0", "79", "280", "77.0%"],
+            ["SUNY Oneonta", "$24,000", "2.8", "6.0", "79", "280", "76.0%"],
+            ["SUNY Plattsburgh", "$24,000", "2.8", "6.0", "79", "280", "80.0%"],
+            ["SUNY Geneseo", "$24,000", "3.3", "6.5", "80", "300", "75.0%"],
+            ["SUNY Brockport", "$24,000", "2.8", "6.0", "79", "280", "85.0%"],
+            ["SUNY Cortland", "$24,000", "2.8", "6.0", "79", "280", "82.0%"],
+            ["SUNY Fredonia", "$24,000", "2.8", "6.0", "79", "280", "88.0%"],
+            ["SUNY Potsdam", "$24,000", "2.8", "6.0", "79", "280", "90.0%"],
+            ["SUNY Environmental Science", "$24,000", "3.0", "6.0", "80", "285", "70.0%"],
+            ["SUNY Maritime College", "$26,000", "3.0", "6.0", "80", "285", "75.0%"],
+            ["CUNY Hunter College", "$19,000", "3.0", "6.0", "61", "285", "42.0%"],
+            ["CUNY Brooklyn College", "$19,000", "2.8", "6.0", "61", "280", "52.0%"],
+            ["CUNY City College", "$19,000", "3.0", "6.0", "61", "285", "62.0%"],
+            ["CUNY Queens College", "$19,000", "2.8", "6.0", "61", "280", "58.0%"],
+            ["CUNY Baruch College", "$19,000", "3.2", "6.5", "80", "295", "35.0%"],
+            ["CUNY John Jay College", "$19,000", "2.8", "6.0", "61", "280", "45.0%"],
+            ["CUNY Lehman College", "$19,000", "2.8", "6.0", "61", "280", "60.0%"],
+            ["CUNY York College", "$19,000", "2.5", "6.0", "61", "275", "75.0%"],
+            ["CUNY College of Staten Island", "$19,000", "2.8", "6.0", "61", "280", "85.0%"],
+            
+            // Pennsylvania Universities
+            ["Penn State University", "$36,000", "3.4", "6.5", "80", "300", "55.2%"],
+            ["Temple University", "$30,000", "3.2", "6.0", "79", "290", "69.0%"],
+            ["University of Pittsburgh", "$34,000", "3.4", "6.5", "90", "305", "67.0%"],
+            ["Penn State Harrisburg", "$26,000", "3.0", "6.0", "80", "285", "85.0%"],
+            ["West Chester University", "$23,000", "3.0", "6.0", "79", "285", "88.0%"],
+            ["Bloomsburg University", "$22,000", "2.8", "6.0", "79", "280", "90.0%"],
+            ["Millersville University", "$22,000", "2.8", "6.0", "79", "280", "85.0%"],
+            ["East Stroudsburg University", "$22,000", "2.8", "6.0", "79", "280", "89.0%"],
+            ["Kutztown University", "$22,000", "2.8", "6.0", "79", "280", "87.0%"],
+            ["Shippensburg University", "$22,000", "2.8", "6.0", "79", "280", "88.0%"],
+            ["California University PA", "$22,000", "2.8", "6.0", "79", "280", "95.0%"],
+            ["Clarion University", "$22,000", "2.5", "6.0", "79", "275", "98.0%"],
+            ["Edinburgh University PA", "$22,000", "2.8", "6.0", "79", "280", "92.0%"],
+            ["Indiana University PA", "$22,000", "2.8", "6.0", "79", "280", "90.0%"],
+            ["Lock Haven University", "$22,000", "2.5", "6.0", "79", "275", "95.0%"],
+            ["Mansfield University", "$22,000", "2.5", "6.0", "79", "275", "98.0%"],
+            ["Slippery Rock University", "$22,000", "2.8", "6.0", "79", "280", "85.0%"],
+            
+            // Ohio Universities
+            ["Ohio State University", "$32,000", "3.3", "6.5", "79", "295", "68.0%"],
+            ["Ohio University", "$22,000", "3.0", "6.0", "80", "285", "85.0%"],
+            ["Bowling Green State University", "$20,000", "2.8", "6.0", "71", "280", "88.0%"],
+            ["Miami University Ohio", "$36,000", "3.3", "6.5", "80", "295", "88.0%"],
+            ["University of Cincinnati", "$27,000", "3.2", "6.5", "79", "290", "73.0%"],
+            ["Kent State University", "$20,000", "2.8", "6.0", "71", "280", "85.0%"],
+            ["University of Toledo", "$21,000", "2.8", "6.0", "71", "280", "92.0%"],
+            ["Youngstown State University", "$19,000", "2.5", "6.0", "61", "275", "95.0%"],
+            ["Wright State University", "$19,000", "2.8", "6.0", "61", "280", "88.0%"],
+            ["Cleveland State University", "$20,000", "2.8", "6.0", "71", "280", "92.0%"],
+            ["University of Akron", "$20,000", "2.8", "6.0", "71", "280", "95.0%"],
+            ["Central State University", "$18,000", "2.5", "6.0", "61", "275", "98.0%"],
+            ["Shawnee State University", "$17,000", "2.5", "6.0", "61", "275", "100%"],
+            
+            // Michigan Universities
+            ["University of Michigan", "$51,000", "3.6", "6.5", "100", "310", "22.9%"],
+            ["Michigan State University", "$40,000", "3.2", "6.5", "79", "295", "76.0%"],
+            ["Wayne State University", "$29,000", "3.0", "6.0", "79", "285", "75.0%"],
+            ["Central Michigan University", "$25,000", "2.8", "6.0", "79", "280", "85.0%"],
+            ["Eastern Michigan University", "$24,000", "2.8", "6.0", "79", "280", "90.0%"],
+            ["Western Michigan University", "$26,000", "2.8", "6.0", "80", "280", "85.0%"],
+            ["Northern Michigan University", "$23,000", "2.7", "6.0", "61", "275", "88.0%"],
+            ["Ferris State University", "$23,000", "2.8", "6.0", "79", "280", "90.0%"],
+            ["Grand Valley State University", "$24,000", "3.0", "6.0", "80", "285", "83.0%"],
+            ["Oakland University", "$26,000", "3.0", "6.0", "79", "285", "85.0%"],
+            ["Saginaw Valley State", "$22,000", "2.8", "6.0", "79", "280", "88.0%"],
+            ["Lake Superior State", "$21,000", "2.5", "6.0", "79", "275", "95.0%"],
+            
+            // Illinois Universities
+            ["University of Illinois Chicago", "$31,000", "3.2", "6.5", "80", "295", "73.0%"],
+            ["University of Illinois Urbana", "$33,000", "3.4", "6.5", "79", "305", "62.0%"],
+            ["Illinois State University", "$26,000", "3.0", "6.0", "79", "285", "81.0%"],
+            ["Northern Illinois University", "$25,000", "2.8", "6.0", "71", "280", "83.0%"],
+            ["Southern Illinois University", "$24,000", "2.8", "6.0", "61", "280", "86.0%"],
+            ["Eastern Illinois University", "$23,000", "2.7", "6.0", "61", "275", "88.0%"],
+            ["Western Illinois University", "$22,000", "2.5", "6.0", "61", "275", "95.0%"],
+            ["Chicago State University", "$20,000", "2.5", "6.0", "61", "275", "95.0%"],
+            ["Governors State University", "$21,000", "2.8", "6.0", "79", "280", "85.0%"],
+            ["Northeastern Illinois", "$20,000", "2.5", "6.0", "61", "275", "90.0%"],
+            ["University of Illinois Springfield", "$25,000", "3.0", "6.0", "79", "285", "75.0%"],
+            
+            // Additional Major State Universities
+            ["Georgia Institute of Technology", "$33,000", "3.6", "6.5", "100", "315", "22.6%"],
+            ["University of Georgia", "$30,000", "3.4", "6.5", "80", "300", "47.8%"],
+            ["Georgia State University", "$29,000", "3.0", "6.0", "79", "285", "67.0%"],
+            ["Georgia Southern University", "$21,000", "2.8", "6.0", "69", "280", "89.0%"],
+            ["Kennesaw State University", "$23,000", "2.8", "6.0", "69", "280", "75.0%"],
+            ["University of North Carolina Chapel Hill", "$36,000", "3.5", "6.5", "100", "305", "22.6%"],
+            ["North Carolina State University", "$28,000", "3.3", "6.5", "85", "300", "47.0%"],
+            ["UNC Charlotte", "$22,000", "3.0", "6.0", "75", "285", "80.0%"],
+            ["UNC Greensboro", "$20,000", "2.8", "6.0", "79", "280", "85.0%"],
+            ["UNC Wilmington", "$22,000", "3.2", "6.5", "79", "290", "69.0%"],
+            ["East Carolina University", "$24,000", "2.8", "6.0", "80", "280", "87.0%"],
+            ["Appalachian State University", "$21,000", "3.0", "6.0", "79", "285", "73.0%"],
+            ["Western Carolina University", "$19,000", "2.8", "6.0", "79", "280", "85.0%"],
+            ["University of Virginia", "$52,000", "3.6", "7.0", "90", "310", "23.9%"],
+            ["Virginia Tech", "$32,000", "3.4", "6.5", "80", "300", "70.0%"],
+            ["James Madison University", "$29,000", "3.2", "6.0", "80", "290", "78.0%"],
+            ["Old Dominion University", "$28,000", "3.0", "6.0", "79", "285", "86.0%"],
+            ["Virginia Commonwealth University", "$35,000", "3.2", "6.0", "80", "290", "87.0%"],
+            ["George Mason University", "$36,000", "3.3", "6.5", "88", "295", "90.0%"],
+            ["Norfolk State University", "$24,000", "2.8", "6.0", "79", "280", "88.0%"],
+            ["University of Washington", "$38,000", "3.5", "6.5", "92", "305", "55.8%"],
+            ["Washington State University", "$26,000", "3.0", "6.5", "79", "285", "76.0%"],
+            ["Western Washington University", "$24,000", "3.0", "6.5", "79", "285", "93.0%"],
+            ["Central Washington University", "$23,000", "2.8", "6.0", "79", "280", "87.0%"],
+            ["Eastern Washington University", "$22,000", "2.8", "6.0", "79", "280", "96.0%"],
+            ["The Evergreen State College", "$25,000", "2.8", "6.0", "79", "280", "99.0%"],
+            ["University of Wisconsin Madison", "$37,000", "3.4", "6.0", "80", "300", "57.1%"],
+            ["University of Wisconsin Milwaukee", "$22,000", "3.0", "6.0", "79", "285", "86.0%"],
+            ["University of Wisconsin Green Bay", "$20,000", "2.8", "6.0", "70", "280", "90.0%"],
+            ["University of Wisconsin Eau Claire", "$19,000", "2.8", "6.0", "70", "280", "85.0%"],
+            ["University of Wisconsin Oshkosh", "$19,000", "2.8", "6.0", "70", "280", "92.0%"],
+            ["University of Wisconsin La Crosse", "$19,000", "3.0", "6.0", "70", "285", "82.0%"],
+            ["University of Wisconsin Stevens Point", "$19,000", "2.8", "6.0", "70", "280", "88.0%"],
+            ["University of Wisconsin Whitewater", "$19,000", "2.8", "6.0", "70", "280", "85.0%"],
+            ["University of Wisconsin Platteville", "$19,000", "2.8", "6.0", "70", "280", "90.0%"],
+            ["University of Wisconsin Stout", "$19,000", "2.8", "6.0", "70", "280", "87.0%"],
+            ["University of Wisconsin Superior", "$19,000", "2.5", "6.0", "70", "275", "95.0%"],
+            
+            // Western Universities
+            ["University of Colorado Boulder", "$37,000", "3.3", "6.5", "75", "300", "80.0%"],
+            ["Colorado State University", "$30,000", "3.2", "6.0", "79", "295", "87.0%"],
+            ["University of Colorado Denver", "$32,000", "3.0", "6.0", "75", "290", "76.0%"],
+            ["Colorado School of Mines", "$38,000", "3.6", "6.5", "79", "315", "58.0%"],
+            ["University of Northern Colorado", "$24,000", "2.8", "6.0", "70", "280", "91.0%"],
+            ["Colorado State University Pueblo", "$20,000", "2.7", "6.0", "61", "275", "95.0%"],
+            ["Metropolitan State University Denver", "$18,000", "2.5", "6.0", "61", "275", "98.0%"],
+            ["Adams State University", "$17,000", "2.5", "6.0", "61", "275", "100%"],
+            ["Fort Lewis College", "$19,000", "2.8", "6.0", "61", "280", "88.0%"],
+            ["University of Oregon", "$36,000", "3.2", "6.0", "88", "295", "83.0%"],
+            ["Oregon State University", "$29,000", "3.0", "6.0", "80", "285", "82.0%"],
+            ["Portland State University", "$27,000", "3.0", "6.0", "71", "285", "93.0%"],
+            ["Southern Oregon University", "$23,000", "2.8", "6.0", "61", "280", "89.0%"],
+            ["Western Oregon University", "$24,000", "2.8", "6.0", "61", "280", "87.0%"],
+            ["Eastern Oregon University", "$22,000", "2.5", "6.0", "61", "275", "100%"],
+            ["Oregon Institute of Technology", "$25,000", "2.8", "6.0", "71", "280", "85.0%"],
+            ["University of Nevada Las Vegas", "$24,000", "3.0", "6.0", "61", "285", "81.0%"],
+            ["University of Nevada Reno", "$23,000", "3.0", "6.0", "61", "285", "86.0%"],
+            ["Nevada State College", "$18,000", "2.5", "6.0", "61", "275", "95.0%"],
+            ["Great Basin College", "$15,000", "2.3", "6.0", "61", "270", "100%"],
+            ["University of Utah", "$28,000", "3.2", "6.5", "80", "295", "75.0%"],
+            ["Utah State University", "$23,000", "3.0", "6.0", "71", "285", "94.0%"],
+            ["Southern Utah University", "$22,000", "2.8", "6.0", "61", "280", "87.0%"],
+            ["Weber State University", "$20,000", "2.7", "6.0", "61", "275", "100%"],
+            ["Utah Valley University", "$19,000", "2.5", "6.0", "61", "270", "100%"],
+            ["Dixie State University", "$18,000", "2.5", "6.0", "61", "270", "98.0%"],
+            ["Snow College", "$16,000", "2.3", "6.0", "61", "270", "100%"],
+            ["Arizona State University", "$29,000", "3.2", "6.0", "61", "290", "88.0%"],
+            ["University of Arizona", "$36,000", "3.2", "6.0", "70", "295", "87.0%"],
+            ["Northern Arizona University", "$26,000", "3.0", "6.0", "70", "285", "85.0%"],
+            ["Arizona State University West", "$29,000", "3.0", "6.0", "61", "285", "90.0%"],
+            ["Arizona State University Polytechnic", "$29,000", "3.0", "6.0", "61", "285", "88.0%"],
+            ["University of New Mexico", "$23,000", "3.0", "6.5", "79", "285", "96.0%"],
+            ["New Mexico State University", "$22,000", "2.8", "6.0", "61", "280", "92.0%"],
+            ["New Mexico Institute of Mining", "$21,000", "3.2", "6.5", "79", "305", "80.0%"],
+            ["Eastern New Mexico University", "$18,000", "2.5", "6.0", "61", "275", "95.0%"],
+            ["Western New Mexico University", "$16,000", "2.5", "6.0", "61", "275", "98.0%"],
+            ["New Mexico Highlands University", "$15,000", "2.3", "6.0", "61", "270", "100%"],
+            
+            // Additional Universities to reach 250+
+            ["Montana State University", "$27,000", "3.0", "6.0", "71", "285", "85.0%"],
+            ["University of Montana", "$26,000", "3.0", "6.0", "70", "285", "95.0%"],
+            ["Montana Tech", "$21,000", "3.0", "6.0", "61", "285", "88.0%"],
+            ["Montana State University Billings", "$19,000", "2.8", "6.0", "61", "280", "90.0%"],
+            ["University of Montana Western", "$17,000", "2.5", "6.0", "61", "275", "95.0%"],
+            ["Carroll College Montana", "$35,000", "3.2", "6.0", "79", "290", "70.0%"],
+            ["University of Idaho", "$25,000", "3.0", "6.0", "70", "285", "74.0%"],
+            ["Idaho State University", "$23,000", "2.8", "6.0", "61", "280", "100%"],
+            ["Boise State University", "$25,000", "3.0", "6.0", "61", "285", "84.0%"],
+            ["Lewis-Clark State College", "$18,000", "2.5", "6.0", "61", "275", "95.0%"],
+            ["College of Idaho", "$32,000", "3.0", "6.0", "79", "285", "85.0%"],
+            ["University of Wyoming", "$17,000", "3.0", "6.0", "71", "285", "96.0%"],
+            ["North Dakota State University", "$14,000", "2.8", "6.0", "71", "280", "93.0%"],
+            ["University of North Dakota", "$15,000", "2.8", "6.0", "71", "280", "85.0%"],
+            ["Minot State University", "$13,000", "2.5", "6.0", "61", "275", "95.0%"],
+            ["Dickinson State University", "$12,000", "2.3", "6.0", "61", "270", "100%"],
+            ["Valley City State University", "$12,000", "2.3", "6.0", "61", "270", "100%"],
+            ["South Dakota State University", "$14,000", "2.8", "6.0", "69", "280", "92.0%"],
+            ["University of South Dakota", "$13,000", "2.8", "6.0", "61", "280", "89.0%"],
+            ["South Dakota School of Mines", "$16,000", "3.2", "6.0", "60", "295", "83.0%"],
+            ["Black Hills State University", "$12,000", "2.5", "6.0", "61", "275", "95.0%"],
+            ["Dakota State University", "$13,000", "2.5", "6.0", "61", "275", "90.0%"],
+            ["Northern State University", "$12,000", "2.3", "6.0", "61", "270", "98.0%"],
+            
+            // Additional Southern Universities
+            ["University of Alabama", "$30,000", "3.2", "6.0", "79", "290", "83.0%"],
+            ["Auburn University", "$30,000", "3.2", "6.0", "79", "295", "85.0%"],
+            ["University of Alabama Birmingham", "$25,000", "3.0", "6.0", "80", "290", "87.0%"],
+            ["Alabama State University", "$20,000", "2.8", "6.0", "61", "280", "95.0%"],
+            ["University of South Alabama", "$21,000", "2.8", "6.0", "61", "280", "85.0%"],
+            ["Troy University", "$19,000", "2.8", "6.0", "61", "280", "88.0%"],
+            ["Jacksonville State University", "$18,000", "2.5", "6.0", "61", "275", "90.0%"],
+            ["University of Alabama Huntsville", "$24,000", "3.0", "6.0", "72", "285", "80.0%"],
+            ["University of Tennessee Knoxville", "$31,000", "3.2", "6.5", "70", "290", "78.0%"],
+            ["University of Memphis", "$24,000", "3.0", "6.0", "79", "285", "95.0%"],
+            ["Middle Tennessee State University", "$23,000", "2.8", "6.0", "61", "280", "88.0%"],
+            ["Tennessee State University", "$21,000", "2.8", "6.0", "61", "280", "90.0%"],
+            ["East Tennessee State University", "$21,000", "2.8", "6.0", "61", "280", "85.0%"],
+            ["Tennessee Tech University", "$20,000", "2.8", "6.0", "61", "280", "85.0%"],
+            ["Austin Peay State University", "$19,000", "2.5", "6.0", "61", "275", "92.0%"],
+            ["University of Tennessee Martin", "$19,000", "2.8", "6.0", "61", "280", "88.0%"],
+            ["University of Kentucky", "$29,000", "3.0", "6.0", "79", "285", "96.0%"],
+            ["University of Louisville", "$27,000", "3.0", "6.0", "79", "285", "82.0%"],
+            ["Western Kentucky University", "$25,000", "2.8", "6.0", "79", "280", "97.0%"],
+            ["Eastern Kentucky University", "$20,000", "2.5", "6.0", "61", "275", "99.0%"],
+            ["Northern Kentucky University", "$21,000", "2.8", "6.0", "61", "280", "95.0%"],
+            ["Murray State University", "$19,000", "2.8", "6.0", "61", "280", "85.0%"],
+            ["Morehead State University", "$18,000", "2.5", "6.0", "61", "275", "90.0%"],
+            ["Kentucky State University", "$17,000", "2.3", "6.0", "61", "270", "95.0%"]
+        ];
+
+        function downloadExcel() {
+            const statusElement = document.getElementById('status');
+            const button = document.getElementById('downloadBtn');
+            
+            try {
+                statusElement.textContent = 'Creating Excel file...';
+                statusElement.style.color = 'blue';
+                button.disabled = true;
+                
+                // Create workbook and worksheet
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.aoa_to_sheet(universities);
+                
+                // Add worksheet to workbook
+                XLSX.utils.book_append_sheet(wb, ws, "US Universities");
+                
+                // Write file
+                XLSX.writeFile(wb, "US_Universities_Data.xlsx");
+                
+                statusElement.textContent = '✓ Excel file downloaded successfully!';
+                statusElement.style.color = 'green';
+                
+            } catch (error) {
+                console.error('Download error:', error);
+                statusElement.textContent = 'Error: ' + error.message;
+                statusElement.style.color = 'red';
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        // Add event listener when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.getElementById('downloadBtn');
+            const statusElement = document.getElementById('status');
+            
+            button.addEventListener('click', downloadExcel);
+            
+            // Check if XLSX library loaded
+            setTimeout(function() {
+                if (typeof XLSX !== 'undefined') {
+                    statusElement.textContent = 'Ready to download!';
+                    statusElement.style.color = 'green';
+                } else {
+                    statusElement.textContent = 'Error: Excel library failed to load';
+                    statusElement.style.color = 'red';
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
