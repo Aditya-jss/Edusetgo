@@ -611,7 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('🎉 All scripts loaded successfully including Enhanced Chatbot');
 });
-// Discount Coupon JavaScript Functionality
+// Complete Discount Coupon & Referral JavaScript Functionality
 document.addEventListener('DOMContentLoaded', function() {
     const discountCoupon = document.querySelector('.discount-coupon');
     
@@ -664,7 +664,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 10000); // Every 10 seconds
     }
     
-    // Function to show referral modal
+    // Function to show referral modal (FIRST MODAL - Benefits)
     function showReferralModal() {
         // Check if modal already exists
         let existingModal = document.querySelector('.referral-modal');
@@ -734,7 +734,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Add modal styles dynamically
+    // Add modal styles dynamically (FIRST MODAL STYLES)
     function addModalStyles() {
         if (document.querySelector('#referralModalStyles')) return;
         
@@ -919,7 +919,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Global functions for modal
+// ========== GLOBAL FUNCTIONS ==========
+
+// Close first referral modal
 function closeReferralModal() {
     const modal = document.getElementById('referralModal');
     if (modal) {
@@ -930,11 +932,460 @@ function closeReferralModal() {
     }
 }
 
+// UPDATED START REFERRAL FUNCTION - Closes first modal and opens second
 function startReferral() {
-    // Here you can integrate with your referral system
-    alert('Great! We will set up your referral link. Please contact our team at +91 80192 96878 or hello@edusetgo.com to get started with your referral program!');
+    // First close the current referral modal
     closeReferralModal();
     
-    // You can also redirect to a referral page or contact form
-    // window.location.href = '#contact';
+    // Wait a bit for the first modal to close, then show referral options
+    setTimeout(() => {
+        showReferralOptionsModal();
+    }, 400);
+}
+
+// SECOND MODAL - Show referral options
+function showReferralOptionsModal() {
+    // Check if modal already exists
+    let existingModal = document.querySelector('.referral-options-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Create referral options modal HTML
+    const modalHTML = `
+        <div class="referral-options-modal" id="referralOptionsModal">
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeReferralOptionsModal()">&times;</button>
+                <div class="modal-header">
+                    <h3>🚀 Get Your Referral Link</h3>
+                    <p>Choose your preferred way to get started</p>
+                </div>
+                <div class="modal-body">
+                    <div class="referral-options">
+                        <div class="option-card" onclick="startWhatsAppReferral()">
+                            <div class="option-icon">📱</div>
+                            <h4>WhatsApp</h4>
+                            <p>Quick & Easy - Get instant response</p>
+                            <span class="recommended">Recommended</span>
+                        </div>
+                        
+                        <div class="option-card" onclick="startEmailReferral()">
+                            <div class="option-icon">📧</div>
+                            <h4>Email</h4>
+                            <p>Send us an email to get your link</p>
+                        </div>
+                        
+                        <div class="option-card" onclick="startPhoneReferral()">
+                            <div class="option-icon">📞</div>
+                            <h4>Call Us</h4>
+                            <p>Speak directly with our team</p>
+                        </div>
+                        
+                        <div class="option-card" onclick="showContactForm()">
+                            <div class="option-icon">📝</div>
+                            <h4>Contact Form</h4>
+                            <p>Fill a quick form and we'll reach out</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <strong>📞 Phone:</strong> +91 80192 96878
+                        </div>
+                        <div class="contact-item">
+                            <strong>📧 Email:</strong> hello@edusetgo.com
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to body
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Add modal styles
+    addReferralOptionsStyles();
+    
+    // Show modal with animation
+    const modal = document.getElementById('referralOptionsModal');
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+    
+    // Add event listeners
+    const modalOverlay = modal.querySelector('.modal-overlay');
+    modalOverlay.addEventListener('click', closeReferralOptionsModal);
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeReferralOptionsModal();
+        }
+    });
+}
+
+// REFERRAL OPTION FUNCTIONS
+function startWhatsAppReferral() {
+    const message = encodeURIComponent("Hi! I'm interested in your referral program. Can you please help me get my referral link? 🎉");
+    window.open(`https://wa.me/918019296878?text=${message}`, '_blank');
+    closeReferralOptionsModal();
+}
+
+function startEmailReferral() {
+    const subject = encodeURIComponent("Referral Program - Please Send My Link");
+    const body = encodeURIComponent(`Hi EduSetGo Team!
+
+I'm excited to join your referral program and start referring friends to earn the amazing benefits:
+- 30% OFF on my selected package
+- FREE UPGRADE to the next package tier
+- Priority Support
+- Exclusive Access to premium resources
+
+Please send me my personalized referral link and any additional details I need to get started.
+
+Thank you!`);
+    window.open(`mailto:hello@edusetgo.com?subject=${subject}&body=${body}`);
+    closeReferralOptionsModal();
+}
+
+function startPhoneReferral() {
+    // Show phone number prominently
+    alert(`📞 Call us now at: +91 80192 96878\n\nOur team is ready to help you get your referral link and start earning rewards!`);
+    closeReferralOptionsModal();
+}
+
+function showContactForm() {
+    // Replace the current modal content with a contact form
+    const modal = document.getElementById('referralOptionsModal');
+    const modalContent = modal.querySelector('.modal-content');
+    
+    modalContent.innerHTML = `
+        <button class="modal-close" onclick="closeReferralOptionsModal()">&times;</button>
+        <div class="modal-header">
+            <h3>📝 Referral Program Request</h3>
+            <p>Fill out this form and we'll send you your referral link within 24 hours</p>
+        </div>
+        <div class="modal-body">
+            <form id="referralForm" onsubmit="submitReferralForm(event)">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" name="name" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" name="email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" name="phone" placeholder="Enter your phone number">
+                </div>
+                <div class="form-group">
+                    <label>How did you hear about us?</label>
+                    <select name="source">
+                        <option value="">Select an option</option>
+                        <option value="friend">Friend/Referral</option>
+                        <option value="social">Social Media</option>
+                        <option value="search">Google Search</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Additional Message</label>
+                    <textarea name="message" placeholder="Any specific questions or requirements?"></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn-primary">Submit Request</button>
+                    <button type="button" onclick="showReferralOptionsModal()" class="btn-secondary">Back to Options</button>
+                </div>
+            </form>
+        </div>
+    `;
+}
+
+function submitReferralForm(event) {
+    event.preventDefault();
+    
+    // Show success message
+    const modalContent = event.target.closest('.modal-content');
+    modalContent.innerHTML = `
+        <button class="modal-close" onclick="closeReferralOptionsModal()">&times;</button>
+        <div class="modal-header">
+            <h3>✅ Request Submitted Successfully!</h3>
+        </div>
+        <div class="modal-body">
+            <div class="success-message">
+                <div class="success-icon">🎉</div>
+                <h4>Thank you for your interest!</h4>
+                <p>We've received your referral program request. Our team will contact you within 24 hours with:</p>
+                <ul>
+                    <li>✅ Your personalized referral link</li>
+                    <li>✅ Detailed program guidelines</li>
+                    <li>✅ Tips to maximize your earnings</li>
+                </ul>
+                <div class="next-steps">
+                    <h5>What's Next?</h5>
+                    <p>Keep an eye on your email and phone for our response. In the meantime, you can explore our courses and start planning which friends to refer!</p>
+                </div>
+            </div>
+            <div class="form-buttons">
+                <button onclick="closeReferralOptionsModal()" class="btn-primary">Great! Close</button>
+            </div>
+        </div>
+    `;
+}
+
+// Close referral options modal
+function closeReferralOptionsModal() {
+    const modal = document.getElementById('referralOptionsModal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.remove();
+        }, 300);
+    }
+}
+
+// Add styles for referral options modal (SECOND MODAL STYLES)
+function addReferralOptionsStyles() {
+    if (document.querySelector('#referralOptionsStyles')) return;
+    
+    const styles = document.createElement('style');
+    styles.id = 'referralOptionsStyles';
+    styles.textContent = `
+        .referral-options-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .referral-options-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .referral-options-modal .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: white;
+            border-radius: 20px;
+            padding: 0;
+            max-width: 600px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .referral-options-modal.show .modal-content {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .referral-options-modal .modal-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+        }
+        
+        .referral-options-modal .modal-header h3 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .referral-options-modal .modal-header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .referral-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+        
+        .option-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option-card:hover {
+            border-color: #3498db;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.15);
+        }
+        
+        .option-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .option-card h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .option-card p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .recommended {
+            position: absolute;
+            top: 10px;
+            right: -30px;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 5px 35px;
+            font-size: 12px;
+            font-weight: 600;
+            transform: rotate(45deg);
+            text-transform: uppercase;
+        }
+        
+        .contact-info {
+            background: #f8f9fa;
+            margin: 0 30px 30px 30px;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .contact-item {
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+        
+        .contact-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .success-message {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .success-message h4 {
+            color: #27ae60;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .success-message ul {
+            text-align: left;
+            max-width: 300px;
+            margin: 20px auto;
+        }
+        
+        .success-message li {
+            margin: 8px 0;
+            color: #2c3e50;
+        }
+        
+        .next-steps {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .next-steps h5 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+        
+        .next-steps p {
+            color: #2c3e50;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .referral-options {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .contact-info {
+                margin: 0 20px 20px 20px;
+            }
+        }
+    `;
+    
+    document.head.appendChild(styles);
 }
