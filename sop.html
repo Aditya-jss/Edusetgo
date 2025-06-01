@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduSetGo - Professional SOP Writing Service</title>
+<link rel="stylesheet" href="uni.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+.sop-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.sop-hero {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 50%, #553c9a 100%);
+    color: white;
+    padding: 80px 0;
+    text-align: center;
+    margin-bottom: 50px;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    position: relative;
+}
+
+.sop-hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.sop-hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.sop-hero-subtitle {
+    font-size: 1.4rem;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.sop-cta-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.sop-btn-primary {
+    background: #ff6b6b;
+    color: white;
+    padding: 15px 35px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.sop-btn-primary:hover {
+    background: #ff5252;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+}
+
+.sop-btn-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.sop-btn-secondary:hover {
+    background: white;
+    color: #5a67d8;
+    transform: translateY(-2px);
+}
+
+.sop-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin: 60px 0;
+    text-align: center;
+}
+
+.sop-stat-item {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f0f0f0;
+}
+
+.sop-stat-number {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #5a67d8;
+    margin-bottom: 10px;
+}
+
+.sop-stat-label {
+    font-size: 1.1rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.sop-section {
+    margin: 60px 0;
+    padding: 40px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+.sop-section-title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+    position: relative;
+}
+
+.sop-section-title::after {
+    content: '';
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #5a67d8, #6b46c1);
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.sop-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+.sop-highlights {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin: 40px 0;
+}
+
+.sop-highlight-item {
+    background: #f8f9ff;
+    padding: 25px;
+    border-radius: 15px;
+    border-left: 5px solid #5a67d8;
+}
+
+.sop-highlight-icon {
+    font-size: 2rem;
+    color: #5a67d8;
+    margin-bottom: 15px;
+}
+
+.sop-highlight-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.sop-highlight-text {
+    color: #666;
+    line-height: 1.6;
+}
+
+.sop-process {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 60px 40px;
+    border-radius: 20px;
+    margin: 60px 0;
+}
+
+.sop-process-title {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.sop-process-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.sop-process-step {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+.sop-process-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.sop-process-step-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.sop-process-step-text {
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.sop-testimonials {
+    margin: 60px 0;
+}
+
+.sop-testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.sop-testimonial {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.sop-testimonial-quote {
+    font-size: 3rem;
+    color: #5a67d8;
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    opacity: 0.3;
+}
+
+.sop-testimonial-text {
+    font-style: italic;
+    line-height: 1.6;
+    margin: 20px 0;
+    color: #555;
+}
+
+.sop-testimonial-author {
+    font-weight: bold;
+    color: #333;
+}
+
+.sop-testimonial-details {
+    color: #5a67d8;
+    font-size: 0.9rem;
+}
+
+.sop-pricing {
+    background: #f8f9ff;
+    padding: 60px 40px;
+    border-radius: 20px;
+    margin: 60px 0;
+}
+
+.sop-pricing-title {
+    font-size: 2.5rem;
+    text-align: center;
+    color: #333;
+    margin-bottom: 50px;
+}
+
+.sop-pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.sop-pricing-card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.sop-pricing-card:hover {
+    transform: translateY(-10px);
+}
+
+.sop-pricing-card.featured {
+    border: 3px solid #5a67d8;
+    transform: scale(1.05);
+}
+
+.sop-pricing-badge {
+    background: #5a67d8;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.sop-pricing-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin: 20px 0;
+}
+
+.sop-pricing-price {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #5a67d8;
+    margin-bottom: 10px;
+}
+
+.sop-pricing-currency {
+    font-size: 1.2rem;
+    color: #999;
+}
+
+.sop-pricing-features {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0;
+}
+
+.sop-pricing-features li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    color: #666;
+}
+
+.sop-pricing-features li:last-child {
+    border-bottom: none;
+}
+
+.sop-pricing-features li i {
+    color: #4CAF50;
+    margin-right: 10px;
+}
+
+.sop-faq {
+    margin: 60px 0;
+}
+
+.sop-faq-item {
+    background: white;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.sop-faq-question {
+    padding: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #333;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.sop-faq-question:hover {
+    background: #f8f9ff;
+}
+
+.sop-faq-answer {
+    padding: 0 25px 25px;
+    color: #666;
+    line-height: 1.6;
+    display: none;
+}
+
+.sop-contact-section {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 50%, #553c9a 100%);
+    color: white;
+    padding: 60px 40px;
+    border-radius: 20px;
+    text-align: center;
+    margin: 60px 0;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    position: relative;
+}
+
+.sop-contact-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.sop-contact-title {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.sop-contact-text {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .sop-hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .sop-cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .sop-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .sop-highlights {
+        grid-template-columns: 1fr;
+    }
+    
+    .sop-process-steps {
+        grid-template-columns: 1fr;
+    }
+    
+    .sop-testimonial-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .sop-pricing-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .sop-pricing-card.featured {
+        transform: none;
+    }
+}
+</style>
+</head>
+<body>
+<!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="index.html#home" class="logo-link">
+                    <img src="4.png" alt="EduSetGo India World Map Logo" class="logo-map">
+                    <span class="logo">Edu<span>Set</span>Go</span>
+                </a>
+            </div>
+            <div class="mobile-toggle">☰</div>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#about">About Us</a></li>
+                <li><a href="index.html#packages">Packages</a></li>
+                <li><a href="index.html#testimonials">Testimonials</a></li>
+                <li class="dropdown">
+                    <a href="index.html#services" class="dropdown-toggle">Resources</a>
+                    <div class="dropdown-content">
+                        <a href="study.html">Study materials</a>
+                        <a href="visa.html">Visa Help</a>
+                        <a href="sop.html">SOP & LOR</a>
+                        <a href="articles.html">Articles</a>
+                    </div>
+                </li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+
+<main class="sop-container">
+    <!-- Hero Section -->
+    <section class="sop-hero">
+        <div class="sop-hero-content">
+            <h1>Professional SOP Writing Service</h1>
+            <p class="sop-hero-subtitle">Crafted by Top University Alumni • 100% Original • Unlimited Revisions</p>
+            <div class="sop-cta-buttons">
+                <a href="#pricing" class="sop-btn-primary">Get Started Today</a>
+                <a href="#consultation" class="sop-btn-secondary">Free Consultation</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="sop-stats">
+        <div class="sop-stat-item">
+            <div class="sop-stat-number">2000+</div>
+            <div class="sop-stat-label">Successful Applications</div>
+        </div>
+        <div class="sop-stat-item">
+            <div class="sop-stat-number">98%</div>
+            <div class="sop-stat-label">Admission Success Rate</div>
+        </div>
+        <div class="sop-stat-item">
+            <div class="sop-stat-number">50+</div>
+            <div class="sop-stat-label">Top Universities</div>
+        </div>
+        <div class="sop-stat-item">
+            <div class="sop-stat-number">24/7</div>
+            <div class="sop-stat-label">Expert Support</div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="sop-section">
+        <h2 class="sop-section-title">Why Your SOP Can Make or Break Your Application</h2>
+        <div class="sop-content">
+            <p><strong>Your Statement of Purpose is the ONLY document that tells your unique story.</strong> While transcripts show your grades and test scores show your abilities, your SOP reveals who you are, what drives you, and why you deserve that admission.</p>
+            
+            <p>We've seen brilliant students with perfect GPAs get rejected because their SOP failed to connect with the admissions committee. We've also witnessed average students with compelling stories secure admits to their dream universities including <strong>Harvard, MIT, Stanford, Oxford, Cambridge, and more.</strong></p>
+            
+            <p><strong>The difference? A professionally crafted SOP that stands out from thousands of applications.</strong></p>
+        </div>
+
+        <div class="sop-highlights">
+            <div class="sop-highlight-item">
+                <div class="sop-highlight-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div class="sop-highlight-title">Expert Writers</div>
+                <div class="sop-highlight-text">Our team consists of alumni from Harvard, MIT, Stanford, Oxford, and other top universities who understand what admissions committees look for.</div>
+            </div>
+            <div class="sop-highlight-item">
+                <div class="sop-highlight-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="sop-highlight-title">100% Original</div>
+                <div class="sop-highlight-text">Every SOP is written from scratch specifically for your profile. Zero plagiarism, zero templates, zero cookie-cutter approaches.</div>
+            </div>
+            <div class="sop-highlight-item">
+                <div class="sop-highlight-icon"><i class="fas fa-infinity"></i></div>
+                <div class="sop-highlight-title">Unlimited Revisions</div>
+                <div class="sop-highlight-text">We work with you until you're 100% satisfied. Free unlimited revisions until your SOP is perfect.</div>
+            </div>
+            <div class="sop-highlight-item">
+                <div class="sop-highlight-icon"><i class="fas fa-rocket"></i></div>
+                <div class="sop-highlight-title">Fast Turnaround</div>
+                <div class="sop-highlight-text">Get your first draft within 48-72 hours. Rush orders available for urgent deadlines.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Process Section -->
+    <section class="sop-process">
+        <h2 class="sop-process-title">Our Proven Process</h2>
+        <div class="sop-process-steps">
+            <div class="sop-process-step">
+                <div class="sop-process-number">01</div>
+                <div class="sop-process-step-title">Deep Dive Consultation</div>
+                <div class="sop-process-step-text">We conduct a comprehensive 60-minute consultation to understand your background, goals, and unique story.</div>
+            </div>
+            <div class="sop-process-step">
+                <div class="sop-process-number">02</div>
+                <div class="sop-process-step-title">Research & Strategy</div>
+                <div class="sop-process-step-text">Our experts research your target universities and programs to align your SOP with their specific requirements.</div>
+            </div>
+            <div class="sop-process-step">
+                <div class="sop-process-number">03</div>
+                <div class="sop-process-step-title">Draft Creation</div>
+                <div class="sop-process-step-text">We craft your first draft from scratch, highlighting your strengths and addressing any weaknesses strategically.</div>
+            </div>
+            <div class="sop-process-step">
+                <div class="sop-process-number">04</div>
+                <div class="sop-process-step-title">Review & Refinement</div>
+                <div class="sop-process-step-text">Multiple rounds of review and refinement until your SOP is compelling, authentic, and admission-worthy.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Stories Section -->
+    <section class="sop-testimonials">
+        <h2 class="sop-section-title">Success Stories from Our Students</h2>
+        <div class="sop-testimonial-grid">
+            <div class="sop-testimonial">
+                <div class="sop-testimonial-quote">"</div>
+                <div class="sop-testimonial-text">EduSetGo transformed my average profile into a compelling narrative. Got admits from Columbia, NYU, and USC with scholarship!</div>
+                <div class="sop-testimonial-author">Priya Sharma</div>
+                <div class="sop-testimonial-details">MS Computer Science • Columbia University</div>
+            </div>
+            <div class="sop-testimonial">
+                <div class="sop-testimonial-quote">"</div>
+                <div class="sop-testimonial-text">My previous consultant's SOP got me rejections. EduSetGo rewrote it and I got into MIT, Stanford, and CMU. The difference was night and day!</div>
+                <div class="sop-testimonial-author">Rahul Patel</div>
+                <div class="sop-testimonial-details">PhD Electrical Engineering • MIT</div>
+            </div>
+            <div class="sop-testimonial">
+                <div class="sop-testimonial-quote">"</div>
+                <div class="sop-testimonial-text">Despite a low GPA, their SOP helped me explain my circumstances and showcase my potential. Now studying at Oxford!</div>
+                <div class="sop-testimonial-author">Sneha Agarwal</div>
+                <div class="sop-testimonial-details">MSc Management • Oxford University</div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- FAQ Section -->
+    <section class="sop-faq">
+        <h2 class="sop-section-title">Frequently Asked Questions</h2>
+        
+        <div class="sop-faq-item">
+            <div class="sop-faq-question" onclick="toggleFAQ(this)">
+                <i class="fas fa-chevron-down" style="float: right; margin-top: 5px;"></i>
+                How is your SOP different from what consultancies provide?
+            </div>
+            <div class="sop-faq-answer">
+                Unlike consultancies that use templates and junior writers, our SOPs are crafted by alumni from top universities who understand what admissions committees actually look for. Each SOP is written completely from scratch based on your unique profile and story.
+            </div>
+        </div>
+
+        <div class="sop-faq-item">
+            <div class="sop-faq-question" onclick="toggleFAQ(this)">
+                <i class="fas fa-chevron-down" style="float: right; margin-top: 5px;"></i>
+                What if I have a low GPA or weak profile?
+            </div>
+            <div class="sop-faq-answer">
+                We specialize in turning weaknesses into strengths. Our expert writers know how to address low GPAs, employment gaps, or other challenges in a way that shows growth, learning, and future potential rather than dwelling on past shortcomings.
+            </div>
+        </div>
+
+        <div class="sop-faq-item">
+            <div class="sop-faq-question" onclick="toggleFAQ(this)">
+                <i class="fas fa-chevron-down" style="float: right; margin-top: 5px;"></i>
+                How long does the process take?
+            </div>
+            <div class="sop-faq-answer">
+                Standard delivery is 5-7 days, Premium package is 48-72 hours, and Complete Application package offers priority 24-hour delivery. Rush orders can be accommodated for urgent deadlines with additional fees.
+            </div>
+        </div>
+
+        <div class="sop-faq-item">
+            <div class="sop-faq-question" onclick="toggleFAQ(this)">
+                <i class="fas fa-chevron-down" style="float: right; margin-top: 5px;"></i>
+                Do you guarantee admission?
+            </div>
+            <div class="sop-faq-answer">
+                While we can't guarantee admission (no ethical service can), we guarantee a professionally written, compelling SOP that significantly improves your chances. Our 98% success rate speaks for itself.
+            </div>
+        </div>
+
+        <div class="sop-faq-item">
+            <div class="sop-faq-question" onclick="toggleFAQ(this)">
+                <i class="fas fa-chevron-down" style="float: right; margin-top: 5px;"></i>
+                What if I'm not satisfied with the SOP?
+            </div>
+            <div class="sop-faq-answer">
+                We offer unlimited revisions until you're completely satisfied. Our goal is your success, and we work with you until your SOP perfectly represents your story and aspirations.
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="sop-contact-section" id="consultation">
+        <div class="sop-contact-content">
+            <h2 class="sop-contact-title">Ready to Transform Your Application?</h2>
+            <p class="sop-contact-text">Book your free consultation today and discover how a professional SOP can change your admission outcomes.</p>
+            <div class="sop-cta-buttons">
+                <a href="tel:+91-XXXXXXXXXX" class="sop-btn-primary">Call Now: +91-801929 6878</a>
+                <a href="mailto:sop@edusetgo.com" class="sop-btn-secondary">Email: help@edusetgo.com</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div class="footer-column">
+<h3>EduSetGo India</h3>
+<p>Your gateway to studying abroad. We help Indian students achieve their dreams of international education.</p>
+</div>
+<div class="footer-column">
+<h3>Quick Links</h3>
+<ul class="footer-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="index.html#about">About Us</a></li>
+<li><a href="index.html#packages">Packages</a></li>
+<li><a href="index.html#testimonials">Testimonials</a></li>
+<li><a href="index.html#contact">Contact</a></li>
+</ul>
+</div>
+<div class="footer-column">
+<h3>Services</h3>
+<ul class="footer-links">
+<li><a href="Listofuni.html">University Selection</a></li>
+<li><a href="study.html">Admission Guidance</a></li>
+<li><a href="visa.html">Visa Assistance</a></li>
+<li><a href="sop.html">SOP Writing</a></li>
+<li><a href="index.html#contact">Pre-Departure Briefing</a></li>
+</ul>
+</div>
+<div class="footer-column">
+<h3>Connect With Us</h3>
+<div class="footer-social">
+<a href="#" aria-label="Follow us on Facebook"><i class="fab fa-facebook-f"></i></a>
+<a href="#" aria-label="Follow us on Instagram"><i class="fab fa-instagram"></i></a>
+<a href="#" aria-label="Follow us on Twitter"><i class="fab fa-twitter"></i></a>
+<a href="#" aria-label="Connect with us on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+</div>
+</div>
+</div>
+<div class="copyright">
+<p>&copy; 2025 EduSetGo India. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+<script>
+// Mobile menu toggle
+document.getElementById('mobileToggle').addEventListener('click', function() {
+    const navMenu = document.getElementById('navMenu');
+    navMenu.classList.toggle('active');
+});
+
+// FAQ toggle functionality
+function toggleFAQ(element) {
+    const answer = element.nextElementSibling;
+    const icon = element.querySelector('i');
+    
+    if (answer.style.display === 'block') {
+        answer.style.display = 'none';
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        // Close all other FAQs
+        document.querySelectorAll('.sop-faq-answer').forEach(ans => ans.style.display = 'none');
+        document.querySelectorAll('.sop-faq-question i').forEach(i => i.style.transform = 'rotate(0deg)');
+        
+        // Open clicked FAQ
+        answer.style.display = 'block';
+        icon.style.transform = 'rotate(180deg)';
+    }
+}
+
+// Smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Add animation on scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, observerOptions);
+
+// Observe all sections for animation
+document.querySelectorAll('.sop-section, .sop-stats, .sop-process, .sop-testimonials, .sop-pricing, .sop-faq').forEach(section => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(30px)';
+    section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(section);
+});
+</script>
+</body>
+</html>

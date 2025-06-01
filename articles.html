@@ -1,0 +1,1986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduSetGo - Latest Articles & Study Abroad News</title>
+<link rel="stylesheet" href="uni.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+/* Articles Page Styles */
+.articles-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.articles-hero {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 50%, #553c9a 100%);
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+    margin-bottom: 60px;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    position: relative;
+}
+
+.articles-hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.articles-hero h1 {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.articles-hero-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 40px;
+    opacity: 0.95;
+}
+
+.articles-search {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 20px 60px 20px 20px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.search-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #ff6b6b;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 50px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    background: #ff5252;
+    transform: translateY(-50%) scale(1.05);
+}
+
+.articles-categories {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 60px 0;
+    flex-wrap: wrap;
+}
+
+.category-btn {
+    background: white;
+    border: 2px solid #5a67d8;
+    color: #5a67d8;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.category-btn:hover,
+.category-btn.active {
+    background: #5a67d8;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(90, 103, 216, 0.3);
+}
+
+.featured-articles {
+    margin: 80px 0;
+}
+
+.section-title {
+    font-size: 2.8rem;
+    text-align: center;
+    margin-bottom: 50px;
+    color: #333;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, #5a67d8, #6b46c1);
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.featured-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+.featured-main {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.featured-main:hover {
+    transform: translateY(-10px);
+}
+
+.featured-main img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.featured-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    color: white;
+    padding: 40px;
+}
+
+.featured-category {
+    background: #ff6b6b;
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.featured-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.featured-excerpt {
+    opacity: 0.9;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.featured-meta {
+    display: flex;
+    gap: 20px;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.featured-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar-article {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.sidebar-article:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.sidebar-article img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+.sidebar-content {
+    padding: 20px;
+}
+
+.sidebar-category {
+    color: #5a67d8;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.sidebar-title {
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.sidebar-date {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+    margin: 60px 0;
+}
+
+.article-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    transition: all 0.4s ease;
+    position: relative;
+}
+
+.article-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+}
+
+.article-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.article-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.article-card:hover img {
+    transform: scale(1.1);
+}
+
+.article-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: #ff6b6b;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.article-content {
+    padding: 30px;
+}
+
+.article-category {
+    color: #5a67d8;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.article-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    line-height: 1.4;
+    color: #333;
+}
+
+.article-excerpt {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.article-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.article-author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.author-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #5a67d8;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.author-info {
+    font-size: 0.9rem;
+}
+
+.author-name {
+    font-weight: bold;
+    color: #333;
+}
+
+.article-date {
+    color: #666;
+}
+
+.read-more-btn {
+    background: linear-gradient(135deg, #5a67d8, #6b46c1);
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.read-more-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(90, 103, 216, 0.4);
+}
+
+.trending-section {
+    background: #f8f9ff;
+    padding: 80px 0;
+    margin: 80px 0;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+}
+
+.trending-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.trending-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.trending-item {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.trending-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.trending-number {
+    position: absolute;
+    top: -15px;
+    left: 30px;
+    background: #5a67d8;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.trending-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+    margin-top: 10px;
+}
+
+.trending-description {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.trending-link {
+    color: #5a67d8;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.trending-link:hover {
+    transform: translateX(5px);
+}
+
+.newsletter-section {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 50%, #553c9a 100%);
+    color: white;
+    padding: 80px 0;
+    text-align: center;
+    margin: 80px 0;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+}
+
+.newsletter-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.newsletter-title {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.newsletter-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    opacity: 0.9;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 15px;
+    max-width: 500px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+.newsletter-input {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    min-width: 250px;
+}
+
+.newsletter-btn {
+    background: #ff6b6b;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.newsletter-btn:hover {
+    background: #ff5252;
+    transform: translateY(-2px);
+}
+
+.load-more {
+    text-align: center;
+    margin: 60px 0;
+}
+
+.load-more-btn {
+    background: transparent;
+    border: 2px solid #5a67d8;
+    color: #5a67d8;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.load-more-btn:hover {
+    background: #5a67d8;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Search Results */
+.search-results {
+    margin: 40px 0;
+    padding: 20px;
+    background: #f8f9ff;
+    border-radius: 15px;
+    display: none;
+}
+
+.search-results.active {
+    display: block;
+}
+
+.search-results h3 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.no-results {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+/* Article Modal */
+.article-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.article-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-header {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 20px 20px 0 0;
+}
+
+.modal-header img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background 0.3s ease;
+}
+
+.modal-close:hover {
+    background: rgba(0,0,0,0.8);
+}
+
+.modal-body {
+    padding: 40px;
+}
+
+.modal-category {
+    color: #5a67d8;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.modal-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+    line-height: 1.3;
+}
+
+.modal-meta {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.modal-text {
+    line-height: 1.8;
+    color: #444;
+    font-size: 1.1rem;
+}
+
+.modal-text p {
+    margin-bottom: 20px;
+}
+
+/* Hidden articles for filtering */
+.article-card.hidden {
+    display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .featured-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .articles-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+    
+    .trending-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .articles-hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .articles-categories {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .newsletter-form {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .newsletter-input {
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .newsletter-btn {
+        width: 200px;
+    }
+    
+    .featured-sidebar {
+        gap: 15px;
+    }
+    
+    .articles-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+    
+    .modal-content {
+        margin: 10px;
+        max-height: 95vh;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .modal-title {
+        font-size: 1.5rem;
+    }
+}
+</style>
+</head>
+<body>
+<!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="index.html#home" class="logo-link">
+                    <img src="4.png" alt="EduSetGo India World Map Logo" class="logo-map">
+                    <span class="logo">Edu<span>Set</span>Go</span>
+                </a>
+            </div>
+            <div class="mobile-toggle">☰</div>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#about">About Us</a></li>
+                <li><a href="index.html#packages">Packages</a></li>
+                <li><a href="index.html#testimonials">Testimonials</a></li>
+                <li class="dropdown">
+                    <a href="index.html#services" class="dropdown-toggle">Resources</a>
+                    <div class="dropdown-content">
+                        <a href="study.html">Study materials</a>
+                        <a href="visa.html">Visa Help</a>
+                        <a href="sop.html">SOP & LOR</a>
+                        <a href="articles.html">Articles</a>
+                    </div>
+                </li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+<main class="articles-container">
+    <!-- Hero Section -->
+    <section class="articles-hero">
+        <div class="articles-hero-content">
+            <h1>Latest Articles & News</h1>
+            <p class="articles-hero-subtitle">Stay updated with the latest trends in international education, university news, and study abroad opportunities</p>
+            <div class="articles-search">
+                <input type="text" class="search-input" placeholder="Search articles, universities, countries...">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Results Section -->
+    <section class="search-results" id="searchResults">
+        <h3>Search Results</h3>
+        <div id="searchResultsContent"></div>
+    </section>
+
+    <!-- Category Navigation -->
+    <section class="articles-categories">
+        <button class="category-btn active" data-category="all">All Articles</button>
+        <button class="category-btn" data-category="study-destinations">Study Destinations</button>
+        <button class="category-btn" data-category="university-rankings">University Rankings</button>
+        <button class="category-btn" data-category="admission-tips">Admission Tips</button>
+        <button class="category-btn" data-category="visa-updates">Visa Updates</button>
+        <button class="category-btn" data-category="scholarships">Scholarships</button>
+        <button class="category-btn" data-category="student-life">Student Life</button>
+    </section>
+
+    <!-- Featured Articles -->
+    <section class="featured-articles">
+        <h2 class="section-title">Featured Stories</h2>
+        <div class="featured-grid">
+            <article class="featured-main" data-article="featured-1">
+                <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&h=400&fit=crop" alt="US Universities 2025">
+                <div class="featured-overlay">
+                    <span class="featured-category">Breaking News</span>
+                    <h3 class="featured-title">Top US Universities Open Extended Application Deadlines for 2025</h3>
+                    <p class="featured-excerpt">Harvard, MIT, and Stanford announce flexible admission timelines following international student surge. New opportunities for late applicants with comprehensive support programs.</p>
+                    <div class="featured-meta">
+                        <span><i class="fas fa-calendar"></i> January 15, 2025</span>
+                        <span><i class="fas fa-clock"></i> 5 min read</span>
+                    </div>
+                </div>
+            </article>
+            
+            <div class="featured-sidebar">
+                <article class="sidebar-article" data-article="sidebar-1">
+                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=120&fit=crop" alt="Canada Immigration">
+                    <div class="sidebar-content">
+                        <div class="sidebar-category">Immigration</div>
+                        <h4 class="sidebar-title">Canada Announces 50% Increase in Study Permits for 2025</h4>
+                        <div class="sidebar-date">January 12, 2025</div>
+                    </div>
+                </article>
+                
+                <article class="sidebar-article" data-article="sidebar-2">
+                    <img src="https://images.unsplash.com/photo-1554734867-bf3c00a49371?w=400&h=120&fit=crop" alt="UK Universities">
+                    <div class="sidebar-content">
+                        <div class="sidebar-category">Rankings</div>
+                        <h4 class="sidebar-title">UK Universities Dominate New Global Engineering Rankings</h4>
+                        <div class="sidebar-date">January 10, 2025</div>
+                    </div>
+                </article>
+                
+                <article class="sidebar-article" data-article="sidebar-3">
+                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=120&fit=crop" alt="Australia Education">
+                    <div class="sidebar-content">
+                        <div class="sidebar-category">Scholarships</div>
+                        <h4 class="sidebar-title">Australia Launches $100M International Student Scholarship Program</h4>
+                        <div class="sidebar-date">January 8, 2025</div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trending Topics -->
+    <section class="trending-section">
+        <div class="trending-content">
+            <h2 class="section-title">Trending This Week</h2>
+            <div class="trending-grid">
+                <div class="trending-item" data-article="trending-1">
+                    <div class="trending-number">1</div>
+                    <h3 class="trending-title">Germany Eliminates Tuition Fees for All International Students</h3>
+                    <p class="trending-description">Major policy change makes German universities completely free for international students, including living stipends for research programs.</p>
+                    <a href="#" class="trending-link">Read Full Story <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="trending-item" data-article="trending-2">
+                    <div class="trending-number">2</div>
+                    <h3 class="trending-title">New IELTS Alternative Accepted by 200+ Universities</h3>
+                    <p class="trending-description">Revolutionary AI-based English proficiency test gains rapid acceptance among top universities worldwide, offering faster results.</p>
+                    <a href="#" class="trending-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="trending-item" data-article="trending-3">
+                    <div class="trending-number">3</div>
+                    <h3 class="trending-title">Singapore Becomes Top Destination for STEM Students</h3>
+                    <p class="trending-description">Latest survey reveals Singapore overtakes US as preferred destination for technology and engineering programs.</p>
+                    <a href="#" class="trending-link">View Rankings <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="trending-item" data-article="trending-4">
+                    <div class="trending-number">4</div>
+                    <h3 class="trending-title">Netherlands Launches English-Only University Programs</h3>
+                    <p class="trending-description">Dutch universities introduce fully English-taught degrees with no Dutch language requirements for international students.</p>
+                    <a href="#" class="trending-link">Explore Programs <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Articles Grid -->
+    <section class="latest-articles">
+        <h2 class="section-title">Latest Articles</h2>
+        <div class="articles-grid">
+            <article class="article-card" data-category="study-destinations" data-article="article-1">
+                <div class="article-image">
+                    <img src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=400&h=250&fit=crop" alt="Study in France">
+                    <span class="article-badge">Hot</span>
+                </div>
+                <div class="article-content">
+                    <div class="article-category">Study Destinations</div>
+                    <h3 class="article-title">Why France is Becoming the Hottest Study Destination for 2025</h3>
+                    <p class="article-excerpt">Discover why French universities are attracting record numbers of international students with new English programs, affordable tuition, and post-study work opportunities.</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">AR</div>
+                            <div class="author-info">
+                                <div class="author-name">Anita Rajesh</div>
+                                <div class="article-date">Jan 14, 2025</div>
+                            </div>
+                        </div>
+                        <button class="read-more-btn">Read More</button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="article-card" data-category="university-rankings" data-article="article-2">
+                <div class="article-image">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=250&fit=crop" alt="MBA Rankings">
+                </div>
+                <div class="article-content">
+                    <div class="article-category">Rankings</div>
+                    <h3 class="article-title">2025 Global MBA Rankings: Surprising New Entrants</h3>
+                    <p class="article-excerpt">This year's MBA rankings reveal unexpected winners, with Asian business schools making unprecedented leaps and European programs gaining ground.</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">RK</div>
+                            <div class="author-info">
+                                <div class="author-name">Rahul Kumar</div>
+                                <div class="article-date">Jan 13, 2025</div>
+                            </div>
+                        </div>
+                        <button class="read-more-btn">Read More</button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="article-card" data-category="scholarships" data-article="article-3">
+                <div class="article-image">
+                    <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=400&h=250&fit=crop" alt="Scholarship Guide">
+                </div>
+                <div class="article-content">
+                    <div class="article-category">Scholarships</div>
+                    <h3 class="article-title">Complete Guide to Merit Scholarships: $50K+ Opportunities</h3>
+                    <p class="article-excerpt">Comprehensive breakdown of the most lucrative merit-based scholarships available for international students, including application strategies and deadlines.</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">PS</div>
+                            <div class="author-info">
+                                <div class="author-name">Priya Sharma</div>
+                                <div class="article-date">Jan 12, 2025</div>
+                            </div>
+                        </div>
+                        <button class="read-more-btn">Read More</button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="article-card" data-category="admission-tips" data-article="article-4">
+                <div class="article-image">
+                    <img src="https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=400&h=250&fit=crop" alt="Digital Learning">
+                </div>
+                <div class="article-content">
+                    <div class="article-category">Technology</div>
+                    <h3 class="article-title">How AI is Revolutionizing University Admissions Process</h3>
+                    <p class="article-excerpt">Universities worldwide are adopting AI-powered admission systems, offering faster decisions and more personalized evaluation criteria for applicants.</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">VG</div>
+                            <div class="author-info">
+                                <div class="author-name">Vikash Gupta</div>
+                                <div class="article-date">Jan 11, 2025</div>
+                            </div>
+                        </div>
+                        <button class="read-more-btn">Read More</button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="article-card" data-category="study-destinations" data-article="article-5">
+                <div class="article-image">
+                    <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=250&fit=crop" alt="Medical Education">
+                </div>
+                <div class="article-content">
+                    <div class="article-category">Medical Education</div>
+                    <h3 class="article-title">Top 10 Countries for Affordable Medical Education in 2025</h3>
+                    <p class="article-excerpt">Updated ranking of countries offering high-quality medical education at affordable costs, including new programs and residency opportunities.</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">SM</div>
+                            <div class="author-info">
+                                <div class="author-name">Dr. Sneha Modi</div>
+                                <div class="article-date">Jan 10, 2025</div>
+                            </div>
+                        </div>
+                        <button class="read-more-btn">Read More</button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="article-card" data-category="visa-updates" data-article="article-6">
+                <div class="article-image">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=250&fit=crop" alt="Student Visa">
+                </div>
+                <div class="article-content">
+                    <div class="article-category">Visa Updates</div>
+                    <h3 class="article-title">Major Changes in Student Visa Policies Across 5 Countries</h3>
+                    <p class="article-excerpt">Recent policy updates in the US, UK, Canada, Australia, and Germany that every prospective international student needs to know about.</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">AK</div>
+                            <div class="author-info">
+                                <div class="author-name">Amit Khanna</div>
+                                <div class="article-date">Jan 9, 2025</div>
+                            </div>
+                        </div>
+                        <button class="read-more-btn">Read More</button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="article-card" data-category="student-life" data-article="article-7">
+                <div class="article-image">
+                    <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=400&h=250&fit=crop" alt="Student Life">
+                </div>
+                <div class="article-content">
+                    <div class="article-category">Student Life</div>
+                    <h3 class="article-title">International Student Housing: Best Cities and Tips for 2025</h3>
+                    <p class="article-excerpt">Complete guide to finding affordable and safe housing as an international student, including city rankings and practical tips for accommodation.</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">NK</div>
+                            <div class="author-info">
+                                <div class="author-name">Neha Kapoor</div>
+                                <div class="article-date">Jan 8, 2025</div>
+                            </div>
+                        </div>
+                        <button class="read-more-btn">Read More</button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="article-card" data-category="student-life" data-article="article-8">
+                <div class="article-image">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=250&fit=crop" alt="Campus Life">
+                </div>
+                <div class="article-content">
+                    <div class="article-category">Student Life</div>
+                    <h3 class="article-title">Building Networks: How to Make the Most of Your Study Abroad Experience</h3>
+                    <p class="article-excerpt">Essential strategies for international students to build meaningful professional and personal networks while studying abroad.</p>
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">AS</div>
+                            <div class="author-info">
+                                <div class="author-name">Arun Singh</div>
+                                <div class="article-date">Jan 7, 2025</div>
+                            </div>
+                        </div>
+                        <button class="read-more-btn">Read More</button>
+                    </div>
+                </div>
+            </article>
+        </div>
+        
+        <div class="load-more">
+            <button class="load-more-btn">Load More Articles</button>
+        </div>
+    </section>
+
+    <!-- Newsletter Subscription -->
+    <section class="newsletter-section">
+        <div class="newsletter-content">
+            <h2 class="newsletter-title">Stay Updated</h2>
+            <p class="newsletter-subtitle">Get the latest education news, university updates, and study abroad opportunities delivered to your inbox</p>
+            <form class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Enter your email address">
+                <button type="submit" class="newsletter-btn">Subscribe Now</button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<!-- Article Modal -->
+<div class="article-modal" id="articleModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <img id="modalImage" src="" alt="">
+            <button class="modal-close" id="modalClose">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-category" id="modalCategory"></div>
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <div class="modal-meta" id="modalMeta"></div>
+            <div class="modal-text" id="modalText"></div>
+        </div>
+    </div>
+</div>
+
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div class="footer-column">
+<h3>EduSetGo India</h3>
+<p>Your gateway to studying abroad. We help Indian students achieve their dreams of international education.</p>
+</div>
+<div class="footer-column">
+<h3>Quick Links</h3>
+<ul class="footer-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="index.html#about">About Us</a></li>
+<li><a href="index.html#packages">Packages</a></li>
+<li><a href="index.html#testimonials">Testimonials</a></li>
+<li><a href="index.html#contact">Contact</a></li>
+</ul>
+</div>
+<div class="footer-column">
+<h3>Services</h3>
+<ul class="footer-links">
+<li><a href="Listofuni.html">University Selection</a></li>
+<li><a href="study.html">Admission Guidance</a></li>
+<li><a href="visa.html">Visa Assistance</a></li>
+<li><a href="sop.html">SOP Writing</a></li>
+<li><a href="articles.html">Articles & News</a></li>
+</ul>
+</div>
+<div class="footer-column">
+<h3>Connect With Us</h3>
+<div class="footer-social">
+<a href="#" aria-label="Follow us on Facebook"><i class="fab fa-facebook-f"></i></a>
+<a href="#" aria-label="Follow us on Instagram"><i class="fab fa-instagram"></i></a>
+<a href="#" aria-label="Follow us on Twitter"><i class="fab fa-twitter"></i></a>
+<a href="#" aria-label="Connect with us on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+</div>
+</div>
+</div>
+<div class="copyright">
+<p>&copy; 2025 EduSetGo India. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+<script>
+// Article data for modal display
+const articleData = {
+    'featured-1': {
+        title: 'Top US Universities Open Extended Application Deadlines for 2025',
+        category: 'Breaking News',
+        image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&h=400&fit=crop',
+        meta: 'January 15, 2025 • 5 min read',
+        content: `
+            <p>In an unprecedented move, several top-tier US universities including Harvard, MIT, and Stanford have announced extended application deadlines for the 2025 academic year, responding to the surge in international student applications following recent policy changes.</p>
+            
+            <p>The decision comes after universities reported a 45% increase in international applications compared to the previous year, largely attributed to improved visa processing times and new scholarship programs specifically designed for international students.</p>
+            
+            <p><strong>Key Changes Include:</strong></p>
+            <p>• Extended deadlines until March 15, 2025 for select programs<br>
+            • Streamlined application processes with reduced documentation requirements<br>
+            • Virtual interview options for international applicants<br>
+            • Increased financial aid packages for qualifying students</p>
+            
+            <p>Harvard University's Dean of Admissions stated, "We recognize the unique challenges international students face in the application process. These extensions ensure that deserving candidates have adequate time to prepare comprehensive applications."</p>
+            
+            <p>The move has been welcomed by education consultants worldwide, who report that many qualified international students had previously missed deadlines due to documentation delays and visa processing times.</p>
+            
+            <p>Prospective applicants are advised to check individual university websites for specific program deadlines and requirements, as not all programs qualify for the extended timeline.</p>
+        `
+    },
+    'sidebar-1': {
+        title: 'Canada Announces 50% Increase in Study Permits for 2025',
+        category: 'Immigration',
+        image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=120&fit=crop',
+        meta: 'January 12, 2025 • 4 min read',
+        content: `
+            <p>Canada has announced a significant expansion of its international student program, increasing study permit approvals by 50% for 2025, marking the largest expansion in the program's history.</p>
+            
+            <p>Immigration Minister Marc Miller announced the changes during a press conference in Ottawa, stating that the decision reflects Canada's commitment to attracting global talent and addressing labor market needs across various sectors.</p>
+            
+            <p><strong>Key Policy Changes:</strong></p>
+            <p>• Study permit processing time reduced to 4-6 weeks<br>
+            • Simplified documentation requirements for students from 25 priority countries<br>
+            • Enhanced Post-Graduation Work Permit (PGWP) durations<br>
+            • Fast-track pathway to permanent residence for graduates in high-demand fields</p>
+            
+            <p><strong>Priority Sectors:</strong></p>
+            <p>The expansion particularly targets students in healthcare, engineering, technology, skilled trades, and early childhood education. These sectors have been identified as critical for Canada's economic growth and demographic challenges.</p>
+            
+            <p><strong>Provincial Distribution:</strong></p>
+            <p>Ontario and British Columbia will see the largest increases, with 35% and 25% of new permits respectively. The Atlantic provinces and Prairie provinces will also benefit from targeted increases to support regional development initiatives.</p>
+            
+            <p>The announcement has been welcomed by universities and colleges across Canada, which have reported increased international interest following recent policy improvements and Canada's reputation for safety and quality education.</p>
+            
+            <p>Students planning to apply are advised to submit applications early, as despite increased capacity, competition for spots at top institutions remains high.</p>
+        `
+    },
+    'sidebar-2': {
+        title: 'UK Universities Dominate New Global Engineering Rankings',
+        category: 'Rankings',
+        image: 'https://images.unsplash.com/photo-1554734867-bf3c00a49371?w=400&h=120&fit=crop',
+        meta: 'January 10, 2025 • 3 min read',
+        content: `
+            <p>British universities have achieved unprecedented success in the 2025 Global Engineering Rankings, securing 7 positions in the top 20 and demonstrating the strength of UK engineering education on the world stage.</p>
+            
+            <p><strong>Top UK Performers:</strong></p>
+            <p>• Cambridge University - #2 globally (up from #4)<br>
+            • Imperial College London - #3 globally<br>
+            • Oxford University - #6 globally<br>
+            • University College London - #8 globally<br>
+            • Edinburgh University - #12 globally</p>
+            
+            <p>The rankings, compiled by the Global Engineering Education Consortium, evaluate universities based on research output, industry partnerships, graduate employment rates, and innovation metrics.</p>
+            
+            <p><strong>Factors Behind UK Success:</strong></p>
+            <p>The surge in UK rankings is attributed to increased government funding for STEM research, stronger industry-university partnerships, and innovative teaching methodologies that combine theoretical knowledge with practical application.</p>
+            
+            <p><strong>Industry Integration:</strong></p>
+            <p>UK engineering programs have excelled in creating partnerships with major corporations including Rolls-Royce, BAE Systems, and tech giants like DeepMind. These collaborations provide students with real-world project experience and direct pathways to employment.</p>
+            
+            <p><strong>International Appeal:</strong></p>
+            <p>The high rankings have contributed to a 40% increase in international applications to UK engineering programs. The UK's post-study work visa policies and the global recognition of British engineering qualifications make it an attractive destination.</p>
+            
+            <p>Engineering programs in specialties like artificial intelligence, renewable energy, and aerospace have been particularly strong, reflecting the UK's leadership in these emerging fields.</p>
+        `
+    },
+    'sidebar-3': {
+        title: 'Australia Launches $100M International Student Scholarship Program',
+        category: 'Scholarships',
+        image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=120&fit=crop',
+        meta: 'January 8, 2025 • 4 min read',
+        content: `
+            <p>The Australian government has unveiled the largest international student scholarship program in the country's history, committing AUD $100 million over three years to attract top global talent to Australian universities.</p>
+            
+            <p>The "Australia Global Scholars Program" will provide comprehensive support to 2,000 international students annually, covering full tuition, living expenses, and research opportunities across all major disciplines.</p>
+            
+            <p><strong>Scholarship Categories:</strong></p>
+            <p>• Research Excellence Scholarships - AUD $60,000 per year for PhD and Masters by Research<br>
+            • Innovation Scholarships - AUD $45,000 per year for STEM undergraduates<br>
+            • Leadership Scholarships - AUD $40,000 per year for students with demonstrated leadership potential<br>
+            • Regional Development Scholarships - AUD $35,000 per year for study in regional Australia</p>
+            
+            <p><strong>Eligibility and Selection:</strong></p>
+            <p>The program is open to students from all countries, with particular focus on high-achieving students from Asia-Pacific, Africa, and Latin America. Selection criteria include academic excellence, leadership potential, and alignment with Australia's research priorities.</p>
+            
+            <p><strong>Additional Benefits:</strong></p>
+            <p>Beyond financial support, scholars receive mentorship programs, industry internship placements, and guaranteed consideration for Australia's post-study work visas. The program also includes cultural integration support and professional development workshops.</p>
+            
+            <p><strong>Focus Areas:</strong></p>
+            <p>Priority will be given to students in renewable energy, healthcare innovation, artificial intelligence, marine science, and sustainable agriculture - areas identified as crucial for Australia's future economic growth.</p>
+            
+            <p>Applications open March 1, 2025, with the first cohort beginning studies in Semester 2, 2025. The program represents Australia's most significant investment in international education since the Colombo Plan.</p>
+        `
+    },
+    'trending-1': {
+        title: 'Germany Eliminates Tuition Fees for All International Students',
+        category: 'Education Policy',
+        image: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=400&h=250&fit=crop',
+        meta: 'January 14, 2025 • 6 min read',
+        content: `
+            <p>In a groundbreaking policy announcement, Germany has become the first major European country to completely eliminate tuition fees for all international students, including those from non-EU countries, making German higher education fully accessible regardless of nationality.</p>
+            
+            <p>The policy, which takes effect immediately for the 2025 academic year, extends the existing tuition-free education available to German and EU students to all international applicants at public universities across all 16 German states.</p>
+            
+            <p><strong>Financial Support Package:</strong></p>
+            <p>Beyond eliminating tuition fees, the German government has announced additional support measures:<br>
+            • Monthly living stipends of €450 for students from developing countries<br>
+            • Free German language courses for all international students<br>
+            • Subsidized housing in student dormitories<br>
+            • Access to the same healthcare benefits as German students</p>
+            
+            <p><strong>Research Opportunities:</strong></p>
+            <p>International students will also have access to paid research assistant positions, with PhD students receiving full funding packages comparable to those offered to domestic students. This includes monthly stipends ranging from €1,500 to €2,200 depending on the field of study.</p>
+            
+            <p><strong>Economic Impact:</strong></p>
+            <p>The German Ministry of Education estimates this policy will attract an additional 200,000 international students over the next five years, contributing significantly to Germany's innovation economy and helping address skilled labor shortages.</p>
+            
+            <p><strong>Application Process:</strong></p>
+            <p>The streamlined application process requires only standard academic documentation, with no financial guarantees or proof of funds needed. Students can apply directly through the new unified portal launching February 1, 2025.</p>
+            
+            <p>This historic decision positions Germany as the most affordable destination for quality higher education globally, likely influencing policy discussions in other European countries.</p>
+        `
+    },
+    'trending-2': {
+        title: 'New IELTS Alternative Accepted by 200+ Universities',
+        category: 'Language Testing',
+        image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=250&fit=crop',
+        meta: 'January 13, 2025 • 5 min read',
+        content: `
+            <p>The Global English Assessment (GEA), a revolutionary AI-powered English proficiency test, has gained acceptance from over 200 universities worldwide, offering students a faster, more accessible alternative to traditional language tests.</p>
+            
+            <p>Developed by a consortium of leading universities and technology companies, the GEA uses advanced artificial intelligence to provide personalized testing experiences that adapt to each candidate's skill level in real-time.</p>
+            
+            <p><strong>Key Advantages:</strong></p>
+            <p>• Test results available within 2 hours instead of 2-3 weeks<br>
+            • Can be taken from any location with a stable internet connection<br>
+            • Cost reduced by 60% compared to traditional tests (only $89)<br>
+            • Adaptive testing ensures more accurate skill assessment<br>
+            • Available 24/7 with no advance booking required</p>
+            
+            <p><strong>Accepting Institutions:</strong></p>
+            <p>Major universities now accepting GEA scores include University of Toronto, University of Melbourne, King's College London, TU Munich, and numerous institutions across Asia and Latin America. The full list is updated weekly on the GEA website.</p>
+            
+            <p><strong>Test Format:</strong></p>
+            <p>The GEA consists of four sections - Reading, Listening, Speaking, and Writing - completed entirely online. The AI system adjusts question difficulty based on responses, providing a more precise measurement of language ability than static traditional tests.</p>
+            
+            <p><strong>Security Measures:</strong></p>
+            <p>Advanced biometric verification and AI proctoring ensure test integrity. The system monitors eye movement, typing patterns, and audio analysis to prevent cheating, making it as secure as center-based tests.</p>
+            
+            <p><strong>Score Validation:</strong></p>
+            <p>GEA scores are directly comparable to IELTS and TOEFL through extensive validation studies. The test has demonstrated 95% correlation accuracy with traditional tests across diverse student populations.</p>
+            
+            <p>Students can register for the GEA starting February 15, 2025, with scores being accepted for fall 2025 admissions at participating universities.</p>
+        `
+    },
+    'trending-3': {
+        title: 'Singapore Becomes Top Destination for STEM Students',
+        category: 'Education Trends',
+        image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&h=250&fit=crop',
+        meta: 'January 11, 2025 • 5 min read',
+        content: `
+            <p>Singapore has emerged as the world's most preferred destination for STEM education, overtaking the United States for the first time in the annual Global Student Preference Survey conducted by International Education Insights.</p>
+            
+            <p>The survey of 50,000 prospective international students from 80 countries revealed that 34% now consider Singapore their first choice for science, technology, engineering, and mathematics programs, compared to 28% for the US and 18% for the UK.</p>
+            
+            <p><strong>Factors Driving Singapore's Success:</strong></p>
+            <p>• World-class universities with cutting-edge research facilities<br>
+            • Strong government investment in STEM education and research<br>
+            • Strategic location as Asia's technology and innovation hub<br>
+            • Excellent post-graduation employment opportunities<br>
+            • Multicultural environment with English as the primary instruction language</p>
+            
+            <p><strong>University Excellence:</strong></p>
+            <p>National University of Singapore (NUS) and Nanyang Technological University (NTU) both rank in the global top 15 for engineering and technology. Singapore University of Technology and Design (SUTD) has gained recognition for its innovative interdisciplinary approach.</p>
+            
+            <p><strong>Industry Partnerships:</strong></p>
+            <p>Singapore's universities maintain strong partnerships with global tech giants including Google, Microsoft, and local innovators like Grab and Sea Limited. These partnerships provide students with internship opportunities, research projects, and direct pathways to high-paying jobs.</p>
+            
+            <p><strong>Government Support:</strong></p>
+            <p>The Singapore government offers generous scholarships covering full tuition and living expenses for international STEM students. Recipients commit to working in Singapore for 3-6 years post-graduation, helping address the nation's talent needs.</p>
+            
+            <p><strong>Innovation Ecosystem:</strong></p>
+            <p>Students benefit from Singapore's robust startup ecosystem, with numerous incubators and accelerators specifically focused on deep tech and scientific innovation. The government's Smart Nation initiative provides real-world applications for student research.</p>
+            
+            <p>This ranking shift reflects broader trends in global education, with Asian destinations gaining prominence due to their investment in technology infrastructure and research capabilities.</p>
+        `
+    },
+    'trending-4': {
+        title: 'Netherlands Launches English-Only University Programs',
+        category: 'Education Policy',
+        image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop',
+        meta: 'January 9, 2025 • 4 min read',
+        content: `
+            <p>Dutch universities have introduced a revolutionary "English-First" initiative, offering fully English-taught degree programs with no Dutch language requirements, making the Netherlands the most accessible European destination for international students.</p>
+            
+            <p>Starting in September 2025, 12 major Dutch universities will offer over 300 bachelor's and master's programs taught entirely in English, with all academic support services, administration, and student life activities available in English.</p>
+            
+            <p><strong>Participating Universities:</strong></p>
+            <p>• University of Amsterdam<br>
+            • Delft University of Technology<br>
+            • Eindhoven University of Technology<br>
+            • Utrecht University<br>
+            • VU Amsterdam<br>
+            • Tilburg University<br>
+            • Maastricht University<br>
+            • University of Groningen</p>
+            
+            <p><strong>Program Coverage:</strong></p>
+            <p>The English-only programs span all major disciplines including engineering, business, social sciences, natural sciences, and liberal arts. Popular programs include Data Science, Sustainable Energy Engineering, International Business, and European Public Health.</p>
+            
+            <p><strong>Support Services:</strong></p>
+            <p>International students will have access to:<br>
+            • English-speaking academic advisors<br>
+            • Career services with connections to international companies<br>
+            • Cultural integration programs<br>
+            • Housing assistance with no Dutch language barriers<br>
+            • Banking and legal support in English</p>
+            
+            <p><strong>Optional Dutch Learning:</strong></p>
+            <p>While Dutch is not required, universities offer free intensive Dutch language courses for students who wish to integrate more deeply into local culture or pursue opportunities requiring Dutch proficiency.</p>
+            
+            <p><strong>Post-Graduation Benefits:</strong></p>
+            <p>Graduates receive a one-year orientation visa to seek employment in the Netherlands or broader EU. The Netherlands' strong economy and international business presence provide excellent career opportunities for English-speaking graduates.</p>
+            
+            <p><strong>Application Process:</strong></p>
+            <p>Applications open March 1, 2025, through the centralized StudyInNL portal. The simplified process requires only academic transcripts, English proficiency proof, and a motivation letter - no Dutch language certification needed.</p>
+        `
+    },
+    'article-1': {
+        title: 'Why France is Becoming the Hottest Study Destination for 2025',
+        category: 'Study Destinations',
+        image: 'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=400&h=250&fit=crop',
+        meta: 'January 14, 2025 • 4 min read • By Anita Rajesh',
+        content: `
+            <p>France has emerged as one of the most attractive study destinations for international students in 2025, with enrollment increasing by 60% compared to the previous year. This surge is driven by several key factors that make France an irresistible choice for students worldwide.</p>
+            
+            <p><strong>English-Taught Programs Expansion</strong></p>
+            <p>French universities have dramatically expanded their English-taught program offerings, with over 1,400 programs now available in English across various disciplines. This removes the language barrier that previously deterred many international students.</p>
+            
+            <p><strong>Affordable Education</strong></p>
+            <p>With tuition fees starting from just €2,770 per year for EU students and €3,770 for non-EU students at public universities, France offers exceptional value for world-class education. The cost of living is also reasonable compared to other European destinations.</p>
+            
+            <p><strong>Post-Study Work Opportunities</strong></p>
+            <p>The new "Passeport Talent" visa allows international graduates to stay in France for up to four years to seek employment, making it one of the most generous post-study work policies in Europe.</p>
+            
+            <p><strong>Innovation Hubs</strong></p>
+            <p>Cities like Paris, Lyon, and Toulouse have become major innovation centers, particularly in technology, aerospace, and sustainable energy sectors, offering excellent internship and career opportunities.</p>
+            
+            <p>Students are particularly drawn to France's research opportunities, with the country investing heavily in R&D and offering numerous scholarships for international researchers.</p>
+        `
+    },
+    'article-2': {
+        title: '2025 Global MBA Rankings: Surprising New Entrants',
+        category: 'University Rankings',
+        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=250&fit=crop',
+        meta: 'January 13, 2025 • 6 min read • By Rahul Kumar',
+        content: `
+            <p>The 2025 Global MBA Rankings have revealed several surprising developments, with Asian business schools making unprecedented leaps and European programs gaining significant ground against traditional US dominance.</p>
+            
+            <p><strong>Top 10 Highlights:</strong></p>
+            <p>1. INSEAD (France/Singapore) - Maintains #1 position<br>
+            2. NUS Business School (Singapore) - Jumps to #2<br>
+            3. London Business School (UK) - Stable at #3<br>
+            4. Harvard Business School (US) - Drops to #4<br>
+            5. Wharton (US) - Remains at #5</p>
+            
+            <p><strong>Notable Climbers:</strong></p>
+            <p>• Hong Kong University of Science and Technology - Up 8 positions to #7<br>
+            • IESE Business School (Spain) - Enters top 10 at #9<br>
+            • Nanyang Business School (Singapore) - Jumps to #12</p>
+            
+            <p>The rankings reflect changing priorities among MBA students, with increased emphasis on international diversity, sustainability focus, and post-graduation employment outcomes in emerging markets.</p>
+            
+            <p>Asian schools have particularly benefited from their strong connections to the rapidly growing Asian economy and their innovative approach to digital transformation in business education.</p>
+            
+            <p>European schools have gained ground through their focus on sustainability, social impact, and collaborative learning approaches that resonate with the values of modern business leaders.</p>
+        `
+    },
+    'article-3': {
+        title: 'Complete Guide to Merit Scholarships: $50K+ Opportunities',
+        category: 'Scholarships',
+        image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=400&h=250&fit=crop',
+        meta: 'January 12, 2025 • 8 min read • By Priya Sharma',
+        content: `
+            <p>Merit-based scholarships represent one of the most lucrative opportunities for international students, with awards exceeding $50,000 available at universities worldwide. This comprehensive guide breaks down the most valuable opportunities and strategies for success.</p>
+            
+            <p><strong>Top Merit Scholarship Programs:</strong></p>
+            <p><strong>1. Presidential Scholarships (USA)</strong><br>
+            Value: Full tuition + living expenses (up to $80,000/year)<br>
+            Available at: Boston University, George Washington University, Northeastern University<br>
+            Requirements: SAT 1500+ or ACT 34+, exceptional leadership record</p>
+            
+            <p><strong>2. Chancellor's Scholarships (UK)</strong><br>
+            Value: £25,000-£40,000 per year<br>
+            Available at: University of Warwick, University of Sussex, Queen Mary University<br>
+            Requirements: First-class academic record, research potential</p>
+            
+            <p><strong>3. Excellence Scholarships (Canada)</strong><br>
+            Value: CAD $30,000-$60,000<br>
+            Available at: University of Toronto, McGill University, UBC<br>
+            Requirements: 90%+ grades, extracurricular leadership</p>
+            
+            <p><strong>4. Innovation Scholarships (Australia)</strong><br>
+            Value: AUD $40,000-$70,000<br>
+            Available at: University of Melbourne, ANU, University of Sydney<br>
+            Requirements: STEM excellence, innovation projects</p>
+            
+            <p><strong>Application Strategies:</strong></p>
+            <p><strong>Start Early:</strong> Begin scholarship research 12-18 months before your intended start date. Many deadlines are 6-12 months before admission deadlines.</p>
+            
+            <p><strong>Academic Excellence:</strong> Maintain the highest possible GPA. Most merit scholarships require top 5-10% class ranking or equivalent.</p>
+            
+            <p><strong>Standardized Test Scores:</strong> Achieve exceptional scores on SAT, ACT, GRE, or GMAT. Many scholarships have minimum score thresholds.</p>
+            
+            <p><strong>Leadership Portfolio:</strong> Document significant leadership roles, community service, and extracurricular achievements. Quantify your impact where possible.</p>
+            
+            <p><strong>Research Experience:</strong> For STEM and graduate scholarships, research experience is often crucial. Seek opportunities to publish or present research.</p>
+            
+            <p><strong>Essay Excellence:</strong> Craft compelling personal statements that showcase your unique perspective, goals, and potential contributions to the university community.</p>
+            
+            <p><strong>Application Tips:</strong></p>
+            <p>• Apply to multiple scholarships to increase chances<br>
+            • Tailor each application to specific scholarship criteria<br>
+            • Request recommendations from teachers who know your work well<br>
+            • Demonstrate financial need if it's a consideration<br>
+            • Follow all application instructions precisely<br>
+            • Submit applications well before deadlines</p>
+        `
+    },
+    'article-4': {
+        title: 'How AI is Revolutionizing University Admissions Process',
+        category: 'Admission Tips',
+        image: 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=400&h=250&fit=crop',
+        meta: 'January 11, 2025 • 6 min read • By Vikash Gupta',
+        content: `
+            <p>Artificial Intelligence is fundamentally transforming university admissions worldwide, offering students faster decisions and more personalized evaluation while helping universities identify the best-fit candidates more effectively than ever before.</p>
+            
+            <p><strong>AI-Powered Application Processing:</strong></p>
+            <p>Universities are now using AI systems to process applications 10x faster than traditional methods. These systems can analyze transcripts, essays, and standardized test scores simultaneously, providing initial evaluations within hours rather than weeks.</p>
+            
+            <p><strong>Predictive Analytics for Student Success:</strong></p>
+            <p>Advanced algorithms analyze historical data to predict student success rates, helping admissions committees identify candidates most likely to thrive in specific programs. This includes analyzing course selection patterns, extracurricular activities, and academic progression trends.</p>
+            
+            <p><strong>Personalized Admission Pathways:</strong></p>
+            <p>AI creates customized application experiences based on student profiles. The system recommends relevant programs, suggests additional documents that could strengthen applications, and provides real-time feedback on application completeness.</p>
+            
+            <p><strong>Essay Analysis and Feedback:</strong></p>
+            <p>Natural Language Processing tools now analyze personal statements for clarity, authenticity, and alignment with program values. Students receive instant feedback on their essays before submission, improving application quality.</p>
+            
+            <p><strong>Bias Reduction:</strong></p>
+            <p>AI systems help reduce unconscious bias in admissions by focusing on objective criteria and achievement patterns rather than subjective interpretations. This leads to more diverse and merit-based selections.</p>
+            
+            <p><strong>Virtual Interviews:</strong></p>
+            <p>AI-powered interview platforms conduct preliminary interviews, analyzing speech patterns, confidence levels, and response quality. This allows universities to interview more candidates while maintaining consistency in evaluation.</p>
+            
+            <p><strong>Real-Time Decision Making:</strong></p>
+            <p>Some universities now offer instant admission decisions for qualifying candidates. AI systems evaluate applications against predefined criteria and can provide immediate acceptance letters for outstanding applicants.</p>
+            
+            <p><strong>For Students: How to Adapt:</strong></p>
+            <p>• Ensure accuracy in all application data as AI systems are highly sensitive to inconsistencies<br>
+            • Use keywords relevant to your target programs in essays and applications<br>
+            • Highlight quantifiable achievements that AI can easily analyze<br>
+            • Maintain consistency across all application components<br>
+            • Prepare for AI-proctored tests and virtual interviews</p>
+            
+            <p><strong>Leading Universities Using AI:</strong></p>
+            <p>Georgia State University, Arizona State University, and several UK institutions including Imperial College London have successfully implemented comprehensive AI admissions systems, reducing processing time by 80% while improving student-program matching accuracy.</p>
+        `
+    },
+    'article-5': {
+        title: 'Top 10 Countries for Affordable Medical Education in 2025',
+        category: 'Study Destinations',
+        image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=250&fit=crop',
+        meta: 'January 10, 2025 • 7 min read • By Dr. Sneha Modi',
+        content: `
+            <p>Medical education costs continue to rise globally, but several countries offer world-class medical programs at surprisingly affordable rates. Our 2025 ranking considers tuition fees, living costs, program quality, and residency opportunities.</p>
+            
+            <p><strong>1. Poland</strong><br>
+            Annual Tuition: €11,000-€13,000<br>
+            Total Cost: €18,000-€22,000/year<br>
+            Programs: 6-year MD programs in English<br>
+            Recognition: WHO/IMED listed, EU practice rights</p>
+            
+            <p><strong>2. Hungary</strong><br>
+            Annual Tuition: €12,000-€15,000<br>
+            Total Cost: €19,000-€23,000/year<br>
+            Programs: Well-established English programs<br>
+            Recognition: Global recognition, strong clinical training</p>
+            
+            <p><strong>3. Czech Republic</strong><br>
+            Annual Tuition: €13,000-€16,000<br>
+            Total Cost: €20,000-€24,000/year<br>
+            Programs: Charles University Prague, Masaryk University<br>
+            Recognition: Excellent reputation, EU standards</p>
+            
+            <p><strong>4. Bulgaria</strong><br>
+            Annual Tuition: €8,000-€10,000<br>
+            Total Cost: €14,000-€17,000/year<br>
+            Programs: Medical University of Sofia, Plovdiv<br>
+            Recognition: Low cost, EU member benefits</p>
+            
+            <p><strong>5. Romania</strong><br>
+            Annual Tuition: €8,000-€12,000<br>
+            Total Cost: €15,000-€19,000/year<br>
+            Programs: Carol Davila University of Medicine<br>
+            Recognition: Growing reputation, affordable living</p>
+            
+            <p><strong>6. Philippines</strong><br>
+            Annual Tuition: $8,000-$12,000<br>
+            Total Cost: $12,000-$18,000/year<br>
+            Programs: University of Santo Tomas, Ateneo School of Medicine<br>
+            Recognition: English instruction, USMLE preparation</p>
+            
+            <p><strong>7. China</strong><br>
+            Annual Tuition: $4,000-$8,000<br>
+            Total Cost: $8,000-$14,000/year<br>
+            Programs: Peking University, Fudan University<br>
+            Recognition: Rapidly improving quality, WHO listed</p>
+            
+            <p><strong>8. India</strong><br>
+            Annual Tuition: $5,000-$15,000 (private)<br>
+            Total Cost: $8,000-$20,000/year<br>
+            Programs: AIIMS, Christian Medical College<br>
+            Recognition: Excellent quality, competitive entrance</p>
+            
+            <p><strong>9. Ukraine</strong><br>
+            Annual Tuition: $4,000-$6,000<br>
+            Total Cost: $7,000-$10,000/year<br>
+            Programs: Bogomolets National Medical University<br>
+            Recognition: Very affordable, English programs available</p>
+            
+            <p><strong>10. Georgia</strong><br>
+            Annual Tuition: $8,000-$12,000<br>
+            Total Cost: $12,000-$16,000/year<br>
+            Programs: Tbilisi State Medical University<br>
+            Recognition: Modern facilities, EU pathway</p>
+            
+            <p><strong>Key Considerations:</strong></p>
+            <p>• Verify medical license recognition in your home country<br>
+            • Research residency match rates for international graduates<br>
+            • Consider language requirements for clinical practice<br>
+            • Evaluate clinical training opportunities and hospital affiliations<br>
+            • Check visa requirements and post-graduation work permissions</p>
+        `
+    },
+    'article-6': {
+        title: 'Major Changes in Student Visa Policies Across 5 Countries',
+        category: 'Visa Updates',
+        image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=250&fit=crop',
+        meta: 'January 9, 2025 • 5 min read • By Amit Khanna',
+        content: `
+            <p>Recent student visa policy changes across major study destinations have significant implications for international students. Here's a comprehensive breakdown of the most important updates you need to know for 2025.</p>
+            
+            <p><strong>United States - F-1 Visa Updates</strong></p>
+            <p><strong>New Changes:</strong><br>
+            • Processing time reduced to 30-45 days (from 60-90 days)<br>
+            • Online interview option for renewal applications<br>
+            • Extended grace period to 90 days post-graduation (from 60 days)<br>
+            • Simplified documentation for STEM OPT extensions</p>
+            
+            <p><strong>Impact:</strong> These changes make the US more accessible and provide additional time for job searching after graduation, particularly benefiting STEM graduates.</p>
+            
+            <p><strong>United Kingdom - Student Visa Reforms</strong></p>
+            <p><strong>New Changes:</strong><br>
+            • Graduate Route visa extended to 3 years for PhD graduates<br>
+            • Faster decision-making: 15 working days for standard applications<br>
+            • Digital visa system eliminating physical visa stickers<br>
+            • Increased financial requirement: £1,334/month for London, £1,023 elsewhere</p>
+            
+            <p><strong>Impact:</strong> While financial requirements increased, the extended post-study work period and faster processing make the UK more attractive for graduate students.</p>
+            
+            <p><strong>Canada - Study Permit Enhancements</strong></p>
+            <p><strong>New Changes:</strong><br>
+            • Provincial Attestation Letter (PAL) requirement for new applications<br>
+            • Increased cost of living requirements: CAD $20,635 (from $10,000)<br>
+            • Spouse work permit eligibility limited to master's and PhD students<br>
+            • Priority processing for healthcare and skilled trades programs</p>
+            
+            <p><strong>Impact:</strong> Changes aim to better manage international student numbers while prioritizing high-demand sectors. Students need stronger financial proof but benefit from streamlined processing in priority areas.</p>
+            
+            <p><strong>Australia - Student Visa Modernization</strong></p>
+            <p><strong>New Changes:</strong><br>
+            • Increased English language requirements: IELTS 6.0 minimum (from 5.5)<br>
+            • Higher financial capacity requirement: AUD $29,710 annually<br>
+            • Streamlined application process with digital document submission<br>
+            • Extended post-study work rights for certain regional graduates</p>
+            
+            <p><strong>Impact:</strong> While entry requirements are stricter, successful applicants benefit from improved post-graduation opportunities, especially in regional areas.</p>
+            
+            <p><strong>Germany - National Visa Updates</strong></p>
+            <p><strong>New Changes:</strong><br>
+            • Digital application system for all study visas<br>
+            • Reduced processing time to 4-6 weeks<br>
+            • Increased blocked account requirement: €11,208 annually<br>
+            • Extended job search period to 18 months for graduates (from 12 months)</p>
+            
+            <p><strong>Impact:</strong> Despite higher financial requirements, Germany becomes more attractive with faster processing and extended post-graduation job search time.</p>
+            
+            <p><strong>Application Tips for Success:</strong></p>
+            <p>• Apply early to account for potential delays<br>
+            • Ensure financial documents exceed minimum requirements by 10-15%<br>
+            • Prepare for higher English language score requirements<br>
+            • Use official government websites for the most current information<br>
+            • Consider professional visa consultation for complex cases<br>
+            • Maintain clear documentation trail for all financial sources</p>
+            
+            <p><strong>Looking Ahead:</strong></p>
+            <p>These policy changes reflect countries' efforts to balance international education benefits with domestic concerns about housing, employment, and resource allocation. Students should plan accordingly and stay updated on evolving policies.</p>
+        `
+    },
+    'article-7': {
+        title: 'International Student Housing: Best Cities and Tips for 2025',
+        category: 'Student Life',
+        image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=400&h=250&fit=crop',
+        meta: 'January 8, 2025 • 7 min read • By Neha Kapoor',
+        content: `
+            <p>Finding suitable accommodation is one of the biggest challenges international students face. Our comprehensive 2025 guide ranks cities by affordability, safety, and student-friendly housing options.</p>
+            
+            <p><strong>Top 5 Student-Friendly Cities for Housing:</strong></p>
+            <p>1. <strong>Berlin, Germany</strong> - Average rent: €400-600/month<br>
+            Excellent public transport, diverse neighborhoods, and strong tenant protection laws make Berlin a top choice.</p>
+            
+            <p>2. <strong>Lisbon, Portugal</strong> - Average rent: €350-550/month<br>
+            Growing international student community with increasing purpose-built student accommodation options.</p>
+            
+            <p>3. <strong>Prague, Czech Republic</strong> - Average rent: €300-500/month<br>
+            Beautiful historic city with affordable living costs and good housing availability.</p>
+            
+            <p>4. <strong>Melbourne, Australia</strong> - Average rent: AUD 200-350/week<br>
+            Despite higher costs, excellent student services and accommodation support make it worthwhile.</p>
+            
+            <p>5. <strong>Montreal, Canada</strong> - Average rent: CAD 500-800/month<br>
+            Bilingual city with diverse housing options and strong student communities.</p>
+            
+            <p><strong>Essential Housing Tips:</strong></p>
+            <p>• Start your search 3-4 months before arrival<br>
+            • Use university-verified accommodation platforms<br>
+            • Consider shared apartments for cost savings<br>
+            • Check proximity to campus and public transport<br>
+            • Understand local tenant rights and rental laws<br>
+            • Budget for deposits, utilities, and initial setup costs</p>
+            
+            <p><strong>Red Flags to Avoid:</strong></p>
+            <p>• Requests for full payment before viewing<br>
+            • Prices significantly below market rate<br>
+            • Landlords unwilling to sign proper contracts<br>
+            • Properties without proper safety certifications</p>
+        `
+    },
+    'article-8': {
+        title: 'Building Networks: How to Make the Most of Your Study Abroad Experience',
+        category: 'Student Life',
+        image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=250&fit=crop',
+        meta: 'January 7, 2025 • 5 min read • By Arun Singh',
+        content: `
+            <p>Studying abroad offers unparalleled opportunities to build global networks that can transform your career. Here's how to maximize these connections during your international education journey.</p>
+            
+            <p><strong>Academic Networking Strategies:</strong></p>
+            <p>• Actively participate in class discussions and group projects<br>
+            • Attend office hours to build relationships with professors<br>
+            • Join academic clubs and research groups in your field<br>
+            • Participate in conferences and academic symposiums<br>
+            • Collaborate on research projects with peers from different backgrounds</p>
+            
+            <p><strong>Professional Network Building:</strong></p>
+            <p>Professional networks are crucial for career advancement. Start building these relationships early:</p>
+            
+            <p>• Attend career fairs and industry networking events<br>
+            • Join professional associations related to your field<br>
+            • Seek internships with local companies<br>
+            • Connect with alumni working in your industry<br>
+            • Participate in mentorship programs</p>
+            
+            <p><strong>Cultural and Social Connections:</strong></p>
+            <p>Don't underestimate the value of cultural connections. They provide insights into local business practices and can open unexpected opportunities:</p>
+            
+            <p>• Join international student organizations<br>
+            • Participate in cultural exchange programs<br>
+            • Volunteer for local charities and community events<br>
+            • Learn the local language to deeper cultural integration<br>
+            • Host or attend cultural celebration events</p>
+            
+            <p><strong>Digital Networking Tools:</strong></p>
+            <p>Leverage technology to maintain and expand your network:<br>
+            • Use LinkedIn to connect with classmates and professionals<br>
+            • Join Facebook groups for international students in your city<br>
+            • Participate in virtual events and webinars<br>
+            • Use apps like Meetup to find local networking events</p>
+            
+            <p><strong>Long-term Network Maintenance:</strong></p>
+            <p>Building a network is just the beginning. Maintaining these relationships is crucial for long-term success. Regular communication, offering help when possible, and staying updated on your connections' achievements will keep your network active and valuable throughout your career.</p>
+        `
+    }
+};
+
+// Mobile menu toggle
+document.getElementById('mobileToggle').addEventListener('click', function() {
+    const navMenu = document.getElementById('navMenu');
+    navMenu.classList.toggle('active');
+});
+
+// Category filter functionality
+document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Remove active class from all buttons
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        
+        // Add active class to clicked button
+        this.classList.add('active');
+        
+        // Get selected category
+        const selectedCategory = this.dataset.category;
+        
+        // Filter articles
+        filterArticles(selectedCategory);
+    });
+});
+
+// Article filtering function
+function filterArticles(category) {
+    const articles = document.querySelectorAll('.article-card');
+    
+    articles.forEach(article => {
+        if (category === 'all') {
+            article.classList.remove('hidden');
+        } else {
+            const articleCategory = article.dataset.category;
+            if (articleCategory === category) {
+                article.classList.remove('hidden');
+            } else {
+                article.classList.add('hidden');
+            }
+        }
+    });
+}
+
+// Search functionality
+function performSearch() {
+    const searchTerm = document.querySelector('.search-input').value.toLowerCase().trim();
+    const searchResults = document.getElementById('searchResults');
+    const searchResultsContent = document.getElementById('searchResultsContent');
+    
+    if (!searchTerm) {
+        searchResults.classList.remove('active');
+        return;
+    }
+    
+    // Search in articles
+    const articles = document.querySelectorAll('.article-card');
+    const results = [];
+    
+    articles.forEach(article => {
+        const title = article.querySelector('.article-title').textContent.toLowerCase();
+        const excerpt = article.querySelector('.article-excerpt').textContent.toLowerCase();
+        const category = article.querySelector('.article-category').textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || excerpt.includes(searchTerm) || category.includes(searchTerm)) {
+            results.push(article);
+        }
+    });
+    
+    // Display results
+    if (results.length > 0) {
+        searchResultsContent.innerHTML = `
+            <p>Found ${results.length} article(s) matching "${searchTerm}":</p>
+            <div class="search-results-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                ${results.map(article => {
+                    const title = article.querySelector('.article-title').textContent;
+                    const excerpt = article.querySelector('.article-excerpt').textContent;
+                    const category = article.querySelector('.article-category').textContent;
+                    const articleId = article.dataset.article;
+                    
+                    return `
+                        <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); cursor: pointer;" onclick="openArticleModal('${articleId}')">
+                            <div style="color: #5a67d8; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">${category}</div>
+                            <h4 style="margin-bottom: 10px; color: #333;">${title}</h4>
+                            <p style="color: #666; font-size: 0.9rem; line-height: 1.5;">${excerpt.substring(0, 120)}...</p>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    } else {
+        searchResultsContent.innerHTML = '<p class="no-results">No articles found matching your search term.</p>';
+    }
+    
+    searchResults.classList.add('active');
+}
+
+document.querySelector('.search-btn').addEventListener('click', performSearch);
+
+document.querySelector('.search-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        performSearch();
+    }
+});
+
+// Clear search results when input is empty
+document.querySelector('.search-input').addEventListener('input', function() {
+    if (!this.value.trim()) {
+        document.getElementById('searchResults').classList.remove('active');
+    }
+});
+
+// Article modal functionality
+function openArticleModal(articleId) {
+    const modal = document.getElementById('articleModal');
+    const article = articleData[articleId];
+    
+    if (article) {
+        document.getElementById('modalTitle').textContent = article.title;
+        document.getElementById('modalCategory').textContent = article.category;
+        document.getElementById('modalImage').src = article.image;
+        document.getElementById('modalMeta').textContent = article.meta;
+        document.getElementById('modalText').innerHTML = article.content;
+        
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeArticleModal() {
+    const modal = document.getElementById('articleModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
+
+// Event listeners for opening articles
+document.addEventListener('click', function(e) {
+    // Handle read more buttons
+    if (e.target.classList.contains('read-more-btn')) {
+        e.preventDefault();
+        const articleCard = e.target.closest('.article-card');
+        const articleId = articleCard.dataset.article;
+        openArticleModal(articleId);
+    }
+    
+    // Handle featured articles
+    if (e.target.closest('.featured-main, .sidebar-article, .trending-item')) {
+        const clickedElement = e.target.closest('.featured-main, .sidebar-article, .trending-item');
+        const articleId = clickedElement.dataset.article;
+        if (articleId) {
+            openArticleModal(articleId);
+        }
+    }
+    
+    // Handle trending links
+    if (e.target.closest('.trending-link')) {
+        e.preventDefault();
+        const trendingItem = e.target.closest('.trending-item');
+        const articleId = trendingItem.dataset.article;
+        openArticleModal(articleId);
+    }
+});
+
+// Modal close functionality
+document.getElementById('modalClose').addEventListener('click', closeArticleModal);
+
+document.getElementById('articleModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeArticleModal();
+    }
+});
+
+// ESC key to close modal
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeArticleModal();
+    }
+});
+
+// Newsletter form
+document.querySelector('.newsletter-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = this.querySelector('.newsletter-input').value;
+    if (email) {
+        alert('Thank you for subscribing! You will receive our latest updates.');
+        this.querySelector('.newsletter-input').value = '';
+    }
+});
+
+// Load more articles
+document.querySelector('.load-more-btn').addEventListener('click', function() {
+    this.textContent = 'Loading...';
+    setTimeout(() => {
+        this.textContent = 'Load More Articles';
+        alert('More articles loaded! Check back soon for new content.');
+    }, 1500);
+});
+
+// Smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Add animation on scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, observerOptions);
+
+// Observe article cards for animation
+document.querySelectorAll('.article-card, .trending-item, .sidebar-article').forEach(card => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(30px)';
+    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(card);
+});
+</script>
+</body>
+</html>
