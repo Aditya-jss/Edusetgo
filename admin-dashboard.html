@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - EduSetGo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="4.png" alt="EduSetGo Logo">
+            <span>EduSetGo Admin</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Back to Website</a></li>
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="admin-profile">
+                <div class="avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h3>Admin User</h3>
+                <p>admin@edusetgo.com</p>
+            </div>
+            <nav class="side-nav">
+                <ul>
+                    <li class="active"><a href="#dashboard"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                    <li><a href="#users"><i class="fas fa-users"></i> Users</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <!-- Dashboard Overview Section -->
+            <section id="dashboard" class="active">
+                <h2>Dashboard Overview</h2>
+                <div class="stats-cards">
+                    <div class="card">
+                        <i class="fas fa-users"></i>
+                        <h3>Total Users</h3>
+                        <p>125</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-university"></i>
+                        <h3>Universities</h3>
+                        <p>48</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-file-alt"></i>
+                        <h3>Applications</h3>
+                        <p>87</p>
+                    </div>
+                </div>
+                
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <ul>
+                        <li>
+                            <span class="activity-time">2 hours ago</span>
+                            <span class="activity-text">New user registered: John Smith</span>
+                        </li>
+                        <li>
+                            <span class="activity-time">5 hours ago</span>
+                            <span class="activity-text">Application submitted to Harvard University</span>
+                        </li>
+                        <li>
+                            <span class="activity-time">1 day ago</span>
+                            <span class="activity-text">New message from: Sarah Johnson</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Users Management Section -->
+            <section id="users">
+                <div class="section-header">
+                    <h2>User Management</h2>
+                    <div class="section-actions">
+                        <div class="search-box">
+                            <input type="text" id="userSearch" placeholder="Search users...">
+                            <button><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Registration Date</th>
+                                <th>Applications</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Smith</td>
+                                <td>john.smith@example.com</td>
+                                <td>15 Jan 2023</td>
+                                <td>2</td>
+                                <td class="actions-cell">
+                                    <button class="action-btn view-btn" data-userid="1"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sarah Johnson</td>
+                                <td>sarah.j@example.com</td>
+                                <td>22 Feb 2023</td>
+                                <td>1</td>
+                                <td class="actions-cell">
+                                    <button class="action-btn view-btn" data-userid="2"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Michael Brown</td>
+                                <td>michael.b@example.com</td>
+                                <td>10 Mar 2023</td>
+                                <td>3</td>
+                                <td class="actions-cell">
+                                    <button class="action-btn view-btn" data-userid="3"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <button class="pagination-btn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="pagination-btn active">1</button>
+                    <button class="pagination-btn">2</button>
+                    <button class="pagination-btn">3</button>
+                    <button class="pagination-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <!-- User Detail Modal -->
+            <div id="userDetailModal" class="modal" data-userid="">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>User Details</h3>
+                        <button class="close-modal"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="user-profile-header">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="user-info">
+                                <h3 id="userDetailName">John Smith</h3>
+                                <p id="userDetailEmail">john.smith@example.com</p>
+                                <p id="userDetailJoined">Joined: 15 Jan 2023</p>
+                            </div>
+                        </div>
+
+                        <div class="tabs">
+                            <button class="tab-btn active" data-tab="userApplications">Applications</button>
+                            <button class="tab-btn" data-tab="userNotes">Notes</button>
+                        </div>
+
+                        <div id="userApplications" class="tab-content active">
+                            <div class="application-list">
+                                <div class="application-item">
+                                    <div class="application-header">
+                                        <h4>Harvard University - Master of Computer Science</h4>
+                                        <span class="application-status pending">In Progress</span>
+                                    </div>
+                                    <div class="application-progress">
+                                        <div class="progress-steps">
+                                            <div class="step completed">
+                                                <div class="step-icon"><i class="fas fa-check"></i></div>
+                                                <div class="step-label">Documents</div>
+                                            </div>
+                                            <div class="step completed">
+                                                <div class="step-icon"><i class="fas fa-check"></i></div>
+                                                <div class="step-label">SOP/LOR</div>
+                                            </div>
+                                            <div class="step active">
+                                                <div class="step-icon"><i class="fas fa-spinner"></i></div>
+                                                <div class="step-label">University Review</div>
+                                            </div>
+                                            <div class="step">
+                                                <div class="step-icon"><i class="fas fa-clock"></i></div>
+                                                <div class="step-label">Decision</div>
+                                            </div>
+                                            <div class="step">
+                                                <div class="step-icon"><i class="fas fa-clock"></i></div>
+                                                <div class="step-label">Visa</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="application-actions">
+                                        <button class="btn btn-primary btn-sm">Update Progress</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="add-application-section">
+                                <button class="btn btn-primary" id="addUniversityBtn"><i class="fas fa-plus"></i> Add University</button>
+                            </div>
+                        </div>
+
+                        <div id="userNotes" class="tab-content">
+                            <div class="notes-container">
+                                <div class="note-item">
+                                    <div class="note-header">
+                                        <span class="note-date">15 Mar 2023</span>
+                                        <span class="note-author">by Admin</span>
+                                    </div>
+                                    <div class="note-content">
+                                        <p>Student is interested in Computer Science programs in the US. Has strong academic background with 8.5 CGPA and good extracurriculars.</p>
+                                    </div>
+                                </div>
+                                <div class="note-item">
+                                    <div class="note-header">
+                                        <span class="note-date">20 Mar 2023</span>
+                                        <span class="note-author">by Admin</span>
+                                    </div>
+                                    <div class="note-content">
+                                        <p>Recommended to apply to Harvard, Stanford, and MIT. Student is preparing for GRE, targeting 320+.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="add-note-form">
+                                <h4>Add New Note</h4>
+                                <textarea placeholder="Enter your note here..."></textarea>
+                                <button class="btn btn-primary">Save Note</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add University Modal -->
+            <div id="addUniversityModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Add University</h3>
+                        <button class="close-modal"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>University Name</label>
+                            <input type="text" id="universityName" placeholder="Enter university name">
+                        </div>
+                        <div class="form-group">
+                            <label>Program</label>
+                            <input type="text" id="programName" placeholder="Enter program name">
+                        </div>
+                        <div class="form-group">
+                            <label>Current Progress</label>
+                            <select id="progressStatus">
+                                <option value="documents">Documents Collection</option>
+                                <option value="sop">SOP/LOR Preparation</option>
+                                <option value="review">University Review</option>
+                                <option value="decision">Decision</option>
+                                <option value="visa">Visa Process</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="applicationStatus">
+                                <option value="pending">In Progress</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="waitlisted">Waitlisted</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary close-modal">Cancel</button>
+                        <button class="btn btn-primary" id="saveUniversityBtn">Add University</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Progress Modal -->
+            <div id="updateProgressModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Update Application Progress</h3>
+                        <button class="close-modal"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Current Progress</label>
+                            <select id="newProgressStatus">
+                                <option value="documents">Documents Collection</option>
+                                <option value="sop">SOP/LOR Preparation</option>
+                                <option value="review">University Review</option>
+                                <option value="decision">Decision</option>
+                                <option value="visa">Visa Process</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="newApplicationStatus">
+                                <option value="pending">In Progress</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="waitlisted">Waitlisted</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Add Note (Optional)</label>
+                            <textarea id="progressNote" placeholder="Add a note about this progress update"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary close-modal">Cancel</button>
+                        <button class="btn btn-primary" id="saveProgressBtn">Update Progress</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

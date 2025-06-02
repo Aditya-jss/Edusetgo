@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - EduSetGo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="user-dashboard.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="4.png" alt="EduSetGo Logo">
+            <span>EduSetGo</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="user-profile">
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3 id="userName">Student Name</h3>
+                <p id="userEmail">student@example.com</p>
+            </div>
+            <nav class="side-nav">
+                <ul>
+                    <li class="active"><a href="#dashboard"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                    <li><a href="#applications"><i class="fas fa-file-alt"></i> My Applications</a></li>
+                    <li><a href="#notes"><i class="fas fa-sticky-note"></i> Notes</a></li>
+                    <li><a href="#profile"><i class="fas fa-user-cog"></i> Profile</a></li>
+                    <li><a href="#progress-tracker"><i class="fas fa-tasks"></i> Progress Tracker</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <!-- Dashboard Overview Section -->
+            <section id="dashboard" class="active">
+                <h2>Dashboard Overview</h2>
+                
+                <!-- Progress Timeline -->
+                <div class="progress-timeline-container">
+                    <h3>Your Progress Timeline</h3>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="progress-percentage" id="progressPercentage">0% Complete</div>
+                    </div>
+                    <div class="progress-steps">
+                        <div class="step" id="step1">
+                            <div class="step-icon"><i class="fas fa-clipboard-check"></i></div>
+                            <div class="step-label">Preparation</div>
+                        </div>
+                        <div class="step" id="step2">
+                            <div class="step-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="step-label">Applications</div>
+                        </div>
+                        <div class="step" id="step3">
+                            <div class="step-icon"><i class="fas fa-university"></i></div>
+                            <div class="step-label">Offers</div>
+                        </div>
+                        <div class="step" id="step4">
+                            <div class="step-icon"><i class="fas fa-passport"></i></div>
+                            <div class="step-label">Visa</div>
+                        </div>
+                        <div class="step" id="step5">
+                            <div class="step-icon"><i class="fas fa-plane-departure"></i></div>
+                            <div class="step-label">Departure</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Applications -->
+                <div class="recent-applications">
+                    <div class="section-header">
+                        <h3>Recent Applications</h3>
+                        <a href="#applications" class="view-all">View All</a>
+                    </div>
+                    <div class="applications-list" id="recentApplicationsList">
+                        <!-- Applications will be loaded here -->
+                        <div class="loading-indicator">
+                            <i class="fas fa-spinner fa-spin"></i> Loading applications...
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Notes -->
+                <div class="recent-notes">
+                    <div class="section-header">
+                        <h3>Recent Notes</h3>
+                        <a href="#notes" class="view-all">View All</a>
+                    </div>
+                    <div class="notes-list" id="recentNotesList">
+                        <!-- Notes will be loaded here -->
+                        <div class="loading-indicator">
+                            <i class="fas fa-spinner fa-spin"></i> Loading notes...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Applications Section -->
+            <section id="applications">
+                <div class="section-header">
+                    <h2>My Applications</h2>
+                </div>
+                
+                <div class="applications-container" id="applicationsContainer">
+                    <!-- Applications will be loaded here -->
+                    <div class="loading-indicator">
+                        <i class="fas fa-spinner fa-spin"></i> Loading applications...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notes Section -->
+            <section id="notes">
+                <div class="section-header">
+                    <h2>Notes from Consultants</h2>
+                </div>
+                
+                <div class="notes-container" id="notesContainer">
+                    <!-- Notes will be loaded here -->
+                    <div class="loading-indicator">
+                        <i class="fas fa-spinner fa-spin"></i> Loading notes...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profile">
+                <div class="section-header">
+                    <h2>My Profile</h2>
+                </div>
+                
+                <div class="profile-container">
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="profile-info">
+                                <h3 id="profileName">Student Name</h3>
+                                <p id="profileEmail">student@example.com</p>
+                                <p id="profileJoined">Joined: January 1, 2023</p>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-details">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="fullName" placeholder="Enter your full name">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" id="phoneNumber" placeholder="Enter your phone number">
+                            </div>
+                            <div class="form-group">
+                                <label>Education Level</label>
+                                <select id="educationLevel">
+                                    <option value="">Select education level</option>
+                                    <option value="high_school">High School</option>
+                                    <option value="bachelors">Bachelor's Degree</option>
+                                    <option value="masters">Master's Degree</option>
+                                    <option value="phd">PhD</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Preferred Study Destination</label>
+                                <select id="studyDestination">
+                                    <option value="">Select destination</option>
+                                    <option value="usa">United States</option>
+                                    <option value="uk">United Kingdom</option>
+                                    <option value="canada">Canada</option>
+                                    <option value="australia">Australia</option>
+                                    <option value="germany">Germany</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button id="updateProfileBtn" class="btn btn-primary">Update Profile</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Progress Tracker Section -->
+            <section id="progress-tracker">
+                <div class="section-header">
+                    <h2>Progress Tracker</h2>
+                </div>
+                
+                <div class="progress-tracker-container">
+                    <div class="progress-overview-card">
+                        <h3>Overall Progress</h3>
+                        <div class="progress-circle-container">
+                            <div class="progress-circle" id="progressCircle">
+                                <div class="progress-circle-inner">
+                                    <span id="progressCirclePercentage">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress-stage-info">
+                            <p>Current Stage: <span id="currentStageLabel">Preparation</span></p>
+                            <p>Next Step: <span id="nextStepLabel">Complete your profile</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-stages-card">
+                        <h3>Application Journey</h3>
+                        <div class="progress-journey-timeline">
+                            <div class="journey-step" id="journeyStep1">
+                                <div class="journey-step-icon">
+                                    <i class="fas fa-clipboard-check"></i>
+                                </div>
+                                <div class="journey-step-content">
+                                    <h4>Preparation</h4>
+                                    <p>Complete your profile and prepare necessary documents</p>
+                                    <div class="journey-step-tasks" id="preparationTasks">
+                                        <div class="task-item">
+                                            <input type="checkbox" id="task1" class="task-checkbox">
+                                            <label for="task1">Complete profile information</label>
+                                        </div>
+                                        <div class="task-item">
+                                            <input type="checkbox" id="task2" class="task-checkbox">
+                                            <label for="task2">Upload academic transcripts</label>
+                                        </div>
+                                        <div class="task-item">
+                                            <input type="checkbox" id="task3" class="task-checkbox">
+                                            <label for="task3">Prepare standardized test scores</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="journey-step" id="journeyStep2">
+                                <div class="journey-step-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="journey-step-content">
+                                    <h4>Applications</h4>
+                                    <p>Submit applications to your chosen universities</p>
+                                    <div class="journey-step-tasks" id="applicationTasks">
+                                        <!-- Tasks will be loaded dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="journey-step" id="journeyStep3">
+                                <div class="journey-step-icon">
+                                    <i class="fas fa-university"></i>
+                                </div>
+                                <div class="journey-step-content">
+                                    <h4>Offers</h4>
+                                    <p>Review and accept university offers</p>
+                                    <div class="journey-step-tasks" id="offerTasks">
+                                        <!-- Tasks will be loaded dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="journey-step" id="journeyStep4">
+                                <div class="journey-step-icon">
+                                    <i class="fas fa-passport"></i>
+                                </div>
+                                <div class="journey-step-content">
+                                    <h4>Visa</h4>
+                                    <p>Apply for and secure your student visa</p>
+                                    <div class="journey-step-tasks" id="visaTasks">
+                                        <!-- Tasks will be loaded dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="journey-step" id="journeyStep5">
+                                <div class="journey-step-icon">
+                                    <i class="fas fa-plane-departure"></i>
+                                </div>
+                                <div class="journey-step-content">
+                                    <h4>Departure</h4>
+                                    <p>Prepare for your journey and arrival</p>
+                                    <div class="journey-step-tasks" id="departureTasks">
+                                        <!-- Tasks will be loaded dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Application Detail Modal -->
+    <div id="applicationDetailModal" class="modal" data-appid="">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="applicationTitle">Application Details</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="application-detail-content" id="applicationDetailContent">
+                    <!-- Application details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="user-dashboard.js"></script>
+</body>
+</html>

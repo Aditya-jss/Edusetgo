@@ -2493,6 +2493,43 @@ body {
     display: flex;
     align-items: center;
     gap: 15px;
+}
+
+/* User dropdown menu styles */
+.user-menu-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 200px;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.user-dropdown a {
+    display: block;
+    padding: 12px 15px;
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.user-dropdown a:hover {
+    background-color: #f3f4f6;
+}
+
+.show-dropdown {
+    display: block;
+
     padding: 20px;
     background: #F7FAFC;
     border-radius: 12px;
