@@ -155,15 +155,19 @@ function loadUsers(db) {
                     });
                 }
                 
+                // Get application count - check both ways it might be stored
+                const appCount = userData.applications || 0;
+                
                 // Create row
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${userData.name || userData.email.split('@')[0]}</td>
                     <td>${userData.email || 'N/A'}</td>
                     <td>${registrationDate}</td>
-                    <td>${userData.applications?.length || 0}</td>
+                    <td>${appCount}</td>
                     <td class="actions-cell">
-                        <button class="action-btn view-btn" data-userid="${doc.id}"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-primary btn-sm view-btn" data-userid="${doc.id}">View</button>
+                        <button class="btn btn-danger btn-sm delete-user-btn" data-userid="${doc.id}">Delete</button>
                     </td>
                 `;
                 
@@ -181,6 +185,16 @@ function loadUsers(db) {
                 btn.addEventListener('click', function() {
                     const userId = this.getAttribute('data-userid');
                     openUserDetailModal(userId, db);
+                });
+            });
+            
+            // Add event listeners to delete user buttons
+            document.querySelectorAll('.delete-user-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = this.getAttribute('data-userid');
+                    if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+                        deleteUser(userId, db);
+                    }
                 });
             });
         })
@@ -275,33 +289,30 @@ function openUserDetailModal(userId, db) {
     // Store user ID in data attribute
     modal.setAttribute('data-userid', userId);
     
-    // Get user data
+    // Get user details
     db.collection('users').doc(userId).get()
         .then((doc) => {
             if (doc.exists) {
                 const userData = doc.data();
                 
-                // Update modal with user data
-                document.getElementById('userDetailName').textContent = userData.name || userData.email.split('@')[0];
-                document.getElementById('userDetailEmail').textContent = userData.email || 'N/A';
-                
-                // Format joined date
+                // Format date
                 let joinedDate = 'N/A';
                 if (userData.createdAt) {
                     const date = userData.createdAt.toDate();
                     joinedDate = date.toLocaleDateString('en-US', {
                         day: 'numeric',
-                        month: 'short',
+                        month: 'long',
                         year: 'numeric'
                     });
                 }
+                
+                // Update modal with user details
+                document.getElementById('userDetailName').textContent = userData.name || userData.email.split('@')[0];
+                document.getElementById('userDetailEmail').textContent = userData.email || 'No email provided';
                 document.getElementById('userDetailJoined').textContent = `Joined: ${joinedDate}`;
                 
                 // Load user applications
                 loadUserApplications(userId, db);
-                
-                // Load user notes
-                loadUserNotes(userId, db);
                 
                 // Show modal
                 modal.classList.add('active');
@@ -357,6 +368,7 @@ function loadUserApplications(userId, db) {
                     </div>
                     <div class="application-actions">
                         <button class="btn btn-primary btn-sm update-progress-btn" data-appid="${doc.id}">Update Progress</button>
+                        <button class="btn btn-danger btn-sm delete-app-btn" data-appid="${doc.id}">Delete</button>
                     </div>
                 `;
                 
@@ -368,6 +380,16 @@ function loadUserApplications(userId, db) {
                 btn.addEventListener('click', function() {
                     const appId = this.getAttribute('data-appid');
                     openUpdateProgressModal(appId, db);
+                });
+            });
+            
+            // Add event listeners to delete application buttons
+            document.querySelectorAll('.delete-app-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const appId = this.getAttribute('data-appid');
+                    if (confirm('Are you sure you want to delete this application? This action cannot be undone.')) {
+                        deleteApplication(appId, userId, db);
+                    }
                 });
             });
         })
@@ -697,6 +719,32 @@ function openUpdateProgressModal(appId, db) {
             updateApplicationProgress(db);
         });
     }
+    
+    // Setup cancel button
+    const cancelBtn = modal.querySelector('.btn-secondary');
+    if (cancelBtn) {
+        // Remove existing event listeners
+        const newCancelBtn = cancelBtn.cloneNode(true);
+        cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+        
+        // Add new event listener
+        newCancelBtn.addEventListener('click', function() {
+            modal.classList.remove('active');
+        });
+    }
+    
+    // Setup close button
+    const closeBtn = modal.querySelector('.close-modal');
+    if (closeBtn) {
+        // Remove existing event listeners
+        const newCloseBtn = closeBtn.cloneNode(true);
+        closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+        
+        // Add new event listener
+        newCloseBtn.addEventListener('click', function() {
+            modal.classList.remove('active');
+        });
+    }
 }
 
 // Update application progress
@@ -767,45 +815,12 @@ function updateApplicationProgress(db) {
 
 // Setup modals
 function setupModals() {
-    // Close modal when clicking outside
+    // Close modals when clicking outside
     window.addEventListener('click', function(e) {
-        const modals = document.querySelectorAll('.modal');
-        modals.forEach(modal => {
+        document.querySelectorAll('.modal').forEach(modal => {
             if (e.target === modal) {
                 modal.classList.remove('active');
             }
-        });
-    });
-    
-    // Close buttons
-    const closeButtons = document.querySelectorAll('.close-modal');
-    closeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const modal = this.closest('.modal');
-            if (modal) {
-                modal.classList.remove('active');
-            }
-        });
-    });
-    
-    // Tab functionality in user detail modal
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    tabButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const tabId = this.getAttribute('data-tab');
-            
-            // Update active tab button
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Show active tab content
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(content => {
-                content.classList.remove('active');
-                if (content.id === tabId) {
-                    content.classList.add('active');
-                }
-            });
         });
     });
     
@@ -830,13 +845,100 @@ function setupModals() {
         });
     }
     
-    // Add Note button
-    const addNoteBtn = document.querySelector('#userNotes .btn-primary');
-    if (addNoteBtn) {
-        addNoteBtn.addEventListener('click', function() {
-            const userId = document.getElementById('userDetailModal').getAttribute('data-userid');
-            const db = firebase.firestore();
-            addNoteToUser(userId, db);
+    // Add Cancel button functionality
+    const cancelBtn = document.getElementById('cancelAddUniversityBtn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+            const modal = document.getElementById('addUniversityModal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
         });
     }
+    
+    // Add Close button functionality
+    const closeAddUniversityBtn = document.querySelector('#addUniversityModal .close-modal');
+    if (closeAddUniversityBtn) {
+        closeAddUniversityBtn.addEventListener('click', function() {
+            const modal = document.getElementById('addUniversityModal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        });
+    }
+}
+
+// Delete user function
+function deleteUser(userId, db) {
+    // Delete user document
+    db.collection('users').doc(userId).delete()
+        .then(() => {
+            console.log("User deleted successfully");
+            
+            // Delete all applications for this user
+            return db.collection('applications')
+                .where('userId', '==', userId)
+                .get()
+                .then(querySnapshot => {
+                    const batch = db.batch();
+                    querySnapshot.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                    return batch.commit();
+                });
+        })
+        .then(() => {
+            // Delete all notes for this user
+            return db.collection('notes')
+                .where('userId', '==', userId)
+                .get()
+                .then(querySnapshot => {
+                    const batch = db.batch();
+                    querySnapshot.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                    return batch.commit();
+                });
+        })
+        .then(() => {
+            // Add to activity log
+            addActivity(`Admin deleted a user account`, db);
+            
+            // Reload users
+            loadUsers(db);
+            
+            // Show success message
+            showToast('User deleted successfully');
+        })
+        .catch(error => {
+            console.error("Error deleting user:", error);
+            showToast('Error deleting user: ' + error.message, 'error');
+        });
+}
+
+// Delete application function
+function deleteApplication(appId, userId, db) {
+    db.collection('applications').doc(appId).delete()
+        .then(() => {
+            console.log("Application deleted successfully");
+            
+            // Update user's application count
+            updateUserApplicationCount(userId, db);
+            
+            // Update user's progress timeline
+            updateUserProgressTimeline(userId, db);
+            
+            // Add to activity log
+            addActivity(`Admin deleted an application for user`, db);
+            
+            // Reload applications
+            loadUserApplications(userId, db);
+            
+            // Show success message
+            showToast('Application deleted successfully');
+        })
+        .catch(error => {
+            console.error("Error deleting application:", error);
+            showToast('Error deleting application: ' + error.message, 'error');
+        });
 }

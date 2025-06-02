@@ -169,7 +169,7 @@
 
                         <div class="tabs">
                             <button class="tab-btn active" data-tab="userApplications">Applications</button>
-                            <button class="tab-btn" data-tab="userNotes">Notes</button>
+                            <!-- Removed Notes tab button -->
                         </div>
 
                         <div id="userApplications" class="tab-content active">
@@ -213,33 +213,7 @@
                             </div>
                         </div>
 
-                        <div id="userNotes" class="tab-content">
-                            <div class="notes-container">
-                                <div class="note-item">
-                                    <div class="note-header">
-                                        <span class="note-date">15 Mar 2023</span>
-                                        <span class="note-author">by Admin</span>
-                                    </div>
-                                    <div class="note-content">
-                                        <p>Student is interested in Computer Science programs in the US. Has strong academic background with 8.5 CGPA and good extracurriculars.</p>
-                                    </div>
-                                </div>
-                                <div class="note-item">
-                                    <div class="note-header">
-                                        <span class="note-date">20 Mar 2023</span>
-                                        <span class="note-author">by Admin</span>
-                                    </div>
-                                    <div class="note-content">
-                                        <p>Recommended to apply to Harvard, Stanford, and MIT. Student is preparing for GRE, targeting 320+.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="add-note-form">
-                                <h4>Add New Note</h4>
-                                <textarea placeholder="Enter your note here..."></textarea>
-                                <button class="btn btn-primary">Save Note</button>
-                            </div>
-                        </div>
+                        <!-- Removed userNotes tab content div -->
                     </div>
                 </div>
             </div>
@@ -249,30 +223,30 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h3>Add University</h3>
-                        <button class="close-modal"><i class="fas fa-times"></i></button>
+                        <button class="close-modal">&times;</button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>University Name</label>
-                            <input type="text" id="universityName" placeholder="Enter university name">
+                            <label for="universityName">University Name</label>
+                            <input type="text" id="universityName" placeholder="Enter university name" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label>Program</label>
-                            <input type="text" id="programName" placeholder="Enter program name">
+                            <label for="programName">Program</label>
+                            <input type="text" id="programName" placeholder="Enter program name" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label>Current Progress</label>
-                            <select id="progressStatus">
+                            <label for="progressStatus">Current Progress</label>
+                            <select id="progressStatus" class="form-control">
                                 <option value="documents">Documents Collection</option>
-                                <option value="sop">SOP/LOR Preparation</option>
+                                <option value="sop">SOP/LOR</option>
                                 <option value="review">University Review</option>
                                 <option value="decision">Decision</option>
-                                <option value="visa">Visa Process</option>
+                                <option value="visa">Visa</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Status</label>
-                            <select id="applicationStatus">
+                            <label for="applicationStatus">Status</label>
+                            <select id="applicationStatus" class="form-control">
                                 <option value="pending">In Progress</option>
                                 <option value="approved">Approved</option>
                                 <option value="rejected">Rejected</option>
@@ -281,8 +255,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary close-modal">Cancel</button>
-                        <button class="btn btn-primary" id="saveUniversityBtn">Add University</button>
+                        <button id="cancelAddUniversityBtn" class="btn btn-secondary">Cancel</button>
+                        <button id="saveUniversityBtn" class="btn btn-primary">Add University</button>
                     </div>
                 </div>
             </div>
@@ -321,7 +295,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary close-modal">Cancel</button>
+                        <button class="btn btn-secondary">Cancel</button>
                         <button class="btn btn-primary" id="saveProgressBtn">Update Progress</button>
                     </div>
                 </div>

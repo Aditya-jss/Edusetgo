@@ -6,9 +6,9 @@ function handleAuthNavigation() {
     const userEmail = sessionStorage.getItem('userEmail');
     const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
     
-    // Show/hide dashboard link based on login status
+    // Show/hide dashboard link based on login status AND user role
     if (dashboardLink) {
-        dashboardLink.style.display = isLoggedIn ? 'block' : 'none';
+        dashboardLink.style.display = (isLoggedIn && !isAdmin) ? 'block' : 'none';
     }
     
     if (authLink) {

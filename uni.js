@@ -983,6 +983,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 100);
 
+    // ===== ADD THIS: Direct event listener for reset buttons =====
+    document.addEventListener('DOMContentLoaded', function() {
+        // Find all reset buttons
+        const resetButtons = document.querySelectorAll('.reset-button, [data-action="reset"], button:contains("Search Again")');
+        
+        resetButtons.forEach(button => {
+            console.log('Found reset button:', button);
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Reset button clicked');
+                
+                // Force page reload - most reliable method
+                window.location.reload();
+            });
+        });
+        
+        // Add click handler to any button with text containing "Search Again"
+        document.addEventListener('click', function(e) {
+            if (e.target && (e.target.textContent.includes('Search Again') || 
+                             (e.target.parentElement && e.target.parentElement.textContent.includes('Search Again')))) {
+                console.log('Search Again button clicked');
+                window.location.reload();
+            }
+        });
+    });
+
     // ===== ADD THIS: Add reset button to form =====
     setTimeout(addResetButtonToForm, 500);
 });
@@ -1312,75 +1338,87 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Main reset function
 function resetForm() {
-    if (confirm('Are you sure you want to reset the form and search again? All data will be cleared.')) {
-        const form = document.getElementById('profileForm');
-        const resultsSection = document.getElementById('resultsSection');
+    console.log('Reset function called');
+    
+    // Hide results section - try multiple possible selectors
+    const resultsSection = document.getElementById('resultsSection');
+    if (resultsSection) {
+        resultsSection.classList.remove('show');
+        resultsSection.style.display = 'none';
+        resultsSection.innerHTML = '';
+        console.log('Results section cleared');
+    }
+    
+    // Get the form - try multiple possible selectors
+    let form = document.getElementById('profileForm');
+    
+    // If form not found by ID, try other common selectors
+    if (!form) {
+        console.warn('Form with ID "profileForm" not found, trying alternative selectors');
+        const possibleForms = [
+            document.querySelector('form'),
+            document.querySelector('.profile-form'),
+            document.querySelector('.university-form'),
+            document.querySelector('.finder-form')
+        ];
+        form = possibleForms.find(f => f !== null);
+    }
+    
+    if (form) {
+        console.log('Form found:', form);
         
-        if (form) {
-            // Reset the form
+        // Reset the form using native reset
+        if (typeof form.reset === 'function') {
             form.reset();
-            
-            // Hide all conditional fields
-            const greScoreGroup = document.getElementById('greScoreGroup');
-            const englishTestGroup = document.getElementById('englishTestGroup');
-            const englishScoreGroup = document.getElementById('englishScoreGroup');
-            const standardizedTestGroup = document.getElementById('standardizedTestGroup');
-            const standardizedScoreGroup = document.getElementById('standardizedScoreGroup');
-            
-            if (greScoreGroup) greScoreGroup.style.display = 'none';
-            if (englishTestGroup) englishTestGroup.style.display = 'none';
-            if (englishScoreGroup) englishScoreGroup.style.display = 'none';
-            if (standardizedTestGroup) standardizedTestGroup.style.display = 'none';
-            if (standardizedScoreGroup) standardizedScoreGroup.style.display = 'none';
-            
-            // Reset help text
-            const englishHelp = document.getElementById('englishHelp');
-            const standardizedHelp = document.getElementById('standardizedHelp');
-            if (englishHelp) englishHelp.textContent = 'Select test type to see score range';
-            if (standardizedHelp) standardizedHelp.textContent = 'Select test type to see score range';
-            
-            // Clear validation classes from inputs
-            const inputs = form.querySelectorAll('input, select');
-            inputs.forEach(input => {
-                input.classList.remove('valid', 'invalid');
-                // Reset required attributes
-                if (['cgpa', 'programLevel', 'course'].includes(input.id)) {
-                    input.required = true;
-                } else {
-                    input.required = false;
-                }
-            });
-            
-            // Hide results section
-            if (resultsSection) {
-                resultsSection.classList.remove('show');
-                setTimeout(() => {
-                    resultsSection.innerHTML = '';
-                }, 300);
-            }
-            
-            // Reset search button
-            const searchBtn = document.getElementById('searchBtn');
-            if (searchBtn) {
-                searchBtn.classList.remove('loading');
-                searchBtn.disabled = false;
-                searchBtn.innerHTML = '<i class="fas fa-search"></i> Find My Universities';
-            }
-            
-            // Scroll back to form
-            form.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
-            
-            // Focus on first input after scroll
-            setTimeout(() => {
-                const firstInput = document.getElementById('cgpa');
-                if (firstInput) {
-                    firstInput.focus();
-                }
-            }, 500);
+            console.log('Native form reset applied');
         }
+        
+        // Reset all conditional fields visibility
+        const conditionalFields = [
+            'greScoreGroup', 'englishTestGroup', 'englishScoreGroup',
+            'standardizedTestGroup', 'standardizedScoreGroup'
+        ];
+        
+        conditionalFields.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.style.display = 'none';
+                console.log(`Hidden conditional field: ${id}`);
+            }
+        });
+        
+        // Reset all inputs manually
+        const inputs = form.querySelectorAll('input, select, textarea');
+        console.log(`Found ${inputs.length} form inputs to reset`);
+        
+        inputs.forEach(input => {
+            if (input.type === 'checkbox' || input.type === 'radio') {
+                input.checked = false;
+            } else {
+                input.value = '';
+                if (input.tagName === 'SELECT') {
+                    input.selectedIndex = 0;
+                }
+            }
+            
+            // Remove validation classes
+            input.classList.remove('error', 'success', 'valid', 'invalid');
+        });
+        
+        // Scroll back to top of form
+        form.scrollIntoView({ behavior: 'smooth' });
+        
+        // Focus on first input
+        setTimeout(() => {
+            const firstInput = form.querySelector('input:not([type="hidden"]), select');
+            if (firstInput) firstInput.focus();
+        }, 500);
+        
+        console.log('Form reset complete');
+    } else {
+        console.error('No form found on page');
+        // Last resort - reload the page
+        window.location.reload();
     }
 }
 
@@ -1599,7 +1637,7 @@ function showResults(profileData) {
                 </p>
                 
                 <!-- Reset Button -->
-                <button onclick="resetForm()" class="reset-button" style="
+                <button onclick="performFormReset()" class="reset-button" style="
                     background: linear-gradient(135deg, #f59e0b, #d97706);
                     color: white;
                     border: none;
@@ -1899,6 +1937,9 @@ function resetForm() {
     }, 500);
     
     console.log('Form reset successfully');
+    console.log('Results elements cleared:', resultsElements.filter(el => el !== null).length);
+    console.log('Form found:', form ? form.tagName : 'No form found');
+    console.log('Inputs reset:', form ? form.querySelectorAll('input, select, textarea').length : 'N/A');
     
     // Force page reload as fallback (uncomment if needed)
     // window.location.reload();
@@ -1967,6 +2008,7 @@ function resetForm() {
             english: profileData.englishRequired === 'yes' ? getEnglishRequirement(profileData.englishTest, 'high') : null,
             standardized: profileData.standardizedTestRequired === 'yes' ? getStandardizedRequirement(profileData.standardizedTest, 'high') : null
         },
+
         highlights: ['STEM Excellence', 'Small Class Sizes', 'NASA Partnerships', 'Nobel Prize Winners'],
         minCgpa: 3.9, minGre: profileData.greRequired === 'yes' ? 330 : 0, minEnglish: getMinEnglishScore(profileData.englishTest, 'high'), category: 'top'
     },
@@ -5195,4 +5237,22 @@ document.addEventListener('DOMContentLoaded', function() {
             input.classList.add(isValid ? 'valid' : 'invalid');
         }
     }
+});
+// ===== ADD THIS AT THE END OF THE FILE =====
+// Global event listener to reload page when "Search Again" is clicked
+document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('click', function(event) {
+        // Check if the clicked element or its parent contains "Search Again" text
+        const target = event.target;
+        const isSearchAgainButton = 
+            (target.textContent && target.textContent.includes('Search Again')) || 
+            (target.innerHTML && target.innerHTML.includes('Search Again')) ||
+            (target.parentElement && target.parentElement.textContent && 
+             target.parentElement.textContent.includes('Search Again'));
+        
+        if (isSearchAgainButton || target.classList.contains('reset-button')) {
+            console.log('Search Again button clicked - reloading page');
+            window.location.reload();
+        }
+    });
 });
