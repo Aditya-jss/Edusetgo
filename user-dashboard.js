@@ -269,17 +269,17 @@ function loadNotes(userId, db) {
     
     // Clear loading indicators
     if (recentNotesList) {
-        recentNotesList.innerHTML = '';
+        recentNotesList.innerHTML = '<div class="loading-indicator"><i class="fas fa-spinner fa-spin"></i> Loading notes...</div>';
     }
     
     if (notesContainer) {
-        notesContainer.innerHTML = '';
+        notesContainer.innerHTML = '<div class="loading-indicator"><i class="fas fa-spinner fa-spin"></i> Loading notes...</div>';
     }
     
-    // Get notes from Firestore
+    // Get notes from Firestore - ensure we're using the right field
     db.collection('notes')
         .where('userId', '==', userId)
-        .orderBy('createdAt', 'desc')
+        .orderBy('timestamp', 'desc')  // Changed from createdAt to timestamp to match admin.js
         .get()
         .then((querySnapshot) => {
             if (querySnapshot.empty) {
@@ -354,10 +354,11 @@ function renderNotes(notes, container, limitCount) {
         const noteCard = document.createElement('div');
         noteCard.className = 'note-card fade-in';
         
-        // Format date
+        // Format date - handle both createdAt and timestamp fields
         let noteDate = 'N/A';
-        if (note.createdAt) {
-            const date = note.createdAt.toDate();
+        const dateField = note.timestamp || note.createdAt;
+        if (dateField) {
+            const date = dateField.toDate();
             noteDate = date.toLocaleDateString('en-US', {
                 day: 'numeric',
                 month: 'short',
@@ -488,22 +489,36 @@ function setupNavigation() {
 // Logout functionality
 function setupLogout() {
     const logoutBtn = document.getElementById('logoutBtn');
+    const headerLogoutBtn = document.getElementById('headerLogoutBtn');
     
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            firebase.auth().signOut()
-                .then(() => {
-                    // Redirect to login page
-                    window.location.href = 'login.html';
-                })
-                .catch((error) => {
-                    console.error("Error signing out:", error);
-                    showToast("Error signing out. Please try again.", "error");
-                });
-        });
+        logoutBtn.addEventListener('click', handleLogout);
     }
+    
+    if (headerLogoutBtn) {
+        headerLogoutBtn.addEventListener('click', handleLogout);
+    }
+}
+
+// Handle logout function
+function handleLogout(e) {
+    e.preventDefault();
+    
+    // Sign out from Firebase
+    firebase.auth().signOut()
+        .then(() => {
+            // Clear session storage
+            sessionStorage.removeItem('userLoggedIn');
+            sessionStorage.removeItem('userEmail');
+            sessionStorage.removeItem('isAdmin');
+            
+            // Redirect to login page
+            window.location.href = 'index.html';
+        })
+        .catch((error) => {
+            console.error("Error signing out:", error);
+            showToast("Error signing out. Please try again.", "error");
+        });
 }
 
 // Setup profile update
@@ -542,14 +557,44 @@ function initializeFirebase() {
     return firebase.firestore();
 }
 
-// Check if user is authenticated
+// Check if user is authenticated with better error handling
 function checkAuth() {
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             // User is signed in
-            loadUserData(user);
+            console.log("User authenticated:", user.uid);
+            
+            // Check if user document exists in Firestore
+            const db = firebase.firestore();
+            db.collection('users').doc(user.uid).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        console.log("User document exists, loading data");
+                        loadUserData(user);
+                    } else {
+                        console.error("User document doesn't exist");
+                        // Create user document if it doesn't exist
+                        return db.collection('users').doc(user.uid).set({
+                            name: user.displayName || 'Student',
+                            email: user.email,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            role: 'student'
+                        });
+                    }
+                })
+                .then(() => {
+                    if (!doc.exists) {
+                        console.log("Created user document, now loading data");
+                        loadUserData(user);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error checking user document:", error);
+                    showToast("Error loading profile. Please try again.", "error");
+                });
         } else {
             // No user is signed in, redirect to login
+            console.log("No user authenticated, redirecting to login");
             window.location.href = 'auth.html';
         }
     });
@@ -560,55 +605,34 @@ function loadUserData(user) {
     const db = firebase.firestore();
     const userId = user.uid;
     
-    // Update user info in UI
-    const userName = document.getElementById('userName');
-    const userEmail = document.getElementById('userEmail');
-    const profileName = document.getElementById('profileName');
-    const profileEmail = document.getElementById('profileEmail');
+    console.log("Loading user data for:", userId);
     
-    if (userName) userName.textContent = user.displayName || 'Student';
-    if (userEmail) userEmail.textContent = user.email;
-    if (profileName) profileName.textContent = user.displayName || 'Student';
-    if (profileEmail) profileEmail.textContent = user.email;
-    
-    // Get user document from Firestore
+    // Get user document
     db.collection('users').doc(userId).get()
         .then((doc) => {
             if (doc.exists) {
                 const userData = doc.data();
+                console.log("User data loaded successfully:", userData);
                 
-                // Update profile fields
-                const fullNameInput = document.getElementById('fullName');
-                const phoneNumberInput = document.getElementById('phoneNumber');
-                const educationLevelSelect = document.getElementById('educationLevel');
-                const studyDestinationSelect = document.getElementById('studyDestination');
-                const profileJoined = document.getElementById('profileJoined');
+                // Update UI with user data
+                document.getElementById('userName').textContent = userData.name || 'Student';
+                document.getElementById('userEmail').textContent = userData.email || user.email;
                 
-                if (fullNameInput) fullNameInput.value = userData.name || '';
-                if (phoneNumberInput) phoneNumberInput.value = userData.phone || '';
-                if (educationLevelSelect) educationLevelSelect.value = userData.educationLevel || '';
-                if (studyDestinationSelect) studyDestinationSelect.value = userData.studyDestination || '';
+                // Load applications and notes
+                loadApplications(userId, db);
+                loadNotes(userId, db);
                 
-                // Format joined date
-                if (profileJoined && userData.createdAt) {
-                    const joinedDate = userData.createdAt.toDate();
-                    profileJoined.textContent = 'Joined: ' + joinedDate.toLocaleDateString('en-US', {
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric'
-                    });
+                // Load progress if on dashboard
+                if (document.getElementById('progressContainer')) {
+                    loadProgress(userId, db);
                 }
-                
-                // Update progress timeline
-                updateProgressTimeline(userData.progressPercentage || 0, userData.progressStage || 'preparation');
+            } else {
+                console.error("No user document found for:", userId);
+                showToast("Error loading user data. Please contact support.", "error");
             }
-            
-            // Load applications and notes
-            loadApplications(userId, db);
-            loadNotes(userId, db);
         })
         .catch((error) => {
-            console.error("Error getting user data:", error);
+            console.error("Error getting user document:", error);
             showToast("Error loading user data. Please refresh the page.", "error");
         });
 }
@@ -649,8 +673,10 @@ function updateProgressTimeline(percentage, currentStage) {
     });
 }
 
-// Load applications
+// Load applications with better error handling
 function loadApplications(userId, db) {
+    console.log("Loading applications for user:", userId);
+    
     const recentApplicationsList = document.getElementById('recentApplicationsList');
     const applicationsContainer = document.getElementById('applicationsContainer');
     
@@ -663,12 +689,22 @@ function loadApplications(userId, db) {
         applicationsContainer.innerHTML = '<div class="loading-indicator"><i class="fas fa-spinner fa-spin"></i> Loading applications...</div>';
     }
     
-    // Get applications from Firestore
-    db.collection('applications')
-        .where('userId', '==', userId)
-        .orderBy('createdAt', 'desc')
-        .get()
+    // First verify user document exists
+    db.collection('users').doc(userId).get()
+        .then((userDoc) => {
+            if (!userDoc.exists) {
+                console.error("User document doesn't exist");
+                throw new Error("User profile not found. Please contact support.");
+            }
+            
+            // Now try to get applications
+            return db.collection('applications')
+                .where('userId', '==', userId)
+                .get();
+        })
         .then((querySnapshot) => {
+            console.log("Applications query successful, count:", querySnapshot.size);
+            
             if (querySnapshot.empty) {
                 // No applications found
                 const emptyState = `
@@ -706,13 +742,14 @@ function loadApplications(userId, db) {
         })
         .catch((error) => {
             console.error("Error getting applications:", error);
-            showToast("Error loading applications. Please refresh the page.", "error");
             
+            // Show detailed error message with retry button
             const errorMessage = `
-                <div class="empty-state">
+                <div class="error-state">
                     <i class="fas fa-exclamation-triangle"></i>
                     <p>Error loading applications</p>
                     <p class="text-muted">${error.message}</p>
+                    <button class="retry-btn" onclick="retryLoadApplications('${userId}')">Retry</button>
                 </div>
             `;
             
@@ -724,6 +761,190 @@ function loadApplications(userId, db) {
                 applicationsContainer.innerHTML = errorMessage;
             }
         });
+}
+
+// Retry loading applications
+function retryLoadApplications(userId) {
+    const db = firebase.firestore();
+    loadApplications(userId, db);
+}
+
+// Load notes with better error handling
+function loadNotes(userId, db) {
+    console.log("Loading notes for user:", userId);
+    
+    const recentNotesList = document.getElementById('recentNotesList');
+    const notesContainer = document.getElementById('notesContainer');
+    
+    // Clear loading indicators
+    if (recentNotesList) {
+        recentNotesList.innerHTML = '<div class="loading-indicator"><i class="fas fa-spinner fa-spin"></i> Loading notes...</div>';
+    }
+    
+    if (notesContainer) {
+        notesContainer.innerHTML = '<div class="loading-indicator"><i class="fas fa-spinner fa-spin"></i> Loading notes...</div>';
+    }
+    
+    // First verify user document exists
+    db.collection('users').doc(userId).get()
+        .then((userDoc) => {
+            if (!userDoc.exists) {
+                console.error("User document doesn't exist");
+                throw new Error("User profile not found. Please contact support.");
+            }
+            
+            // Now try to get notes
+            return db.collection('notes')
+                .where('userId', '==', userId)
+                .get();
+        })
+        .then((querySnapshot) => {
+            console.log("Notes query successful, count:", querySnapshot.size);
+            
+            if (querySnapshot.empty) {
+                // No notes found
+                const emptyState = `
+                    <div class="empty-state">
+                        <i class="fas fa-sticky-note"></i>
+                        <p>No notes found</p>
+                        <p class="text-muted">Notes from your consultants will appear here.</p>
+                    </div>
+                `;
+                
+                if (recentNotesList) {
+                    recentNotesList.innerHTML = emptyState;
+                }
+                
+                if (notesContainer) {
+                    notesContainer.innerHTML = emptyState;
+                }
+                
+                return;
+            }
+            
+            // Process notes
+            const notes = [];
+            querySnapshot.forEach((doc) => {
+                const noteData = doc.data();
+                notes.push({
+                    id: doc.id,
+                    ...noteData
+                });
+            });
+            
+            // Render notes
+            renderNotes(notes, recentNotesList, true);
+            renderNotes(notes, notesContainer, false);
+        })
+        .catch((error) => {
+            console.error("Error getting notes:", error);
+            
+            // Show detailed error message with retry button
+            const errorMessage = `
+                <div class="error-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Error loading notes</p>
+                    <p class="text-muted">${error.message}</p>
+                    <button class="retry-btn" onclick="retryLoadNotes('${userId}')">Retry</button>
+                </div>
+            `;
+            
+            if (recentNotesList) {
+                recentNotesList.innerHTML = errorMessage;
+            }
+            
+            if (notesContainer) {
+                notesContainer.innerHTML = errorMessage;
+            }
+        });
+}
+
+// Retry loading notes
+function retryLoadNotes(userId) {
+    const db = firebase.firestore();
+    loadNotes(userId, db);
+}
+
+// Function to create test data (for debugging purposes)
+function createTestData(userId) {
+    const db = firebase.firestore();
+    
+    // Create a test application
+    const testApplication = {
+        userId: userId,
+        universityName: "Test University",
+        programName: "Computer Science",
+        status: "pending",
+        progress: "preparation",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        intake: "Fall 2023"
+    };
+    
+    // Create a test note
+    const testNote = {
+        userId: userId,
+        authorName: "Test Consultant",
+        content: "This is a test note to verify permissions are working correctly.",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    // Add test application
+    db.collection('applications').add(testApplication)
+        .then((docRef) => {
+            console.log("Test application created with ID:", docRef.id);
+            showToast("Test application created successfully", "success");
+        })
+        .catch((error) => {
+            console.error("Error creating test application:", error);
+            showToast("Error creating test application: " + error.message, "error");
+        });
+    
+    // Add test note
+    db.collection('notes').add(testNote)
+        .then((docRef) => {
+            console.log("Test note created with ID:", docRef.id);
+            showToast("Test note created successfully", "success");
+            
+            // Reload data after creating test items
+            setTimeout(() => {
+                loadApplications(userId, db);
+                loadNotes(userId, db);
+            }, 2000);
+        })
+        .catch((error) => {
+            console.error("Error creating test note:", error);
+            showToast("Error creating test note: " + error.message, "error");
+        });
+}
+
+// Add a debug button to the UI
+function addDebugButton() {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+    
+    const debugContainer = document.createElement('div');
+    debugContainer.className = 'debug-container';
+    debugContainer.style.position = 'fixed';
+    debugContainer.style.bottom = '20px';
+    debugContainer.style.right = '20px';
+    debugContainer.style.zIndex = '1000';
+    
+    const debugButton = document.createElement('button');
+    debugButton.className = 'debug-button';
+    debugButton.textContent = 'Create Test Data';
+    debugButton.style.padding = '10px 15px';
+    debugButton.style.backgroundColor = '#ff6b6b';
+    debugButton.style.color = 'white';
+    debugButton.style.border = 'none';
+    debugButton.style.borderRadius = '5px';
+    debugButton.style.cursor = 'pointer';
+    
+    debugButton.addEventListener('click', () => {
+        createTestData(user.uid);
+    });
+    
+    debugContainer.appendChild(debugButton);
+    document.body.appendChild(debugContainer);
 }
 
 // Initialize the dashboard
@@ -742,6 +963,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Setup profile update
     setupProfileUpdate();
+    
+    // Add debug button after a delay to ensure auth is complete
+    setTimeout(addDebugButton, 3000);
     
     console.log('User dashboard initialized');
 });

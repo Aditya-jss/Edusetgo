@@ -1,0 +1,26 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        // Allow users to read and write only their own data
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "applications": {
+      // Allow users to read applications where userId matches their uid
+      ".read": "data.child('userId').val() === auth.uid",
+      "$appId": {
+        ".read": "data.child('userId').val() === auth.uid",
+        ".write": "data.child('userId').val() === auth.uid || newData.child('userId').val() === auth.uid"
+      }
+    },
+    "notes": {
+      // Allow users to read notes where userId matches their uid
+      ".read": "data.child('userId').val() === auth.uid",
+      "$noteId": {
+        ".read": "data.child('userId').val() === auth.uid"
+      }
+    }
+  }
+}

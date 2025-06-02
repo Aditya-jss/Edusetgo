@@ -27,17 +27,31 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Logout functionality
     const logoutBtn = document.getElementById('logoutBtn');
+    const headerLogoutBtn = document.getElementById('headerLogoutBtn');
+
+    function handleLogout(e) {
+        e.preventDefault();
+        
+        // Try to sign out with Firebase if available
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            firebase.auth().signOut().catch(error => console.error("Firebase sign out error:", error));
+        }
+        
+        // Clear session storage
+        sessionStorage.removeItem('userLoggedIn');
+        sessionStorage.removeItem('userEmail');
+        sessionStorage.removeItem('isAdmin');
+        
+        // Redirect to login page
+        window.location.href = 'index.html';
+    }
+
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            // Clear session storage
-            sessionStorage.removeItem('userLoggedIn');
-            sessionStorage.removeItem('userEmail');
-            sessionStorage.removeItem('isAdmin');
-            
-            // Redirect to login page
-            window.location.href = 'auth.html';
-        });
+        logoutBtn.addEventListener('click', handleLogout);
+    }
+
+    if (headerLogoutBtn) {
+        headerLogoutBtn.addEventListener('click', handleLogout);
     }
     
     // Navigation functionality
