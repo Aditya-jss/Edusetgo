@@ -65,8 +65,8 @@ function handleAuthNavigation() {
                 window.location.href = 'index.html';
             });
         } else {
-            // Not logged in - show login/register link
-            authLink.innerHTML = 'Login / Register';
+            // Not logged in - show login/sign up link
+            authLink.innerHTML = 'Login or Sign up';
             authLink.href = 'auth.html';
         }
     }

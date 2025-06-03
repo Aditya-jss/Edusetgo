@@ -39,7 +39,6 @@
                 <ul>
                     <li class="active"><a href="#dashboard"><i class="fas fa-th-large"></i> Dashboard</a></li>
                     <li><a href="#applications"><i class="fas fa-file-alt"></i> My Applications</a></li>
-                    <li><a href="#notes"><i class="fas fa-sticky-note"></i> Notes</a></li>
                     <li><a href="#profile"><i class="fas fa-user-cog"></i> Profile</a></li>
                     <li><a href="#progress-tracker"><i class="fas fa-tasks"></i> Progress Tracker</a></li>
                 </ul>
@@ -50,6 +49,37 @@
             <!-- Dashboard Overview Section -->
             <section id="dashboard" class="active">
                 <h2>Dashboard Overview</h2>
+                
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="applicationCount">0</h3>
+                            <p>Total Applications</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="approvedCount">0</h3>
+                            <p>Approved</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="pendingCount">0</h3>
+                            <p>Pending</p>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- Progress Timeline -->
                 <div class="progress-timeline-container">
@@ -91,60 +121,34 @@
                         <a href="#applications" class="view-all">View All</a>
                     </div>
                     <div class="applications-list" id="recentApplicationsList">
-                        <!-- Applications will be loaded here -->
                         <div class="loading-indicator">
                             <i class="fas fa-spinner fa-spin"></i> Loading applications...
                         </div>
                     </div>
                 </div>
                 
-                <!-- Recent Notes -->
-                <div class="recent-notes">
-                    <div class="section-header">
-                        <h3>Recent Notes</h3>
-                        <a href="#notes" class="view-all">View All</a>
-                    </div>
-                    <div class="notes-list" id="recentNotesList">
-                        <!-- Notes will be loaded here -->
-                        <div class="loading-indicator">
-                            <i class="fas fa-spinner fa-spin"></i> Loading notes...
-                        </div>
-                    </div>
-                </div>
             </section>
 
             <!-- Applications Section -->
             <section id="applications">
                 <div class="section-header">
                     <h2>My Applications</h2>
+                    <p class="section-subtitle">Track your university applications and their progress</p>
                 </div>
                 
                 <div class="applications-container" id="applicationsContainer">
-                    <!-- Applications will be loaded here -->
                     <div class="loading-indicator">
                         <i class="fas fa-spinner fa-spin"></i> Loading applications...
                     </div>
                 </div>
             </section>
 
-            <!-- Notes Section -->
-            <section id="notes">
-                <div class="section-header">
-                    <h2>Notes from Consultants</h2>
-                </div>
-                
-                <div class="notes-container" id="notesContainer">
-                    <!-- Notes will be loaded here -->
-                    <div class="loading-indicator">
-                        <i class="fas fa-spinner fa-spin"></i> Loading notes...
-                    </div>
-                </div>
-            </section>
 
             <!-- Profile Section -->
             <section id="profile">
                 <div class="section-header">
                     <h2>My Profile</h2>
+                    <p class="section-subtitle">Manage your personal information and preferences</p>
                 </div>
                 
                 <div class="profile-container">
@@ -156,43 +160,53 @@
                             <div class="profile-info">
                                 <h3 id="profileName">Student Name</h3>
                                 <p id="profileEmail">student@example.com</p>
-                                <p id="profileJoined">Joined: January 1, 2023</p>
+                                <p id="profileJoined">Member since: January 2024</p>
                             </div>
                         </div>
                         
                         <div class="profile-details">
-                            <div class="form-group">
-                                <label>Full Name</label>
-                                <input type="text" id="fullName" placeholder="Enter your full name">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name *</label>
+                                    <input type="text" id="fullName" placeholder="Enter your full name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phoneNumber">Phone Number</label>
+                                    <input type="tel" id="phoneNumber" placeholder="Enter your phone number">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Phone Number</label>
-                                <input type="tel" id="phoneNumber" placeholder="Enter your phone number">
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="educationLevel">Education Level</label>
+                                    <select id="educationLevel">
+                                        <option value="">Select education level</option>
+                                        <option value="high_school">High School</option>
+                                        <option value="bachelors">Bachelor's Degree</option>
+                                        <option value="masters">Master's Degree</option>
+                                        <option value="phd">PhD</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="studyDestination">Preferred Study Destination</label>
+                                    <select id="studyDestination">
+                                        <option value="">Select destination</option>
+                                        <option value="usa">United States</option>
+                                        <option value="uk">United Kingdom</option>
+                                        <option value="canada">Canada</option>
+                                        <option value="australia">Australia</option>
+                                        <option value="germany">Germany</option>
+                                        <option value="france">France</option>
+                                        <option value="netherlands">Netherlands</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Education Level</label>
-                                <select id="educationLevel">
-                                    <option value="">Select education level</option>
-                                    <option value="high_school">High School</option>
-                                    <option value="bachelors">Bachelor's Degree</option>
-                                    <option value="masters">Master's Degree</option>
-                                    <option value="phd">PhD</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Preferred Study Destination</label>
-                                <select id="studyDestination">
-                                    <option value="">Select destination</option>
-                                    <option value="usa">United States</option>
-                                    <option value="uk">United Kingdom</option>
-                                    <option value="canada">Canada</option>
-                                    <option value="australia">Australia</option>
-                                    <option value="germany">Germany</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <button id="updateProfileBtn" class="btn btn-primary">Update Profile</button>
+                            
+                            <div class="form-actions">
+                                <button id="updateProfileBtn" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Update Profile
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -203,6 +217,7 @@
             <section id="progress-tracker">
                 <div class="section-header">
                     <h2>Progress Tracker</h2>
+                    <p class="section-subtitle">Track your journey through the application process</p>
                 </div>
                 
                 <div class="progress-tracker-container">
@@ -224,26 +239,15 @@
                     <div class="progress-stages-card">
                         <h3>Application Journey</h3>
                         <div class="progress-journey-timeline">
-                            <div class="journey-step" id="journeyStep1">
+                            <div class="journey-step active" id="journeyStep1">
                                 <div class="journey-step-icon">
                                     <i class="fas fa-clipboard-check"></i>
                                 </div>
                                 <div class="journey-step-content">
-                                    <h4>Preparation</h4>
+                                    <h4>Preparation Phase</h4>
                                     <p>Complete your profile and prepare necessary documents</p>
-                                    <div class="journey-step-tasks" id="preparationTasks">
-                                        <div class="task-item">
-                                            <input type="checkbox" id="task1" class="task-checkbox">
-                                            <label for="task1">Complete profile information</label>
-                                        </div>
-                                        <div class="task-item">
-                                            <input type="checkbox" id="task2" class="task-checkbox">
-                                            <label for="task2">Upload academic transcripts</label>
-                                        </div>
-                                        <div class="task-item">
-                                            <input type="checkbox" id="task3" class="task-checkbox">
-                                            <label for="task3">Prepare standardized test scores</label>
-                                        </div>
+                                    <div class="journey-step-status">
+                                        <span class="status-indicator active">In Progress</span>
                                     </div>
                                 </div>
                             </div>
@@ -253,10 +257,10 @@
                                     <i class="fas fa-file-alt"></i>
                                 </div>
                                 <div class="journey-step-content">
-                                    <h4>Applications</h4>
+                                    <h4>Application Submission</h4>
                                     <p>Submit applications to your chosen universities</p>
-                                    <div class="journey-step-tasks" id="applicationTasks">
-                                        <!-- Tasks will be loaded dynamically -->
+                                    <div class="journey-step-status">
+                                        <span class="status-indicator pending">Pending</span>
                                     </div>
                                 </div>
                             </div>
@@ -266,10 +270,10 @@
                                     <i class="fas fa-university"></i>
                                 </div>
                                 <div class="journey-step-content">
-                                    <h4>Offers</h4>
+                                    <h4>University Offers</h4>
                                     <p>Review and accept university offers</p>
-                                    <div class="journey-step-tasks" id="offerTasks">
-                                        <!-- Tasks will be loaded dynamically -->
+                                    <div class="journey-step-status">
+                                        <span class="status-indicator pending">Pending</span>
                                     </div>
                                 </div>
                             </div>
@@ -279,10 +283,10 @@
                                     <i class="fas fa-passport"></i>
                                 </div>
                                 <div class="journey-step-content">
-                                    <h4>Visa</h4>
+                                    <h4>Visa Processing</h4>
                                     <p>Apply for and secure your student visa</p>
-                                    <div class="journey-step-tasks" id="visaTasks">
-                                        <!-- Tasks will be loaded dynamically -->
+                                    <div class="journey-step-status">
+                                        <span class="status-indicator pending">Pending</span>
                                     </div>
                                 </div>
                             </div>
@@ -292,10 +296,10 @@
                                     <i class="fas fa-plane-departure"></i>
                                 </div>
                                 <div class="journey-step-content">
-                                    <h4>Departure</h4>
+                                    <h4>Departure Preparation</h4>
                                     <p>Prepare for your journey and arrival</p>
-                                    <div class="journey-step-tasks" id="departureTasks">
-                                        <!-- Tasks will be loaded dynamically -->
+                                    <div class="journey-step-status">
+                                        <span class="status-indicator pending">Pending</span>
                                     </div>
                                 </div>
                             </div>
@@ -307,11 +311,13 @@
     </div>
 
     <!-- Application Detail Modal -->
-    <div id="applicationDetailModal" class="modal" data-appid="">
+    <div id="applicationDetailModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="applicationTitle">Application Details</h3>
-                <button class="close-modal"><i class="fas fa-times"></i></button>
+                <h3>Application Details</h3>
+                <button class="close-modal" type="button">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="application-detail-content" id="applicationDetailContent">
@@ -321,7 +327,9 @@
         </div>
     </div>
 
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
     <script src="user-dashboard.js"></script>
-    <script src="auth-nav.js"></script>
 </body>
 </html>

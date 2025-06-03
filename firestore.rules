@@ -1,31 +1,36 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow users to read and write their own data
+    
+    // Users can read and write their own user document
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
-    // Allow users to read their own applications
+    // Applications: Users can read their own, admins can read/write all
     match /applications/{applicationId} {
       allow read: if request.auth != null && 
                    request.auth.uid == resource.data.userId;
+      
       allow write: if request.auth != null && 
-                    request.auth.uid == request.resource.data.userId;
+                    exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
     
-    // Allow users to read their own notes
+    // Notes: Users can read their own, admins can read/write all
     match /notes/{noteId} {
       allow read: if request.auth != null && 
                    request.auth.uid == resource.data.userId;
+      
       allow write: if request.auth != null && 
-                    (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-                     request.auth.uid == request.resource.data.userId);
+                    exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
     
-    // Admin access to all collections
+    // Admin-only collections or documents
     match /{document=**} {
       allow read, write: if request.auth != null && 
+                           exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
                            get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
   }
