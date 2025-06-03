@@ -20,18 +20,79 @@ const auth = firebase.auth();
 // Global variable to store applications for both progress and UI
 let userApplications = [];
 
-// Remove debug logging function and its usage
+// Add debug logging
 function debugLog(message, data = null) {
-    // Function body removed - no longer needed
+    console.log(`[DEBUG] ${message}`, data);
+    
+    // Also show on page for easier debugging
+    const debugDiv = document.getElementById('debugInfo') || createDebugDiv();
+    const timestamp = new Date().toLocaleTimeString();
+    debugDiv.innerHTML += `<div><strong>${timestamp}:</strong> ${message} ${data ? JSON.stringify(data) : ''}</div>`;
+    debugDiv.scrollTop = debugDiv.scrollHeight;
 }
 
 function createDebugDiv() {
-    // Function body removed - no longer needed
+    const debugDiv = document.createElement('div');
+    debugDiv.id = 'debugInfo';
+    debugDiv.style.cssText = `
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        width: 400px;
+        height: 200px;
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        font-family: monospace;
+        font-size: 12px;
+        overflow-y: auto;
+        z-index: 9999;
+        border: 1px solid #333;
+    `;
+    document.body.appendChild(debugDiv);
+    return debugDiv;
 }
 
 // Document ready function
 document.addEventListener('DOMContentLoaded', function() {
-    // Check authentication
+    // Check if user is logged in
+    const isLoggedIn = sessionStorage.getItem('userLoggedIn') === 'true';
+    
+    if (!isLoggedIn) {
+        window.location.href = 'auth.html';
+        return;
+    }
+    
+    // Add cache control meta tags to prevent caching
+    const metaCache = document.createElement('meta');
+    metaCache.setAttribute('http-equiv', 'Cache-Control');
+    metaCache.setAttribute('content', 'no-cache, no-store, must-revalidate');
+    document.head.appendChild(metaCache);
+    
+    const metaPragma = document.createElement('meta');
+    metaPragma.setAttribute('http-equiv', 'Pragma');
+    metaPragma.setAttribute('content', 'no-cache');
+    document.head.appendChild(metaPragma);
+    
+    const metaExpires = document.createElement('meta');
+    metaExpires.setAttribute('http-equiv', 'Expires');
+    metaExpires.setAttribute('content', '0');
+    document.head.appendChild(metaExpires);
+    
+    // Add page visibility change detection
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') {
+            // Re-check authentication when page becomes visible (like when returning with back button)
+            const isStillLoggedIn = sessionStorage.getItem('userLoggedIn') === 'true';
+            
+            if (!isStillLoggedIn) {
+                window.location.href = 'auth.html';
+            }
+        }
+    });
+    
+    // Check authentication with Firebase
     auth.onAuthStateChanged(function(user) {
         if (user) {
             loadUserData(user);
@@ -51,6 +112,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Setup modal close functionality
     setupModalClose();
+    
+    debugLog('User dashboard initialized');
 });
 
 // Load user data
@@ -75,9 +138,6 @@ function loadUserData(user) {
                 // Load applications and calculate progress together
                 loadApplicationsAndProgress(userId);
                 
-                // Load notes
-                loadNotes(userId);
-                
             } else {
                 debugLog("No user document found, creating one");
                 return db.collection('users').doc(userId).set({
@@ -88,7 +148,6 @@ function loadUserData(user) {
                     isAdmin: false
                 }).then(() => {
                     loadApplicationsAndProgress(userId);
-                    loadNotes(userId);
                 });
             }
         })
@@ -254,6 +313,8 @@ function showEmptyApplicationsState() {
 }
 
 function calculateAndUpdateProgress(applications, userId) {
+    debugLog("Calculating progress", { applicationCount: applications.length });
+    
     let progressPercentage = 0;
     let currentStage = 'preparation';
     
@@ -262,6 +323,8 @@ function calculateAndUpdateProgress(applications, userId) {
         progressPercentage = 25;
         
         applications.forEach(app => {
+            debugLog("Processing app for progress", { status: app.status, progress: app.progress });
+            
             if (app.status === 'approved' || app.status === 'waitlisted') {
                 currentStage = 'offers';
                 progressPercentage = Math.max(progressPercentage, 50);
@@ -279,17 +342,15 @@ function calculateAndUpdateProgress(applications, userId) {
         });
     }
     
+    debugLog("Final progress calculation", { percentage: progressPercentage, stage: currentStage });
     updateProgressTimeline(progressPercentage, currentStage);
-    
-    // Update progress circle
-    updateProgressCircle(progressPercentage, currentStage);
     
     // Update user document with progress stage
     db.collection('users').doc(userId).update({
         progressStage: currentStage,
         progressPercentage: progressPercentage
     }).catch(error => {
-        console.error("Error updating user progress stage:", error);
+        debugLog("Error updating user progress stage", error);
     });
 }
 
@@ -459,116 +520,33 @@ function createProgressStepsHTML(currentProgress) {
     return html;
 }
 
-function loadNotes(userId) {
-    debugLog("Loading notes for user", userId);
-    
-    const recentNotesList = document.getElementById('recentNotesList');
-    const notesContainer = document.getElementById('notesContainer');
-    
-    if (recentNotesList) {
-        recentNotesList.innerHTML = '<div class="loading-indicator"><i class="fas fa-spinner fa-spin"></i> Loading notes...</div>';
-    }
-    
-    if (notesContainer) {
-        notesContainer.innerHTML = '<div class="loading-indicator"><i class="fas fa-spinner fa-spin"></i> Loading notes...</div>';
-    }
-    
-    db.collection('notes')
-        .where('userId', '==', userId)
-        .orderBy('timestamp', 'desc')
-        .get()
-        .then((querySnapshot) => {
-            debugLog("Notes query returned", querySnapshot.size);
-            
-            if (querySnapshot.empty) {
-                const emptyState = `
-                    <div class="empty-state">
-                        <i class="fas fa-sticky-note"></i>
-                        <p>No notes found</p>
-                        <p class="text-muted">Notes from your consultants will appear here.</p>
-                    </div>
-                `;
-                
-                if (recentNotesList) recentNotesList.innerHTML = emptyState;
-                if (notesContainer) notesContainer.innerHTML = emptyState;
-                return;
-            }
-            
-            const notes = [];
-            querySnapshot.forEach((doc) => {
-                const noteData = doc.data();
-                notes.push({
-                    id: doc.id,
-                    ...noteData
-                });
-            });
-            
-            renderNotes(notes, recentNotesList, true);
-            renderNotes(notes, notesContainer, false);
-        })
-        .catch((error) => {
-            debugLog("Error getting notes", error);
-            const errorMessage = `
-                <div class="error-state">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <p>No notes available</p>
-                    <p class="text-muted">Consultant notes will appear here when available.</p>
-                </div>
-            `;
-            
-            if (recentNotesList) recentNotesList.innerHTML = errorMessage;
-            if (notesContainer) notesContainer.innerHTML = errorMessage;
-        });
-}
-
-function renderNotes(notes, container, limitCount) {
-    if (!container) return;
-    
-    container.innerHTML = '';
-    
-    const notesToRender = limitCount ? notes.slice(0, 3) : notes;
-    
-    notesToRender.forEach((note) => {
-        const noteCard = document.createElement('div');
-        noteCard.className = 'note-card fade-in';
-        
-        let noteDate = 'N/A';
-        const dateField = note.timestamp || note.createdAt;
-        if (dateField) {
-            try {
-                const date = dateField.toDate ? dateField.toDate() : new Date(dateField);
-                noteDate = date.toLocaleDateString('en-US', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric'
-                });
-            } catch (e) {
-                debugLog("Error formatting note date", e);
-            }
-        }
-        
-        noteCard.innerHTML = `
-            <div class="note-header">
-                <div class="note-author">${note.authorName || 'Consultant'}</div>
-                <div class="note-date">${noteDate}</div>
-            </div>
-            <div class="note-content">${note.content || 'No content'}</div>
-        `;
-        
-        container.appendChild(noteCard);
-    });
-}
-
 function updateProfileForm(userData) {
+    debugLog("Updating profile form with data", userData);
+    
     const fullNameInput = document.getElementById('fullName');
     const phoneNumberInput = document.getElementById('phoneNumber');
     const educationLevelSelect = document.getElementById('educationLevel');
     const studyDestinationSelect = document.getElementById('studyDestination');
     
-    if (fullNameInput) fullNameInput.value = userData.name || '';
-    if (phoneNumberInput) phoneNumberInput.value = userData.phone || '';
-    if (educationLevelSelect && userData.educationLevel) educationLevelSelect.value = userData.educationLevel;
-    if (studyDestinationSelect && userData.studyDestination) studyDestinationSelect.value = userData.studyDestination;
+    if (fullNameInput) {
+        fullNameInput.value = userData.name || '';
+        debugLog("Set fullName to", userData.name);
+    }
+    
+    if (phoneNumberInput) {
+        phoneNumberInput.value = userData.phone || '';
+        debugLog("Set phone to", userData.phone);
+    }
+    
+    if (educationLevelSelect && userData.educationLevel) {
+        educationLevelSelect.value = userData.educationLevel;
+        debugLog("Set educationLevel to", userData.educationLevel);
+    }
+    
+    if (studyDestinationSelect && userData.studyDestination) {
+        studyDestinationSelect.value = userData.studyDestination;
+        debugLog("Set studyDestination to", userData.studyDestination);
+    }
 }
 
 function showErrorState(error, recentApplicationsList, applicationsContainer, userId) {
@@ -629,14 +607,44 @@ function setupLogout() {
 
 function setupProfileUpdate() {
     const updateProfileBtn = document.getElementById('updateProfileBtn');
+    const profileForm = document.getElementById('profileForm');
     
     if (updateProfileBtn) {
-        updateProfileBtn.addEventListener('click', function() {
+        updateProfileBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
             const user = firebase.auth().currentUser;
             if (user) {
                 updateUserProfile(user.uid);
             } else {
                 showToast("You must be logged in to update your profile", "error");
+            }
+        });
+    }
+    
+    // Also handle form submission if there's a form element
+    if (profileForm) {
+        profileForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const user = firebase.auth().currentUser;
+            if (user) {
+                updateUserProfile(user.uid);
+            } else {
+                showToast("You must be logged in to update your profile", "error");
+            }
+        });
+    }
+    
+    // Add real-time validation
+    const fullNameInput = document.getElementById('fullName');
+    if (fullNameInput) {
+        fullNameInput.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.classList.add('error');
+                showToast("Full name is required", "error");
+            } else {
+                this.classList.remove('error');
             }
         });
     }
@@ -687,7 +695,73 @@ function closeModal(modal) {
 
 function updateUserProfile(userId) {
     debugLog("Updating user profile for", userId);
-    // Implementation here
+    
+    // Get form values
+    const fullName = document.getElementById('fullName')?.value?.trim();
+    const phoneNumber = document.getElementById('phoneNumber')?.value?.trim();
+    const educationLevel = document.getElementById('educationLevel')?.value;
+    const studyDestination = document.getElementById('studyDestination')?.value;
+    
+    // Validate required fields
+    if (!fullName) {
+        showToast("Please enter your full name", "error");
+        return;
+    }
+    
+    // Prepare update data
+    const updateData = {
+        name: fullName,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    if (phoneNumber) updateData.phone = phoneNumber;
+    if (educationLevel) updateData.educationLevel = educationLevel;
+    if (studyDestination) updateData.studyDestination = studyDestination;
+    
+    debugLog("Updating profile with data", updateData);
+    
+    // Show loading state
+    const updateBtn = document.getElementById('updateProfileBtn');
+    const originalText = updateBtn?.textContent;
+    if (updateBtn) {
+        updateBtn.disabled = true;
+        updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+    }
+    
+    // Update Firestore document
+    db.collection('users').doc(userId).update(updateData)
+        .then(() => {
+            debugLog("Profile updated successfully");
+            showToast("Profile updated successfully!", "success");
+            
+            // Update display name in Firebase Auth if it changed
+            const user = firebase.auth().currentUser;
+            if (user && user.displayName !== fullName) {
+                return user.updateProfile({
+                    displayName: fullName
+                });
+            }
+        })
+        .then(() => {
+            // Update UI elements with new name
+            const userNameElements = document.querySelectorAll('#userName, #profileName');
+            userNameElements.forEach(element => {
+                if (element) element.textContent = fullName;
+            });
+            
+            debugLog("Auth profile updated successfully");
+        })
+        .catch((error) => {
+            debugLog("Error updating profile", error);
+            showToast("Error updating profile: " + error.message, "error");
+        })
+        .finally(() => {
+            // Reset button state
+            if (updateBtn) {
+                updateBtn.disabled = false;
+                updateBtn.textContent = originalText || 'Update Profile';
+            }
+        });
 }
 
 function showToast(message, type = 'success') {
@@ -714,86 +788,4 @@ function showToast(message, type = 'success') {
             toast.remove();
         }, 300);
     }, 3000);
-}
-
-// Add this function to update the progress circle
-function updateProgressCircle(percentage, currentStage) {
-    const progressCircle = document.getElementById('progressCircle');
-    const progressCirclePercentage = document.getElementById('progressCirclePercentage');
-    const currentStageLabel = document.getElementById('currentStageLabel');
-    const nextStepLabel = document.getElementById('nextStepLabel');
-    
-    if (progressCirclePercentage) {
-        progressCirclePercentage.textContent = percentage + '%';
-    }
-    
-    if (progressCircle) {
-        // Update circle visual (if you're using a CSS-based circle)
-        progressCircle.style.background = `conic-gradient(#4e54c8 ${percentage}%, #f1f1f1 0%)`;
-    }
-    
-    if (currentStageLabel) {
-        // Capitalize first letter of stage
-        const formattedStage = currentStage.charAt(0).toUpperCase() + currentStage.slice(1);
-        currentStageLabel.textContent = formattedStage;
-    }
-    
-    if (nextStepLabel) {
-        // Set next step based on current stage
-        let nextStep = '';
-        switch(currentStage) {
-            case 'preparation':
-                nextStep = 'Complete your profile';
-                break;
-            case 'applications':
-                nextStep = 'Wait for university decisions';
-                break;
-            case 'offers':
-                nextStep = 'Apply for visa';
-                break;
-            case 'visa':
-                nextStep = 'Prepare for departure';
-                break;
-            case 'departure':
-                nextStep = 'All steps completed';
-                break;
-        }
-        nextStepLabel.textContent = nextStep;
-    }
-    
-    // Update journey steps
-    updateJourneySteps(currentStage);
-}
-
-// Add this function to update journey steps
-function updateJourneySteps(currentStage) {
-    const stages = ['preparation', 'applications', 'offers', 'visa', 'departure'];
-    const currentStageIndex = stages.indexOf(currentStage);
-    
-    for (let i = 1; i <= 5; i++) {
-        const journeyStep = document.getElementById(`journeyStep${i}`);
-        if (journeyStep) {
-            journeyStep.classList.remove('active', 'completed');
-            
-            const statusIndicator = journeyStep.querySelector('.status-indicator');
-            if (statusIndicator) {
-                statusIndicator.textContent = 'Pending';
-                statusIndicator.classList.remove('active', 'completed');
-            }
-            
-            if (i - 1 < currentStageIndex) {
-                journeyStep.classList.add('completed');
-                if (statusIndicator) {
-                    statusIndicator.textContent = 'Completed';
-                    statusIndicator.classList.add('completed');
-                }
-            } else if (i - 1 === currentStageIndex) {
-                journeyStep.classList.add('active');
-                if (statusIndicator) {
-                    statusIndicator.textContent = 'In Progress';
-                    statusIndicator.classList.add('active');
-                }
-            }
-        }
-    }
 }

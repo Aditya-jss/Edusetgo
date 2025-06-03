@@ -9,6 +9,35 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
+    // Add cache control meta tags to prevent caching
+    const metaCache = document.createElement('meta');
+    metaCache.setAttribute('http-equiv', 'Cache-Control');
+    metaCache.setAttribute('content', 'no-cache, no-store, must-revalidate');
+    document.head.appendChild(metaCache);
+    
+    const metaPragma = document.createElement('meta');
+    metaPragma.setAttribute('http-equiv', 'Pragma');
+    metaPragma.setAttribute('content', 'no-cache');
+    document.head.appendChild(metaPragma);
+    
+    const metaExpires = document.createElement('meta');
+    metaExpires.setAttribute('http-equiv', 'Expires');
+    metaExpires.setAttribute('content', '0');
+    document.head.appendChild(metaExpires);
+    
+    // Add page visibility change detection
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') {
+            // Re-check authentication when page becomes visible (like when returning with back button)
+            const isStillLoggedIn = sessionStorage.getItem('userLoggedIn') === 'true';
+            const isStillAdmin = sessionStorage.getItem('isAdmin') === 'true';
+            
+            if (!isStillLoggedIn || !isStillAdmin) {
+                window.location.href = 'auth.html';
+            }
+        }
+    });
+    
     // Display admin email in the sidebar
     const adminEmail = sessionStorage.getItem('userEmail');
     const adminNameElements = document.querySelectorAll('.admin-profile h3');

@@ -222,7 +222,29 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                 })
                 .catch((error) => {
-                    showMessage('loginForm', error.message, 'error');
+                    // Custom user-friendly error messages
+                    let errorMessage = "An error occurred during login. Please try again.";
+                    
+                    switch(error.code) {
+                        case 'auth/invalid-email':
+                            errorMessage = "Invalid email format. Please check your email address.";
+                            break;
+                        case 'auth/user-not-found':
+                            errorMessage = "User not found. Please check your email or register for an account.";
+                            break;
+                        case 'auth/wrong-password':
+                        case 'auth/invalid-login-credentials':
+                            errorMessage = "Incorrect password. Please try again.";
+                            break;
+                        case 'auth/too-many-requests':
+                            errorMessage = "Too many failed login attempts. Please try again later.";
+                            break;
+                        case 'auth/user-disabled':
+                            errorMessage = "This account has been disabled. Please contact support.";
+                            break;
+                    }
+                    
+                    showMessage('loginForm', errorMessage, 'error');
                 });
         });
     }
