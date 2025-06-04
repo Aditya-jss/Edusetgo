@@ -9,23 +9,355 @@ const firebaseConfig = {
     apiKey: "AIzaSyBLAHgSs8caqBdjbuNqUFs21vb24NO28_U",
     authDomain: "edusetgo-c895f.firebaseapp.com",
     projectId: "edusetgo-c895f",
-    storageBucket: "edusetgo-c895f.firebasestorage.app",
+    storageBucket: "edusetgo-c895f.appspot.com",
     messagingSenderId: "356614273448",
     appId: "1:356614273448:web:ab2de825d2c810cbc9459d",
     measurementId: "G-N5JFFCJ1L2"
 };
 
-// Wait for DOM to be fully loaded
+// Initialize Firebase
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM fully loaded");
     
+    // Display current domain for debugging
+    const currentDomain = window.location.hostname;
+    console.log("Current domain:", currentDomain);
+    
     // Initialize Firebase
     try {
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
         console.log("Firebase initialized successfully");
+        
+        // Tab switching functionality
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+        const forgotPasswordLink = document.getElementById('forgotPassword');
+        const backToLoginLink = document.getElementById('backToLogin');
+        
+        // Switch to login tab
+        loginTab.addEventListener('click', function() {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            forgotPasswordForm.style.display = 'none';
+        });
+        
+        // Switch to register tab
+        registerTab.addEventListener('click', function() {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            registerForm.style.display = 'block';
+            loginForm.style.display = 'none';
+            forgotPasswordForm.style.display = 'none';
+        });
+        
+        // Show forgot password form
+        forgotPasswordLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            loginForm.style.display = 'none';
+            forgotPasswordForm.style.display = 'block';
+        });
+        
+        // Back to login from forgot password
+        backToLoginLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            forgotPasswordForm.style.display = 'none';
+            loginForm.style.display = 'block';
+        });
+        
+        // Login form submission
+        const userLoginForm = document.getElementById('userLoginForm');
+        userLoginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const loginErrorMessage = document.getElementById('loginErrorMessage');
+            
+            // Clear previous error messages
+            loginErrorMessage.innerHTML = '';
+            
+            // Show loading state
+            const submitBtn = userLoginForm.querySelector('button[type="submit"]');
+            submitBtn.textContent = 'Logging in...';
+            submitBtn.disabled = true;
+            
+            // Sign in with email and password
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Signed in
+                    const user = userCredential.user;
+                    console.log("User signed in:", user.uid);
+                    
+                    // Check if user is admin
+                    db.collection('users').doc(user.uid).get()
+                        .then((doc) => {
+                            // Set session storage
+                            sessionStorage.setItem('userLoggedIn', 'true');
+                            sessionStorage.setItem('userEmail', user.email);
+                            
+                            if (doc.exists && doc.data().isAdmin === true) {
+                                sessionStorage.setItem('isAdmin', 'true');
+                                window.location.href = 'admin-dashboard.html';
+                            } else {
+                                window.location.href = 'index.html';
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error checking user role:", error);
+                            window.location.href = 'index.html';
+                        });
+                })
+                .catch((error) => {
+                    // Handle errors
+                    console.error("Login error:", error);
+                    
+                    // Show error message
+                    loginErrorMessage.innerHTML = `
+                        <div class="auth-message auth-error">
+                            ${getErrorMessage(error.code)}
+                        </div>
+                    `;
+                    
+                    // Reset button
+                    submitBtn.textContent = 'Login';
+                    submitBtn.disabled = false;
+                });
+        });
+        
+        // Registration form submission
+        const userRegisterForm = document.getElementById('userRegisterForm');
+        userRegisterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const phone = document.getElementById('registerPhone').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const registerErrorMessage = document.getElementById('registerErrorMessage');
+            
+            // Clear previous error messages
+            registerErrorMessage.innerHTML = '';
+            
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                registerErrorMessage.innerHTML = `
+                    <div class="auth-message auth-error">
+                        Passwords do not match. Please try again.
+                    </div>
+                `;
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = userRegisterForm.querySelector('button[type="submit"]');
+            submitBtn.textContent = 'Creating Account...';
+            submitBtn.disabled = true;
+            
+            // Create user with email and password
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Signed up
+                    const user = userCredential.user;
+                    console.log("User created:", user.uid);
+                    
+                    // Add user data to Firestore
+                    return db.collection('users').doc(user.uid).set({
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        progressStage: 'preparation',
+                        isAdmin: false
+                    });
+                })
+                .then(() => {
+                    // Send email verification
+                    return auth.currentUser.sendEmailVerification();
+                })
+                .then(() => {
+                    // Show success message
+                    registerErrorMessage.innerHTML = `
+                        <div class="auth-message auth-success">
+                            Account created successfully! Please check your email to verify your account.
+                        </div>
+                    `;
+                    
+                    // Reset form
+                    userRegisterForm.reset();
+                    
+                    // Switch to login tab after 3 seconds
+                    setTimeout(() => {
+                        loginTab.click();
+                    }, 3000);
+                })
+                .catch((error) => {
+                    // Handle errors
+                    console.error("Registration error:", error);
+                    
+                    // Show error message
+                    registerErrorMessage.innerHTML = `
+                        <div class="auth-message auth-error">
+                            ${getErrorMessage(error.code)}
+                        </div>
+                    `;
+                })
+                .finally(() => {
+                    // Reset button
+                    submitBtn.textContent = 'Create Account';
+                    submitBtn.disabled = false;
+                });
+        });
+        
+        // Password reset form submission
+        const passwordResetForm = document.getElementById('passwordResetForm');
+        passwordResetForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('resetEmail').value;
+            const resetErrorMessage = document.getElementById('resetErrorMessage');
+            
+            // Clear previous error messages
+            resetErrorMessage.innerHTML = '';
+            
+            // Show loading state
+            const submitBtn = passwordResetForm.querySelector('button[type="submit"]');
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            
+            // Send password reset email
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    // Show success message
+                    resetErrorMessage.innerHTML = `
+                        <div class="auth-message auth-success">
+                            Password reset email sent! Check your inbox for further instructions.
+                        </div>
+                    `;
+                    
+                    // Reset form
+                    passwordResetForm.reset();
+                })
+                .catch((error) => {
+                    // Handle errors
+                    console.error("Password reset error:", error);
+                    
+                    // Show error message
+                    resetErrorMessage.innerHTML = `
+                        <div class="auth-message auth-error">
+                            ${getErrorMessage(error.code)}
+                        </div>
+                    `;
+                })
+                .finally(() => {
+                    // Reset button
+                    submitBtn.textContent = 'Send Reset Link';
+                    submitBtn.disabled = false;
+                });
+        });
+        
+        // Google Sign In
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        const googleSignupBtn = document.getElementById('googleSignupBtn');
+        
+        const handleGoogleSignIn = () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    // Google Sign In successful
+                    const user = result.user;
+                    console.log("Google sign-in successful:", user.uid);
+                    
+                    // Check if user exists in Firestore
+                    return db.collection('users').doc(user.uid).get()
+                        .then((doc) => {
+                            if (!doc.exists) {
+                                // Create new user document if first time login
+                                return db.collection('users').doc(user.uid).set({
+                                    name: user.displayName || '',
+                                    email: user.email,
+                                    phone: user.phoneNumber || '',
+                                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                    progressStage: 'preparation',
+                                    isAdmin: false
+                                });
+                            }
+                            return Promise.resolve();
+                        });
+                })
+                .then(() => {
+                    // Set session storage
+                    sessionStorage.setItem('userLoggedIn', 'true');
+                    sessionStorage.setItem('userEmail', auth.currentUser.email);
+                    
+                    // Check if admin
+                    return db.collection('users').doc(auth.currentUser.uid).get();
+                })
+                .then((doc) => {
+                    if (doc && doc.exists && doc.data().isAdmin === true) {
+                        sessionStorage.setItem('isAdmin', 'true');
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                })
+                .catch((error) => {
+                    console.error("Google sign-in error:", error);
+                    
+                    // Show error message
+                    const errorMessage = error.code === 'auth/unauthorized-domain' 
+                        ? `<div class="auth-message auth-error">Authentication error: This domain is not authorized. Please access the site from an authorized domain.</div>`
+                        : `<div class="auth-message auth-error">${getErrorMessage(error.code)}</div>`;
+                    
+                    document.getElementById('loginErrorMessage').innerHTML = errorMessage;
+                });
+        };
+        
+        // Add event listeners to Google buttons
+        if (googleLoginBtn) {
+            googleLoginBtn.addEventListener('click', handleGoogleSignIn);
+        }
+        
+        if (googleSignupBtn) {
+            googleSignupBtn.addEventListener('click', handleGoogleSignIn);
+        }
+        
+        // Check if user is already logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in
+                console.log("User is already signed in:", user.uid);
+                
+                // If on auth page, redirect to appropriate page
+                if (window.location.pathname.includes('auth.html')) {
+                    // Check if admin
+                    db.collection('users').doc(user.uid).get()
+                        .then((doc) => {
+                            sessionStorage.setItem('userLoggedIn', 'true');
+                            sessionStorage.setItem('userEmail', user.email);
+                            
+                            if (doc.exists && doc.data().isAdmin === true) {
+                                sessionStorage.setItem('isAdmin', 'true');
+                                window.location.href = 'admin-dashboard.html';
+                            } else {
+                                window.location.href = 'index.html';
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error checking user role:", error);
+                        });
+                }
+            }
+        });
+        
     } catch (error) {
         console.error("Firebase initialization error:", error);
         // Show error on page
@@ -34,250 +366,68 @@ document.addEventListener('DOMContentLoaded', function() {
         errorDiv.textContent = 'Error connecting to authentication service. Please try again later.';
         document.querySelector('.auth-forms').prepend(errorDiv);
     }
+});
 
-    // DOM Elements
-    const loginForm = document.getElementById('userLoginForm');
-    const registerForm = document.getElementById('userRegisterForm');
-    const showRegisterLink = document.getElementById('showRegister');
-    const showLoginLink = document.getElementById('showLogin');
-    const forgotPasswordLink = document.getElementById('forgotPassword');
+// Helper function to toggle password visibility
+function togglePasswordVisibility(inputId) {
+    const passwordInput = document.getElementById(inputId);
+    const icon = passwordInput.nextElementSibling.querySelector('i');
     
-    console.log("DOM Elements:", {
-        loginForm: !!loginForm,
-        registerForm: !!registerForm,
-        showRegisterLink: !!showRegisterLink,
-        showLoginLink: !!showLoginLink,
-        forgotPasswordLink: !!forgotPasswordLink
-    });
-
-    // Toggle between login and register forms
-    if (showRegisterLink) {
-        showRegisterLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log("Show register clicked");
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('registerForm').style.display = 'block';
-        });
-    }
-
-    if (showLoginLink) {
-        showLoginLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log("Show login clicked");
-            document.getElementById('registerForm').style.display = 'none';
-            document.getElementById('loginForm').style.display = 'block';
-        });
-    }
-
-    // Toggle password visibility
-    window.togglePasswordVisibility = function(inputId) {
-        const passwordInput = document.getElementById(inputId);
-        const icon = event.currentTarget.querySelector('i');
-        
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            passwordInput.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
-    };
-
-    // Show message function - updated with error handling
-    function showMessage(formId, message, type) {
-        try {
-            console.log(`Showing message: ${message} (${type}) in ${formId}`);
-            const formContainer = document.getElementById(formId);
-            
-            if (!formContainer) {
-                console.error(`Form container ${formId} not found`);
-                return;
-            }
-            
-            // Remove any existing message
-            const existingMessage = formContainer.querySelector('.auth-message');
-            if (existingMessage) {
-                existingMessage.remove();
-            }
-            
-            // Create new message
-            const messageElement = document.createElement('div');
-            messageElement.className = `auth-message ${type === 'error' ? 'auth-error' : 'auth-success'}`;
-            messageElement.textContent = message;
-            
-            // Insert at the top of the form
-            formContainer.insertBefore(messageElement, formContainer.firstChild);
-            
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                messageElement.remove();
-            }, 5000);
-        } catch (error) {
-            console.error("Error showing message:", error);
-        }
-    }
-
-    // Register form submission
-    if (registerForm) {
-        registerForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log("Register form submitted");
-            
-            try {
-                const name = document.getElementById('registerName').value;
-                const email = document.getElementById('registerEmail').value;
-                const phone = document.getElementById('registerPhone').value;
-                const password = document.getElementById('registerPassword').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-                const termsAccepted = document.getElementById('terms').checked;
-                
-                console.log("Form data collected:", { name, email, phone });
-                
-                // Validation
-                if (password !== confirmPassword) {
-                    showMessage('registerForm', 'Passwords do not match', 'error');
-                    return;
-                }
-                
-                if (!termsAccepted) {
-                    showMessage('registerForm', 'You must accept the Terms & Conditions', 'error');
-                    return;
-                }
-                
-                // Create user with email and password
-                firebase.auth().createUserWithEmailAndPassword(email, password)
-                    .then((userCredential) => {
-                        console.log("User created successfully:", userCredential.user.uid);
-                        // Add user details to Firestore
-                        return firebase.firestore().collection('users').doc(userCredential.user.uid).set({
-                            name: name,
-                            email: email,
-                            phone: phone,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                    })
-                    .then(() => {
-                        console.log("User profile created in Firestore");
-                        showMessage('registerForm', 'Registration successful! Redirecting to login...', 'success');
-                        registerForm.reset();
-                        
-                        // Redirect to login after 2 seconds
-                        setTimeout(() => {
-                            document.getElementById('registerForm').style.display = 'none';
-                            document.getElementById('loginForm').style.display = 'block';
-                        }, 2000);
-                    })
-                    .catch((error) => {
-                        console.error("Registration error:", error);
-                        showMessage('registerForm', error.message, 'error');
-                    });
-            } catch (error) {
-                console.error("Form processing error:", error);
-                showMessage('registerForm', "An error occurred. Please try again.", 'error');
-            }
-        });
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
     } else {
-        console.error("Register form not found in the DOM");
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
     }
+}
 
-    // Login form submission
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log("Login form submitted");
-            
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            firebase.auth().signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Check if user is admin
-                    return firebase.firestore().collection('users').doc(userCredential.user.uid).get()
-                        .then((doc) => {
-                            if (doc.exists && doc.data().isAdmin === true) {
-                                // User is admin, redirect to admin dashboard
-                                showMessage('loginForm', 'Admin login successful! Redirecting...', 'success');
-                                sessionStorage.setItem('userLoggedIn', 'true');
-                                sessionStorage.setItem('userEmail', email);
-                                sessionStorage.setItem('isAdmin', 'true');
-                                
-                                setTimeout(() => {
-                                    window.location.href = 'admin-dashboard.html';
-                                }, 2000);
-                            } else {
-                                // Regular user login
-                                showMessage('loginForm', 'Login successful! Redirecting...', 'success');
-                                loginForm.reset();
-                                
-                                sessionStorage.setItem('userLoggedIn', 'true');
-                                sessionStorage.setItem('userEmail', email);
-                                
-                                // Redirect to home page after 2 seconds
-                                setTimeout(() => {
-                                    window.location.href = 'index.html';
-                                }, 2000);
-                            }
-                        });
-                })
-                .catch((error) => {
-                    // Custom user-friendly error messages
-                    let errorMessage = "An error occurred during login. Please try again.";
-                    
-                    switch(error.code) {
-                        case 'auth/invalid-email':
-                            errorMessage = "Invalid email format. Please check your email address.";
-                            break;
-                        case 'auth/user-not-found':
-                            errorMessage = "User not found. Please check your email or register for an account.";
-                            break;
-                        case 'auth/wrong-password':
-                        case 'auth/invalid-login-credentials':
-                            errorMessage = "Incorrect password. Please try again.";
-                            break;
-                        case 'auth/too-many-requests':
-                            errorMessage = "Too many failed login attempts. Please try again later.";
-                            break;
-                        case 'auth/user-disabled':
-                            errorMessage = "This account has been disabled. Please contact support.";
-                            break;
-                    }
-                    
-                    showMessage('loginForm', errorMessage, 'error');
-                });
-        });
+// Helper function to get user-friendly error messages
+function getErrorMessage(errorCode) {
+    switch (errorCode) {
+        case 'auth/email-already-in-use':
+            return 'This email is already registered. Please use a different email or try logging in.';
+        case 'auth/invalid-email':
+            return 'Please enter a valid email address.';
+        case 'auth/weak-password':
+            return 'Password is too weak. Please use at least 6 characters.';
+        case 'auth/user-not-found':
+            return 'No account found with this email. Please check your email or register.';
+        case 'auth/wrong-password':
+            return 'Incorrect password. Please try again or reset your password.';
+        case 'auth/too-many-requests':
+            return 'Too many unsuccessful login attempts. Please try again later or reset your password.';
+        case 'auth/unauthorized-domain':
+            return 'This domain is not authorized for authentication. Please access from an authorized domain.';
+        default:
+            return 'An error occurred. Please try again later.';
     }
+}
 
-    // Forgot password
-    if (forgotPasswordLink) {
-        forgotPasswordLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log("Forgot password clicked");
-            
-            const email = document.getElementById('loginEmail').value;
-            
-            if (!email) {
-                showMessage('loginForm', 'Please enter your email address', 'error');
-                return;
-            }
-            
-            firebase.auth().sendPasswordResetEmail(email)
-                .then(() => {
-                    showMessage('loginForm', 'Password reset email sent. Check your inbox.', 'success');
-                })
-                .catch((error) => {
-                    showMessage('loginForm', error.message, 'error');
-                });
-        });
-    }
-
-    // Check if user is already logged in
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-            // User is signed in
-            console.log('User is signed in:', user.email);
-        }
-    });
+// Mobile menu toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileToggle = document.querySelector('.mobile-toggle');
+    const navMenu = document.querySelector('.nav-menu');
     
+    if (mobileToggle && navMenu) {
+        mobileToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            
+            if (navMenu.classList.contains('active')) {
+                mobileToggle.innerHTML = '✕';
+            } else {
+                mobileToggle.innerHTML = '☰';
+            }
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (navMenu.classList.contains('active') && !navMenu.contains(e.target) && !mobileToggle.contains(e.target)) {
+                navMenu.classList.remove('active');
+                mobileToggle.innerHTML = '☰';
+            }
+        });
+    }
 });

@@ -20,40 +20,6 @@ const auth = firebase.auth();
 // Global variable to store applications for both progress and UI
 let userApplications = [];
 
-// Add debug logging
-function debugLog(message, data = null) {
-    console.log(`[DEBUG] ${message}`, data);
-    
-    // Also show on page for easier debugging
-    const debugDiv = document.getElementById('debugInfo') || createDebugDiv();
-    const timestamp = new Date().toLocaleTimeString();
-    debugDiv.innerHTML += `<div><strong>${timestamp}:</strong> ${message} ${data ? JSON.stringify(data) : ''}</div>`;
-    debugDiv.scrollTop = debugDiv.scrollHeight;
-}
-
-function createDebugDiv() {
-    const debugDiv = document.createElement('div');
-    debugDiv.id = 'debugInfo';
-    debugDiv.style.cssText = `
-        position: fixed;
-        bottom: 10px;
-        right: 10px;
-        width: 400px;
-        height: 200px;
-        background: rgba(0,0,0,0.8);
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        font-family: monospace;
-        font-size: 12px;
-        overflow-y: auto;
-        z-index: 9999;
-        border: 1px solid #333;
-    `;
-    document.body.appendChild(debugDiv);
-    return debugDiv;
-}
-
 // Document ready function
 document.addEventListener('DOMContentLoaded', function() {
     // Check if user is logged in
@@ -112,15 +78,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Setup modal close functionality
     setupModalClose();
-    
-    debugLog('User dashboard initialized');
 });
 
 // Load user data
 function loadUserData(user) {
     const userId = user.uid;
-    
-    debugLog("Loading user data for userId", userId);
     
     // Update UI with user info
     updateUserInfo(user);
@@ -130,7 +92,6 @@ function loadUserData(user) {
         .then((doc) => {
             if (doc.exists) {
                 const userData = doc.data();
-                debugLog("User data loaded successfully", userData);
                 
                 // Update profile form
                 updateProfileForm(userData);
@@ -139,7 +100,6 @@ function loadUserData(user) {
                 loadApplicationsAndProgress(userId);
                 
             } else {
-                debugLog("No user document found, creating one");
                 return db.collection('users').doc(userId).set({
                     name: user.displayName || 'Student',
                     email: user.email,
@@ -152,15 +112,12 @@ function loadUserData(user) {
             }
         })
         .catch((error) => {
-            debugLog("Error getting user document", error);
             showToast("Error loading profile data", "error");
         });
 }
 
 // Combined function to load applications and calculate progress
 function loadApplicationsAndProgress(userId) {
-    debugLog("Loading applications and calculating progress for userId", userId);
-    
     const recentApplicationsList = document.getElementById('recentApplicationsList');
     const applicationsContainer = document.getElementById('applicationsContainer');
     
@@ -178,12 +135,9 @@ function loadApplicationsAndProgress(userId) {
         .where('userId', '==', userId)
         .get()
         .then((querySnapshot) => {
-            debugLog("Applications query returned", querySnapshot.size);
-            
             userApplications = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
-                debugLog("Found application", { id: doc.id, data: data });
                 userApplications.push({
                     id: doc.id,
                     ...data
@@ -198,11 +152,7 @@ function loadApplicationsAndProgress(userId) {
             
         })
         .catch((error) => {
-            debugLog("Error getting applications", error);
-            
-            // If permission denied, try alternative query methods
             if (error.code === 'permission-denied') {
-                debugLog("Permission denied, trying alternative queries...");
                 tryAlternativeQueries(userId);
             } else {
                 showErrorState(error, recentApplicationsList, applicationsContainer, userId);
@@ -214,20 +164,14 @@ function tryAlternativeQueries(userId) {
     const user = auth.currentUser;
     const userEmail = user.email;
     
-    debugLog("Trying to find applications by email", userEmail);
-    
-    // Try querying by email field
     db.collection('applications')
         .where('email', '==', userEmail)
         .get()
         .then((querySnapshot) => {
-            debugLog("Applications by email query returned", querySnapshot.size);
-            
             if (querySnapshot.size > 0) {
                 userApplications = [];
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    debugLog("Found application by email", { id: doc.id, data: data });
                     userApplications.push({
                         id: doc.id,
                         ...data
@@ -237,7 +181,6 @@ function tryAlternativeQueries(userId) {
                 updateApplicationsUI();
                 calculateAndUpdateProgress(userApplications, userId);
             } else {
-                // Try userEmail field
                 return db.collection('applications')
                     .where('userEmail', '==', userEmail)
                     .get();
@@ -245,12 +188,9 @@ function tryAlternativeQueries(userId) {
         })
         .then((querySnapshot) => {
             if (querySnapshot && querySnapshot.size > 0) {
-                debugLog("Applications by userEmail query returned", querySnapshot.size);
-                
                 userApplications = [];
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    debugLog("Found application by userEmail", { id: doc.id, data: data });
                     userApplications.push({
                         id: doc.id,
                         ...data
@@ -260,25 +200,19 @@ function tryAlternativeQueries(userId) {
                 updateApplicationsUI();
                 calculateAndUpdateProgress(userApplications, userId);
             } else {
-                debugLog("No applications found with any query method");
                 showEmptyApplicationsState();
             }
         })
         .catch((error) => {
-            debugLog("Error with alternative queries", error);
             showEmptyApplicationsState();
         });
 }
 
 function updateApplicationsUI() {
-    debugLog("Updating applications UI", { count: userApplications.length });
-    
     // Update counters
     const totalCount = userApplications.length;
     const approvedCount = userApplications.filter(app => app.status === 'approved').length;
     const pendingCount = userApplications.filter(app => app.status === 'pending' || app.status === 'in progress').length;
-    
-    debugLog("Application counts", { total: totalCount, approved: approvedCount, pending: pendingCount });
     
     updateApplicationCounters(totalCount, approvedCount, pendingCount);
     
@@ -313,8 +247,6 @@ function showEmptyApplicationsState() {
 }
 
 function calculateAndUpdateProgress(applications, userId) {
-    debugLog("Calculating progress", { applicationCount: applications.length });
-    
     let progressPercentage = 0;
     let currentStage = 'preparation';
     
@@ -323,8 +255,6 @@ function calculateAndUpdateProgress(applications, userId) {
         progressPercentage = 25;
         
         applications.forEach(app => {
-            debugLog("Processing app for progress", { status: app.status, progress: app.progress });
-            
             if (app.status === 'approved' || app.status === 'waitlisted') {
                 currentStage = 'offers';
                 progressPercentage = Math.max(progressPercentage, 50);
@@ -342,7 +272,6 @@ function calculateAndUpdateProgress(applications, userId) {
         });
     }
     
-    debugLog("Final progress calculation", { percentage: progressPercentage, stage: currentStage });
     updateProgressTimeline(progressPercentage, currentStage);
     
     // Update user document with progress stage
@@ -350,13 +279,11 @@ function calculateAndUpdateProgress(applications, userId) {
         progressStage: currentStage,
         progressPercentage: progressPercentage
     }).catch(error => {
-        debugLog("Error updating user progress stage", error);
+        // Silent error handling
     });
 }
 
 function updateUserInfo(user) {
-    debugLog("Updating user info", { displayName: user.displayName, email: user.email });
-    
     const userNameElements = document.querySelectorAll('#userName, #profileName');
     const userEmailElements = document.querySelectorAll('#userEmail, #profileEmail');
     
@@ -370,8 +297,6 @@ function updateUserInfo(user) {
 }
 
 function updateApplicationCounters(totalCount, approvedCount, pendingCount) {
-    debugLog("Updating application counters", { total: totalCount, approved: approvedCount, pending: pendingCount });
-    
     const applicationCountElement = document.getElementById('applicationCount');
     const approvedCountElement = document.getElementById('approvedCount');
     const pendingCountElement = document.getElementById('pendingCount');
@@ -382,8 +307,6 @@ function updateApplicationCounters(totalCount, approvedCount, pendingCount) {
 }
 
 function updateProgressTimeline(percentage, currentStage) {
-    debugLog("Updating progress timeline", { percentage, currentStage });
-    
     const progressFill = document.getElementById('progressFill');
     const progressPercentage = document.getElementById('progressPercentage');
     const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
@@ -391,16 +314,13 @@ function updateProgressTimeline(percentage, currentStage) {
     
     if (progressFill) {
         progressFill.style.width = percentage + '%';
-        debugLog("Progress bar updated to", percentage + '%');
     }
     
     if (progressPercentage) {
         progressPercentage.textContent = percentage + '% Complete';
-        debugLog("Progress text updated to", percentage + '% Complete');
     }
     
     const currentStageIndex = stages.indexOf(currentStage);
-    debugLog("Current stage index", currentStageIndex);
     
     steps.forEach((stepId, index) => {
         const stepElement = document.getElementById(stepId);
@@ -414,6 +334,97 @@ function updateProgressTimeline(percentage, currentStage) {
             }
         }
     });
+    
+    // Update progress tracker section
+    updateProgressTrackerSection(percentage, currentStage);
+}
+
+function updateProgressTrackerSection(percentage, currentStage) {
+    // Update progress circle
+    const progressCirclePercentage = document.getElementById('progressCirclePercentage');
+    if (progressCirclePercentage) {
+        progressCirclePercentage.textContent = percentage + '%';
+    }
+    
+    // Update progress circle visual
+    const progressCircle = document.getElementById('progressCircle');
+    if (progressCircle) {
+        progressCircle.style.background = `conic-gradient(#667eea ${percentage}%, #e1e5e9 0%)`;
+    }
+    
+    // Update current stage label
+    const currentStageLabel = document.getElementById('currentStageLabel');
+    if (currentStageLabel) {
+        // Capitalize first letter
+        const formattedStage = currentStage.charAt(0).toUpperCase() + currentStage.slice(1);
+        currentStageLabel.textContent = formattedStage;
+    }
+    
+    // Update next step label based on current stage
+    const nextStepLabel = document.getElementById('nextStepLabel');
+    if (nextStepLabel) {
+        let nextStep = '';
+        switch(currentStage) {
+            case 'preparation':
+                nextStep = 'Complete your profile';
+                break;
+            case 'applications':
+                nextStep = 'Wait for university decisions';
+                break;
+            case 'offers':
+                nextStep = 'Apply for visa';
+                break;
+            case 'visa':
+                nextStep = 'Prepare for departure';
+                break;
+            case 'departure':
+                nextStep = 'All steps completed';
+                break;
+        }
+        nextStepLabel.textContent = nextStep;
+    }
+    
+    // Update journey steps in the progress tracker
+    updateJourneySteps(currentStage);
+}
+
+function updateJourneySteps(currentStage) {
+    const stages = ['preparation', 'applications', 'offers', 'visa', 'departure'];
+    const currentStageIndex = stages.indexOf(currentStage);
+    
+    // Update journey steps
+    for (let i = 1; i <= 5; i++) {
+        const journeyStep = document.getElementById('journeyStep' + i);
+        if (journeyStep) {
+            // Remove all status classes
+            journeyStep.classList.remove('active', 'completed');
+            
+            // Update status indicator
+            const statusIndicator = journeyStep.querySelector('.status-indicator');
+            if (statusIndicator) {
+                statusIndicator.classList.remove('active', 'completed', 'pending');
+                statusIndicator.classList.add('pending');
+                statusIndicator.textContent = 'Pending';
+            }
+            
+            // Set appropriate class based on current stage
+            if (i - 1 < currentStageIndex) {
+                journeyStep.classList.add('completed');
+                if (statusIndicator) {
+                    statusIndicator.classList.remove('pending');
+                    statusIndicator.classList.add('completed');
+                    statusIndicator.textContent = 'Completed';
+                }
+            } else if (i - 1 === currentStageIndex) {
+                journeyStep.classList.add('active');
+                if (statusIndicator) {
+                    statusIndicator.classList.remove('pending');
+                    statusIndicator.classList.add('active');
+                    statusIndicator.textContent = 'In Progress';
+                }
+            }
+        }
+    }
 }
 
 function renderApplications(applications, container, limitCount) {
@@ -422,11 +433,7 @@ function renderApplications(applications, container, limitCount) {
     container.innerHTML = '';
     const appsToRender = limitCount ? applications.slice(0, 3) : applications;
     
-    debugLog("Rendering applications", { count: appsToRender.length, limitCount });
-    
     appsToRender.forEach((app) => {
-        debugLog("Rendering application", { id: app.id, universityName: app.universityName, programName: app.programName });
-        
         const appCard = document.createElement('div');
         appCard.className = 'application-card fade-in';
         appCard.setAttribute('data-id', app.id);
@@ -449,7 +456,7 @@ function renderApplications(applications, container, limitCount) {
                     day: 'numeric', month: 'short', year: 'numeric'
                 });
             } catch (e) {
-                debugLog("Error formatting date", e);
+                // Silent error handling
             }
         }
         
@@ -521,8 +528,6 @@ function createProgressStepsHTML(currentProgress) {
 }
 
 function updateProfileForm(userData) {
-    debugLog("Updating profile form with data", userData);
-    
     const fullNameInput = document.getElementById('fullName');
     const phoneNumberInput = document.getElementById('phoneNumber');
     const educationLevelSelect = document.getElementById('educationLevel');
@@ -530,22 +535,18 @@ function updateProfileForm(userData) {
     
     if (fullNameInput) {
         fullNameInput.value = userData.name || '';
-        debugLog("Set fullName to", userData.name);
     }
     
     if (phoneNumberInput) {
         phoneNumberInput.value = userData.phone || '';
-        debugLog("Set phone to", userData.phone);
     }
     
     if (educationLevelSelect && userData.educationLevel) {
         educationLevelSelect.value = userData.educationLevel;
-        debugLog("Set educationLevel to", userData.educationLevel);
     }
     
     if (studyDestinationSelect && userData.studyDestination) {
         studyDestinationSelect.value = userData.studyDestination;
-        debugLog("Set studyDestination to", userData.studyDestination);
     }
 }
 
@@ -565,7 +566,6 @@ function showErrorState(error, recentApplicationsList, applicationsContainer, us
 
 // Retry functions
 function retryLoadApplications(userId) {
-    debugLog("Retrying load applications for", userId);
     loadApplicationsAndProgress(userId);
 }
 
@@ -677,13 +677,11 @@ function handleLogout(e) {
             window.location.href = 'index.html';
         })
         .catch((error) => {
-            debugLog("Error signing out", error);
             showToast("Error signing out. Please try again.", "error");
         });
 }
 
 function showApplicationDetails(applicationId) {
-    debugLog("Showing application details for", applicationId);
     // Implementation here
 }
 
@@ -694,8 +692,6 @@ function closeModal(modal) {
 }
 
 function updateUserProfile(userId) {
-    debugLog("Updating user profile for", userId);
-    
     // Get form values
     const fullName = document.getElementById('fullName')?.value?.trim();
     const phoneNumber = document.getElementById('phoneNumber')?.value?.trim();
@@ -718,8 +714,6 @@ function updateUserProfile(userId) {
     if (educationLevel) updateData.educationLevel = educationLevel;
     if (studyDestination) updateData.studyDestination = studyDestination;
     
-    debugLog("Updating profile with data", updateData);
-    
     // Show loading state
     const updateBtn = document.getElementById('updateProfileBtn');
     const originalText = updateBtn?.textContent;
@@ -731,7 +725,6 @@ function updateUserProfile(userId) {
     // Update Firestore document
     db.collection('users').doc(userId).update(updateData)
         .then(() => {
-            debugLog("Profile updated successfully");
             showToast("Profile updated successfully!", "success");
             
             // Update display name in Firebase Auth if it changed
@@ -748,11 +741,8 @@ function updateUserProfile(userId) {
             userNameElements.forEach(element => {
                 if (element) element.textContent = fullName;
             });
-            
-            debugLog("Auth profile updated successfully");
         })
         .catch((error) => {
-            debugLog("Error updating profile", error);
             showToast("Error updating profile: " + error.message, "error");
         })
         .finally(() => {
@@ -765,8 +755,6 @@ function updateUserProfile(userId) {
 }
 
 function showToast(message, type = 'success') {
-    debugLog("Showing toast", { message, type });
-    
     const existingToast = document.querySelector('.toast');
     if (existingToast) {
         existingToast.remove();
