@@ -163,7 +163,7 @@ function loadUsers(db) {
             console.log("User query returned:", querySnapshot.size, "users");
             
             if (querySnapshot.empty) {
-                userTableBody.innerHTML = '<tr><td colspan="5" class="text-center">No users found</td></tr>';
+                userTableBody.innerHTML = '<tr><td colspan="6" class="text-center">No users found</td></tr>';
                 return;
             }
             
@@ -187,6 +187,22 @@ function loadUsers(db) {
                 // Get application count - check both ways it might be stored
                 const appCount = userData.applications || 0;
                 
+                // Determine payment status
+                let paymentStatus = 'Unpaid';
+                let paymentStatusClass = 'status-unpaid';
+                
+                if (userData.paymentStatus) {
+                    paymentStatus = userData.paymentStatus;
+                    if (paymentStatus.toLowerCase() === 'paid') {
+                        paymentStatusClass = 'status-paid';
+                    } else if (paymentStatus.toLowerCase() === 'pending') {
+                        paymentStatusClass = 'status-pending';
+                    }
+                } else if (userData.isPaid) {
+                    paymentStatus = 'Paid';
+                    paymentStatusClass = 'status-paid';
+                }
+                
                 // Create row
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -194,6 +210,7 @@ function loadUsers(db) {
                     <td>${userData.email || 'N/A'}</td>
                     <td>${registrationDate}</td>
                     <td>${appCount}</td>
+                    <td><span class="payment-status ${paymentStatusClass}">${paymentStatus}</span></td>
                     <td class="actions-cell">
                         <button class="btn btn-primary btn-sm view-btn" data-userid="${doc.id}">View</button>
                         <button class="btn btn-danger btn-sm delete-user-btn" data-userid="${doc.id}">Delete</button>
@@ -229,7 +246,7 @@ function loadUsers(db) {
         })
         .catch((error) => {
             console.error("Error getting users:", error);
-            userTableBody.innerHTML = '<tr><td colspan="5" class="text-center">Error loading users: ' + error.message + '</td></tr>';
+            userTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Error loading users: ' + error.message + '</td></tr>';
         });
 }
 
@@ -339,6 +356,39 @@ function openUserDetailModal(userId, db) {
                 document.getElementById('userDetailName').textContent = userData.name || userData.email.split('@')[0];
                 document.getElementById('userDetailEmail').textContent = userData.email || 'No email provided';
                 document.getElementById('userDetailJoined').textContent = `Joined: ${joinedDate}`;
+                
+                // Update additional user details
+                document.getElementById('userDetailPhone').textContent = userData.phone || 'Not provided';
+                
+                // Format education level for display
+                let educationLevel = 'Not provided';
+                if (userData.educationLevel) {
+                    const educationMap = {
+                        'high_school': 'High School',
+                        'bachelors': 'Bachelor\'s Degree',
+                        'masters': 'Master\'s Degree',
+                        'phd': 'PhD'
+                    };
+                    educationLevel = educationMap[userData.educationLevel] || userData.educationLevel;
+                }
+                document.getElementById('userDetailEducation').textContent = educationLevel;
+                
+                // Format study destination for display
+                let studyDestination = 'Not provided';
+                if (userData.studyDestination) {
+                    const destinationMap = {
+                        'usa': 'United States',
+                        'uk': 'United Kingdom',
+                        'canada': 'Canada',
+                        'australia': 'Australia',
+                        'germany': 'Germany',
+                        'france': 'France',
+                        'netherlands': 'Netherlands',
+                        'singapore': 'Singapore'
+                    };
+                    studyDestination = destinationMap[userData.studyDestination] || userData.studyDestination;
+                }
+                document.getElementById('userDetailDestination').textContent = studyDestination;
                 
                 // Load user applications
                 loadUserApplications(userId, db);
