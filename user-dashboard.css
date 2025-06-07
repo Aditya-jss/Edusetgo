@@ -123,16 +123,38 @@ header nav a:hover {
     border-right: 3px solid transparent;
 }
 
-.side-nav li.active a,
-.side-nav a:hover {
-    background-color: #f8f9fa;
-    color: #667eea;
-    border-right-color: #667eea;
+.side-nav li.active a {
+    background-color: rgba(67, 97, 238, 0.1);
+    color: #4361ee;
+    border-left: 3px solid #4361ee;
 }
 
 .side-nav i {
     width: 20px;
     text-align: center;
+}
+
+/* JavaScript-based hover fix */
+.js-hover-fix .side-nav a:hover {
+    /* Disable all CSS-based hover effects */
+    background-color: transparent !important;
+    color: #666 !important;
+    transform: none !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+}
+
+/* Apply hover styles through JS-added class instead */
+.js-hover-fix .side-nav a.js-hover {
+    background-color: rgba(67, 97, 238, 0.05);
+    color: #4361ee;
+}
+
+/* Make sure active state still works */
+.js-hover-fix .side-nav li.active a {
+    background-color: rgba(67, 97, 238, 0.1) !important;
+    color: #4361ee !important;
+    border-left: 3px solid #4361ee !important;
 }
 
 /* Main Content */
@@ -1263,4 +1285,268 @@ section.active {
 
 .status-badge.waitlisted::before {
     background-color: #3498db;
+}
+
+/* Profile incomplete styles */
+.profile-incomplete .side-nav a.disabled-nav {
+    color: #aaa;
+    cursor: not-allowed;
+    position: relative;
+}
+
+.profile-incomplete .side-nav a.disabled-nav:hover {
+    background: rgba(0,0,0,0.05);
+}
+
+.profile-warning {
+    background: #fff3cd;
+    color: #856404;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-warning i {
+    font-size: 1.1rem;
+}
+
+/* Profile completion notification */
+.profile-completion-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #fff;
+    border-left: 4px solid #4e73df;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 1000;
+    max-width: 400px;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.notification-content i {
+    font-size: 1.5rem;
+    color: #4e73df;
+}
+
+.notification-text h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+}
+
+.notification-text p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.close-notification {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+    margin-left: auto;
+}
+
+.close-notification:hover {
+    color: #333;
+}
+
+/* Form validation styles */
+.form-group input:invalid,
+.form-group select:invalid {
+    border-color: #dc3545;
+}
+
+.form-group input:focus:invalid,
+.form-group select:focus:invalid {
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-group input:valid,
+.form-group select:valid {
+    border-color: #28a745;
+}
+
+.form-group input:focus:valid,
+.form-group select:focus:valid {
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Payment Section Styles */
+.payment-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.payment-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.payment-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.payment-card:hover {
+    border-color: #4361ee;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(67, 97, 238, 0.1);
+}
+
+.payment-card.selected {
+    border-color: #4361ee;
+    background-color: rgba(67, 97, 238, 0.05);
+}
+
+.payment-icon {
+    font-size: 32px;
+    color: #4361ee;
+    margin-bottom: 15px;
+}
+
+.payment-card h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.payment-card p {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.payment-form {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.payment-form.active {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.card-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.btn-pay {
+    background-color: #4361ee;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-pay:hover {
+    background-color: #3a56d4;
+}
+
+.payment-success {
+    text-align: center;
+    display: none;
+    padding: 30px;
+}
+
+.payment-success i {
+    font-size: 60px;
+    color: #10b981;
+    margin-bottom: 20px;
+}
+
+.payment-success h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.payment-success p {
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+
+.btn-return {
+    background-color: #4361ee;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.bank-details {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f9fafb;
+    border-radius: 6px;
+}
+
+.bank-details p {
+    margin-bottom: 8px;
+}
+
+.bank-details .note {
+    margin-top: 15px;
+    font-style: italic;
+    color: #6b7280;
 }

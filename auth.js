@@ -138,7 +138,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const name = document.getElementById('registerName').value;
             const email = document.getElementById('registerEmail').value;
-            const phone = document.getElementById('registerPhone').value;
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             const registerErrorMessage = document.getElementById('registerErrorMessage');
@@ -168,35 +167,35 @@ document.addEventListener('DOMContentLoaded', function() {
                     const user = userCredential.user;
                     console.log("User created:", user.uid);
                     
-                    // Add user data to Firestore
-                    return db.collection('users').doc(user.uid).set({
-                        name: name,
-                        email: email,
-                        phone: phone,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        progressStage: 'preparation',
-                        isAdmin: false
+                    // Update display name
+                    return user.updateProfile({
+                        displayName: name
+                    }).then(() => {
+                        // Add user data to Firestore
+                        return db.collection('users').doc(user.uid).set({
+                            name: name,
+                            email: email,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            progressStage: 'preparation',
+                            isAdmin: false
+                        });
                     });
                 })
                 .then(() => {
-                    // Send email verification
-                    return auth.currentUser.sendEmailVerification();
-                })
-                .then(() => {
+                    // Set session storage
+                    sessionStorage.setItem('userLoggedIn', 'true');
+                    sessionStorage.setItem('userEmail', email);
+                    sessionStorage.setItem('needsProfileCompletion', 'true');
+                    
                     // Show success message
                     registerErrorMessage.innerHTML = `
                         <div class="auth-message auth-success">
-                            Account created successfully! Please check your email to verify your account.
+                            Account created successfully! Redirecting to profile setup...
                         </div>
                     `;
                     
-                    // Reset form
-                    userRegisterForm.reset();
-                    
-                    // Switch to login tab after 3 seconds
-                    setTimeout(() => {
-                        loginTab.click();
-                    }, 3000);
+                    // Redirect to profile page immediately
+                    window.location.href = 'user-dashboard.html#profile';
                 })
                 .catch((error) => {
                     // Handle errors
@@ -208,8 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             ${getErrorMessage(error.code)}
                         </div>
                     `;
-                })
-                .finally(() => {
+                    
                     // Reset button
                     submitBtn.textContent = 'Create Account';
                     submitBtn.disabled = false;
@@ -266,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Google Sign In
         const googleLoginBtn = document.getElementById('googleLoginBtn');
         const googleSignupBtn = document.getElementById('googleSignupBtn');
-        
+
         const handleGoogleSignIn = () => {
             const provider = new firebase.auth.GoogleAuthProvider();
             
@@ -279,34 +277,46 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Check if user exists in Firestore
                     return db.collection('users').doc(user.uid).get()
                         .then((doc) => {
-                            if (!doc.exists) {
+                            const isNewUser = !doc.exists;
+                            
+                            if (isNewUser) {
                                 // Create new user document if first time login
                                 return db.collection('users').doc(user.uid).set({
                                     name: user.displayName || '',
                                     email: user.email,
-                                    phone: user.phoneNumber || '',
                                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                                     progressStage: 'preparation',
                                     isAdmin: false
+                                }).then(() => {
+                                    return { isNewUser: true };
                                 });
                             }
-                            return Promise.resolve();
+                            
+                            // Check if profile is incomplete
+                            const userData = doc.data();
+                            const isProfileIncomplete = !userData.phone || !userData.educationLevel || !userData.studyDestination;
+                            
+                            return { 
+                                isNewUser: isNewUser,
+                                isProfileIncomplete: isProfileIncomplete,
+                                isAdmin: userData.isAdmin === true
+                            };
                         });
                 })
-                .then(() => {
+                .then((result) => {
                     // Set session storage
                     sessionStorage.setItem('userLoggedIn', 'true');
                     sessionStorage.setItem('userEmail', auth.currentUser.email);
                     
-                    // Check if admin
-                    return db.collection('users').doc(auth.currentUser.uid).get();
-                })
-                .then((doc) => {
-                    if (doc && doc.exists && doc.data().isAdmin === true) {
+                    if (result.isAdmin) {
                         sessionStorage.setItem('isAdmin', 'true');
                         window.location.href = 'admin-dashboard.html';
+                    } else if (result.isNewUser || result.isProfileIncomplete) {
+                        // Mark that profile needs completion
+                        sessionStorage.setItem('needsProfileCompletion', 'true');
+                        window.location.href = 'user-dashboard.html#profile';
                     } else {
-                        window.location.href = 'index.html';
+                        window.location.href = 'user-dashboard.html';
                     }
                 })
                 .catch((error) => {

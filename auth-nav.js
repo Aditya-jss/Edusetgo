@@ -58,9 +58,7 @@ function handleAuthNavigation() {
                     firebase.auth().signOut().catch(error => console.error("Firebase sign out error:", error));
                 }
                 // Clear session storage
-                sessionStorage.removeItem('userLoggedIn');
-                sessionStorage.removeItem('userEmail');
-                sessionStorage.removeItem('isAdmin');
+                sessionStorage.clear();
                 // Redirect to home page
                 window.location.href = 'index.html';
             });
@@ -79,5 +77,16 @@ document.addEventListener('DOMContentLoaded', handleAuthNavigation);
 window.addEventListener('storage', function(e) {
     if (e.key === 'userLoggedIn' || e.key === null) {
         handleAuthNavigation();
+    }
+});
+
+// Add history state change detection for back button
+window.addEventListener('popstate', function(event) {
+    // If we're on a protected page and not logged in, redirect to auth
+    const isProtectedPage = window.location.pathname.includes('dashboard.html');
+    const isLoggedIn = sessionStorage.getItem('userLoggedIn') === 'true';
+    
+    if (isProtectedPage && !isLoggedIn) {
+        window.location.href = 'auth.html';
     }
 });

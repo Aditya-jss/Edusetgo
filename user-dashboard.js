@@ -20,8 +20,68 @@ const auth = firebase.auth();
 // Global variable to store applications for both progress and UI
 let userApplications = [];
 
+// Process payment
+function processPayment(method) {
+    // Show loading state
+    const button = document.querySelector(`#${method}CardForm .btn-pay`);
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    
+    // Simulate payment processing
+    setTimeout(() => {
+        // Hide all forms
+        document.querySelectorAll('.payment-form').forEach(form => {
+            form.classList.remove('active');
+        });
+        
+        // Show success message
+        document.getElementById('paymentSuccess').style.display = 'block';
+        
+        // Update user payment status in Firestore
+        const user = firebase.auth().currentUser;
+        if (user) {
+            firebase.firestore().collection('users').doc(user.uid).update({
+                paymentStatus: 'paid',
+                paymentMethod: method,
+                paymentDate: firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(error => {
+                console.error("Error updating payment status:", error);
+            });
+        }
+    }, 2000);
+}
+
 // Document ready function
 document.addEventListener('DOMContentLoaded', function() {
+    // Setup navigation
+    setupNavigation();
+    
+    // Add direct event listener for payment link
+    const paymentLink = document.querySelector('.side-nav a[href="#payment"]');
+    if (paymentLink) {
+        paymentLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Hide all sections
+            document.querySelectorAll('main.content > section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show payment section
+            document.getElementById('payment').classList.add('active');
+            
+            // Update URL hash
+            window.location.hash = '#payment';
+            
+            // Update active nav link
+            document.querySelectorAll('.side-nav li').forEach(item => {
+                item.classList.remove('active');
+            });
+            this.parentElement.classList.add('active');
+        });
+    }
+    
     // Check if user is logged in
     const isLoggedIn = sessionStorage.getItem('userLoggedIn') === 'true';
     
@@ -29,22 +89,6 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'auth.html';
         return;
     }
-    
-    // Add cache control meta tags to prevent caching
-    const metaCache = document.createElement('meta');
-    metaCache.setAttribute('http-equiv', 'Cache-Control');
-    metaCache.setAttribute('content', 'no-cache, no-store, must-revalidate');
-    document.head.appendChild(metaCache);
-    
-    const metaPragma = document.createElement('meta');
-    metaPragma.setAttribute('http-equiv', 'Pragma');
-    metaPragma.setAttribute('content', 'no-cache');
-    document.head.appendChild(metaPragma);
-    
-    const metaExpires = document.createElement('meta');
-    metaExpires.setAttribute('http-equiv', 'Expires');
-    metaExpires.setAttribute('content', '0');
-    document.head.appendChild(metaExpires);
     
     // Add page visibility change detection
     document.addEventListener('visibilitychange', function() {
@@ -63,6 +107,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (user) {
             loadUserData(user);
         } else {
+            // Clear session storage and redirect
+            sessionStorage.clear();
             window.location.href = 'auth.html';
         }
     });
@@ -78,6 +124,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Setup modal close functionality
     setupModalClose();
+    
+    // Handle browser back button
+    window.addEventListener('popstate', function(event) {
+        // Check if user is still logged in
+        const isStillLoggedIn = sessionStorage.getItem('userLoggedIn') === 'true';
+        if (!isStillLoggedIn) {
+            window.location.href = 'auth.html';
+        }
+    });
+    
+    // Add our fix
+    fixNavigationHoverIssue();
 });
 
 // Load user data
@@ -96,10 +154,34 @@ function loadUserData(user) {
                 // Update profile form
                 updateProfileForm(userData);
                 
+                // Check if profile is incomplete
+                const isProfileIncomplete = !userData.phone || !userData.educationLevel || !userData.studyDestination;
+                
+                if (isProfileIncomplete) {
+                    // Show profile completion notification
+                    showProfileCompletionNotification();
+                    
+                    // Force navigate to profile section
+                    window.location.hash = '#profile';
+                    
+                    // Hide other sections until profile is complete
+                    document.querySelectorAll('main.content > section:not(#profile)').forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    document.getElementById('profile').classList.add('active');
+                    
+                    // Disable navigation to other sections
+                    disableNavigationUntilProfileComplete();
+                } else if (window.location.hash === '' || window.location.hash === '#profile') {
+                    // If profile is complete and no specific hash or on profile, go to dashboard
+                    window.location.hash = '#dashboard';
+                }
+                
                 // Load applications and calculate progress together
                 loadApplicationsAndProgress(userId);
                 
             } else {
+                // Create new user document if it doesn't exist
                 return db.collection('users').doc(userId).set({
                     name: user.displayName || 'Student',
                     email: user.email,
@@ -107,12 +189,28 @@ function loadUserData(user) {
                     progressStage: 'preparation',
                     isAdmin: false
                 }).then(() => {
+                    // Show profile completion notification
+                    showProfileCompletionNotification();
+                    
+                    // Force navigate to profile section
+                    window.location.hash = '#profile';
+                    
+                    // Hide other sections until profile is complete
+                    document.querySelectorAll('main.content > section:not(#profile)').forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    document.getElementById('profile').classList.add('active');
+                    
+                    // Disable navigation to other sections
+                    disableNavigationUntilProfileComplete();
+                    
                     loadApplicationsAndProgress(userId);
                 });
             }
         })
         .catch((error) => {
             showToast("Error loading profile data", "error");
+            console.error("Error loading profile data:", error);
         });
 }
 
@@ -548,6 +646,14 @@ function updateProfileForm(userData) {
     if (studyDestinationSelect && userData.studyDestination) {
         studyDestinationSelect.value = userData.studyDestination;
     }
+    
+    // Add joined date to profile if available
+    const profileJoined = document.getElementById('profileJoined');
+    if (profileJoined && userData.createdAt) {
+        const joinDate = userData.createdAt.toDate();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        profileJoined.textContent = `Member since: ${joinDate.toLocaleDateString('en-US', options)}`;
+    }
 }
 
 function showErrorState(error, recentApplicationsList, applicationsContainer, userId) {
@@ -571,25 +677,78 @@ function retryLoadApplications(userId) {
 
 // Setup functions
 function setupNavigation() {
-    const navLinks = document.querySelectorAll('.side-nav a');
-    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.side-nav a:not([href="#payment"])');
+    const sections = document.querySelectorAll('main.content > section');
+    const paymentLink = document.querySelector('.side-nav a[href="#payment"]');
     
+    // Reset all hover states when mouse leaves navigation area
+    const sideNav = document.querySelector('.side-nav');
+    if (sideNav) {
+        sideNav.addEventListener('mouseleave', function() {
+            // Remove any stuck hover effects
+            document.querySelectorAll('.side-nav a').forEach(link => {
+                link.style.transform = '';
+                link.style.boxShadow = '';
+                link.style.borderColor = '';
+            });
+        });
+    }
+    
+    // Add mouseout event to each nav link
+    document.querySelectorAll('.side-nav a').forEach(link => {
+        link.addEventListener('mouseout', function() {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+            this.style.borderColor = '';
+        });
+    });
+    
+    // Handle hash change
+    function handleHashChange() {
+        const hash = window.location.hash || '#dashboard';
+        const targetId = hash.substring(1);
+        
+        // Skip if it's the payment section (handled separately)
+        if (targetId === 'payment') return;
+        
+        const targetSection = document.getElementById(targetId);
+        
+        if (targetSection) {
+            // Hide all sections
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show target section
+            targetSection.classList.add('active');
+            
+            // Update active nav link
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === hash) {
+                    link.parentElement.classList.add('active');
+                } else {
+                    link.parentElement.classList.remove('active');
+                }
+            });
+        }
+    }
+    
+    // Add click event to navigation links (except payment)
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href').substring(1);
-            
-            navLinks.forEach(link => link.parentElement.classList.remove('active'));
-            sections.forEach(section => section.classList.remove('active'));
-            
-            this.parentElement.classList.add('active');
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) {
-                targetSection.classList.add('active');
+            if (!link.classList.contains('disabled-nav')) {
+                const href = this.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    e.preventDefault();
+                    window.location.hash = href;
+                }
             }
         });
     });
+    
+    // Handle initial hash and hash changes
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
 }
 
 function setupLogout() {
@@ -603,26 +762,23 @@ function setupLogout() {
     if (headerLogoutBtn) {
         headerLogoutBtn.addEventListener('click', handleLogout);
     }
+    
+    // Add event listeners to all navigation links that go outside the dashboard
+    document.querySelectorAll('a[href^="index.html"], a[href^="auth.html"], a[href^="http"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetHref = this.getAttribute('href');
+            
+            // Logout and then navigate
+            handleLogoutWithRedirect(targetHref);
+        });
+    });
 }
 
 function setupProfileUpdate() {
     const updateProfileBtn = document.getElementById('updateProfileBtn');
     const profileForm = document.getElementById('profileForm');
     
-    if (updateProfileBtn) {
-        updateProfileBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const user = firebase.auth().currentUser;
-            if (user) {
-                updateUserProfile(user.uid);
-            } else {
-                showToast("You must be logged in to update your profile", "error");
-            }
-        });
-    }
-    
-    // Also handle form submission if there's a form element
     if (profileForm) {
         profileForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -636,15 +792,16 @@ function setupProfileUpdate() {
         });
     }
     
-    // Add real-time validation
-    const fullNameInput = document.getElementById('fullName');
-    if (fullNameInput) {
-        fullNameInput.addEventListener('blur', function() {
-            if (!this.value.trim()) {
-                this.classList.add('error');
-                showToast("Full name is required", "error");
+    // Also handle button click if there's a button outside the form
+    if (updateProfileBtn && !profileForm) {
+        updateProfileBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const user = firebase.auth().currentUser;
+            if (user) {
+                updateUserProfile(user.uid);
             } else {
-                this.classList.remove('error');
+                showToast("You must be logged in to update your profile", "error");
             }
         });
     }
@@ -669,7 +826,7 @@ function setupModalClose() {
 }
 
 function handleLogout(e) {
-    e.preventDefault();
+    if (e) e.preventDefault();
     
     firebase.auth().signOut()
         .then(() => {
@@ -678,6 +835,21 @@ function handleLogout(e) {
         })
         .catch((error) => {
             showToast("Error signing out. Please try again.", "error");
+        });
+}
+
+function handleLogoutWithRedirect(redirectUrl) {
+    firebase.auth().signOut()
+        .then(() => {
+            sessionStorage.clear();
+            window.location.href = redirectUrl;
+        })
+        .catch((error) => {
+            showToast("Error signing out. Please try again.", "error");
+            // Redirect anyway after error
+            setTimeout(() => {
+                window.location.href = redirectUrl;
+            }, 1000);
         });
 }
 
@@ -704,15 +876,29 @@ function updateUserProfile(userId) {
         return;
     }
     
+    if (!phoneNumber) {
+        showToast("Please enter your phone number", "error");
+        return;
+    }
+    
+    if (!educationLevel) {
+        showToast("Please select your education level", "error");
+        return;
+    }
+    
+    if (!studyDestination) {
+        showToast("Please select your preferred study destination", "error");
+        return;
+    }
+    
     // Prepare update data
     const updateData = {
         name: fullName,
+        phone: phoneNumber,
+        educationLevel: educationLevel,
+        studyDestination: studyDestination,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
-    
-    if (phoneNumber) updateData.phone = phoneNumber;
-    if (educationLevel) updateData.educationLevel = educationLevel;
-    if (studyDestination) updateData.studyDestination = studyDestination;
     
     // Show loading state
     const updateBtn = document.getElementById('updateProfileBtn');
@@ -726,6 +912,12 @@ function updateUserProfile(userId) {
     db.collection('users').doc(userId).update(updateData)
         .then(() => {
             showToast("Profile updated successfully!", "success");
+            
+            // Remove profile completion notification if exists
+            const notification = document.querySelector('.profile-completion-notification');
+            if (notification) {
+                notification.remove();
+            }
             
             // Update display name in Firebase Auth if it changed
             const user = firebase.auth().currentUser;
@@ -741,6 +933,12 @@ function updateUserProfile(userId) {
             userNameElements.forEach(element => {
                 if (element) element.textContent = fullName;
             });
+            
+            // Re-enable navigation
+            enableNavigation();
+            
+            // Redirect to dashboard section after profile completion
+            window.location.hash = '#dashboard';
         })
         .catch((error) => {
             showToast("Error updating profile: " + error.message, "error");
@@ -776,4 +974,158 @@ function showToast(message, type = 'success') {
             toast.remove();
         }, 300);
     }, 3000);
+}
+
+// Show profile completion notification
+function showProfileCompletionNotification() {
+    // Remove existing notification if any
+    const existingNotification = document.querySelector('.profile-completion-notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    const notification = document.createElement('div');
+    notification.className = 'profile-completion-notification';
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-user-edit"></i>
+            <div class="notification-text">
+                <h3>Complete Your Profile</h3>
+                <p>Please complete your profile to help us provide better assistance for your study abroad journey.</p>
+            </div>
+            <button class="close-notification"><i class="fas fa-times"></i></button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Add event listener to close button
+    notification.querySelector('.close-notification').addEventListener('click', function() {
+        notification.remove();
+    });
+}
+
+// Disable navigation until profile is complete
+function disableNavigationUntilProfileComplete() {
+    // Add a profile-incomplete class to body
+    document.body.classList.add('profile-incomplete');
+    
+    // Get all navigation links except profile
+    const navLinks = document.querySelectorAll('.side-nav a:not([href="#profile"])');
+    
+    // Add warning message to sidebar
+    const warningMsg = document.createElement('div');
+    warningMsg.className = 'profile-warning';
+    warningMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Please complete your profile first';
+    
+    // Add warning if not already present
+    if (!document.querySelector('.profile-warning')) {
+        document.querySelector('.side-nav').appendChild(warningMsg);
+    }
+    
+    // Add click event to navigation links
+    navLinks.forEach(link => {
+        // Remove existing event listeners by cloning
+        const newLink = link.cloneNode(true);
+        link.parentNode.replaceChild(newLink, link);
+        
+        // Store original href
+        newLink.setAttribute('data-original-href', newLink.getAttribute('href'));
+        
+        // Replace with profile link
+        newLink.setAttribute('href', '#profile');
+        
+        // Add warning class
+        newLink.classList.add('disabled-nav');
+        
+        // Add click handler
+        newLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            showToast("Please complete your profile first", "warning");
+            window.location.hash = '#profile';
+        });
+    });
+}
+
+// Re-enable navigation after profile completion
+function enableNavigation() {
+    // Remove profile-incomplete class from body
+    document.body.classList.remove('profile-incomplete');
+    
+    // Get all disabled navigation links
+    const navLinks = document.querySelectorAll('.side-nav a.disabled-nav');
+    
+    // Remove warning message
+    const warningMsg = document.querySelector('.profile-warning');
+    if (warningMsg) {
+        warningMsg.remove();
+    }
+    
+    // Restore original hrefs and remove event listeners
+    navLinks.forEach(link => {
+        const originalHref = link.getAttribute('data-original-href');
+        if (originalHref) {
+            link.setAttribute('href', originalHref);
+        }
+        link.classList.remove('disabled-nav');
+        
+        // Clone and replace to remove event listeners
+        const newLink = link.cloneNode(true);
+        link.parentNode.replaceChild(newLink, link);
+    });
+    
+    // Specifically check and fix payment navigation
+    const paymentLink = document.querySelector('.side-nav a[href="#payment"]');
+    if (paymentLink && paymentLink.classList.contains('disabled-nav')) {
+        const originalHref = paymentLink.getAttribute('data-original-href') || '#payment';
+        paymentLink.setAttribute('href', originalHref);
+        paymentLink.classList.remove('disabled-nav');
+        
+        // Clone and replace to remove event listeners
+        const newPaymentLink = paymentLink.cloneNode(true);
+        paymentLink.parentNode.replaceChild(newPaymentLink, paymentLink);
+    }
+    
+    // Re-setup navigation event listeners
+    setupNavigation();
+}
+
+// Complete replacement for the fixNavigationHoverIssue function
+function fixNavigationHoverIssue() {
+    // Get all navigation links
+    const navLinks = document.querySelectorAll('.side-nav a');
+    
+    // Remove all existing event listeners by cloning and replacing each link
+    navLinks.forEach(link => {
+        const newLink = link.cloneNode(true);
+        link.parentNode.replaceChild(newLink, link);
+        
+        // Clear any inline styles that might be causing issues
+        newLink.removeAttribute('style');
+    });
+    
+    // Disable CSS hover effects completely by adding a class to body
+    document.body.classList.add('no-hover-effects');
+    
+    // Add a style element to override all hover effects
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+        .side-nav a:hover {
+            transform: none !important;
+            box-shadow: none !important;
+            background-color: rgba(67, 97, 238, 0.05) !important;
+            color: #4361ee !important;
+            border-color: transparent !important;
+        }
+        
+        .side-nav li.active a {
+            background-color: rgba(67, 97, 238, 0.1) !important;
+            color: #4361ee !important;
+            border-left: 3px solid #4361ee !important;
+        }
+    `;
+    document.head.appendChild(styleElement);
+    
+    // Re-setup navigation event listeners
+    setupNavigation();
 }
