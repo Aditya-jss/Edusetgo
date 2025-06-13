@@ -764,7 +764,8 @@ function setupLogout() {
     }
     
     // Add event listeners to all navigation links that go outside the dashboard
-    document.querySelectorAll('a[href^="index.html"], a[href^="auth.html"], a[href^="http"]').forEach(link => {
+    // MODIFY THIS PART: Exclude the Home link from logout behavior
+    document.querySelectorAll('a[href^="index.html"]:not([href="index.html"]), a[href^="auth.html"], a[href^="http"]').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const targetHref = this.getAttribute('href');
@@ -773,6 +774,15 @@ function setupLogout() {
             handleLogoutWithRedirect(targetHref);
         });
     });
+    
+    // Add a direct navigation for the Home link
+    const homeLink = document.querySelector('header nav a[href="index.html"]');
+    if (homeLink) {
+        homeLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'index.html';
+        });
+    }
 }
 
 function setupProfileUpdate() {
