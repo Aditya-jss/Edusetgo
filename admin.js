@@ -63,16 +63,33 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Try to sign out with Firebase if available
         if (typeof firebase !== 'undefined' && firebase.auth) {
-            firebase.auth().signOut().catch(error => console.error("Firebase sign out error:", error));
+            firebase.auth().signOut().then(() => {
+                // Clear session storage
+                sessionStorage.clear();
+                
+                // Clear Firebase auth persistence data
+                localStorage.removeItem('firebase:authUser');
+                localStorage.removeItem('firebase:session');
+                
+                // Clear any auth cookies
+                document.cookie.split(";").forEach(function(c) {
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                });
+                
+                // Force reload to clear any cached auth state
+                window.location.replace('index.html');
+            }).catch(error => {
+                console.error("Firebase sign out error:", error);
+                // Still clear session and redirect
+                sessionStorage.clear();
+                window.location.replace('index.html');
+            });
+        } else {
+            // Clear session storage
+            sessionStorage.clear();
+            // Redirect to login page
+            window.location.replace('index.html');
         }
-        
-        // Clear session storage
-        sessionStorage.removeItem('userLoggedIn');
-        sessionStorage.removeItem('userEmail');
-        sessionStorage.removeItem('isAdmin');
-        
-        // Redirect to login page
-        window.location.href = 'index.html';
     }
 
     if (logoutBtn) {

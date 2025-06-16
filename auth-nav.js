@@ -31,12 +31,12 @@ function handleAuthNavigation() {
             if (isAdmin) {
                 dropdown.innerHTML = `
                     <a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</a>
-                    <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                    <a href="admin-meetings.html"><i class="fas fa-calendar-check"></i> My Meetings</a>
                 `;
             } else {
                 dropdown.innerHTML = `
                     <a href="user-dashboard.html"><i class="fas fa-tachometer-alt"></i> My Dashboard</a>
-                    <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                    <a href="user-meetings.html"><i class="fas fa-calendar-check"></i> My Meetings</a>
                 `;
             }
             
@@ -49,18 +49,50 @@ function handleAuthNavigation() {
                 e.preventDefault();
                 dropdown.classList.toggle('show-dropdown');
             });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                // Check if dropdown exists and is shown
+                if (dropdown && dropdown.classList.contains('show-dropdown')) {
+                    // If click is outside the auth link and dropdown
+                    if (!authLink.contains(e.target) && !dropdown.contains(e.target)) {
+                        dropdown.classList.remove('show-dropdown');
+                    }
+                }
+            });
             
             // Handle logout
             document.getElementById('logoutBtn').addEventListener('click', function(e) {
                 e.preventDefault();
+                
                 // Try to sign out with Firebase if available
                 if (typeof firebase !== 'undefined' && firebase.auth) {
-                    firebase.auth().signOut().catch(error => console.error("Firebase sign out error:", error));
+                    firebase.auth().signOut().then(() => {
+                        // Clear session storage
+                        sessionStorage.clear();
+                        // Clear local storage auth data
+                        localStorage.removeItem('firebase:authUser');
+                        localStorage.removeItem('firebase:session');
+                        
+                        // Clear any auth cookies
+                        document.cookie.split(";").forEach(function(c) {
+                            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                        });
+                        
+                        // Force reload to clear any cached auth state
+                        window.location.href = 'index.html';
+                    }).catch(error => {
+                        console.error("Firebase sign out error:", error);
+                        // Still clear session and redirect even if Firebase logout fails
+                        sessionStorage.clear();
+                        window.location.href = 'index.html';
+                    });
+                } else {
+                    // Clear session storage
+                    sessionStorage.clear();
+                    // Redirect to home page
+                    window.location.href = 'index.html';
                 }
-                // Clear session storage
-                sessionStorage.clear();
-                // Redirect to home page
-                window.location.href = 'index.html';
             });
         } else {
             // Not logged in - show login/sign up link

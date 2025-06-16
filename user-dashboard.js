@@ -840,25 +840,57 @@ function handleLogout(e) {
     
     firebase.auth().signOut()
         .then(() => {
+            // Clear all storage
             sessionStorage.clear();
-            window.location.href = 'index.html';
+            
+            // Clear Firebase auth persistence data
+            localStorage.removeItem('firebase:authUser');
+            localStorage.removeItem('firebase:session');
+            
+            // Clear any auth cookies
+            document.cookie.split(";").forEach(function(c) {
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            });
+            
+            // Force reload the page to clear any cached auth state
+            window.location.replace('index.html');
         })
         .catch((error) => {
+            console.error("Error signing out:", error);
             showToast("Error signing out. Please try again.", "error");
+            
+            // Still clear session and redirect
+            sessionStorage.clear();
+            window.location.replace('index.html');
         });
 }
 
 function handleLogoutWithRedirect(redirectUrl) {
     firebase.auth().signOut()
         .then(() => {
+            // Clear all storage
             sessionStorage.clear();
-            window.location.href = redirectUrl;
+            
+            // Clear Firebase auth persistence data
+            localStorage.removeItem('firebase:authUser');
+            localStorage.removeItem('firebase:session');
+            
+            // Clear any auth cookies
+            document.cookie.split(";").forEach(function(c) {
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            });
+            
+            // Force reload to the redirect URL
+            window.location.replace(redirectUrl);
         })
         .catch((error) => {
+            console.error("Error signing out:", error);
             showToast("Error signing out. Please try again.", "error");
-            // Redirect anyway after error
+            
+            // Still clear session and redirect
+            sessionStorage.clear();
             setTimeout(() => {
-                window.location.href = redirectUrl;
+                window.location.replace(redirectUrl);
             }, 1000);
         });
 }
@@ -962,28 +994,57 @@ function updateUserProfile(userId) {
         });
 }
 
-function showToast(message, type = 'success') {
-    const existingToast = document.querySelector('.toast');
-    if (existingToast) {
-        existingToast.remove();
+function showToast(message, type = 'info') {
+    // Check if toast container exists, if not create it
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.style.position = 'fixed';
+        toastContainer.style.top = '20px';
+        toastContainer.style.right = '20px';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
     }
     
+    // Create toast element
     const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
+    toast.className = `toast toast-${type}`;
+    toast.style.minWidth = '250px';
+    toast.style.margin = '10px 0';
+    toast.style.padding = '15px';
+    toast.style.borderRadius = '4px';
+    toast.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+    
+    // Set background color based on type
+    switch(type) {
+        case 'success':
+            toast.style.backgroundColor = '#4caf50';
+            break;
+        case 'error':
+            toast.style.backgroundColor = '#f44336';
+            break;
+        case 'warning':
+            toast.style.backgroundColor = '#ff9800';
+            break;
+        default:
+            toast.style.backgroundColor = '#2196f3';
+    }
+    
+    toast.style.color = 'white';
     toast.textContent = message;
     
-    document.body.appendChild(toast);
+    // Add to container
+    toastContainer.appendChild(toast);
     
+    // Remove after 5 seconds
     setTimeout(() => {
-        toast.classList.add('show');
-    }, 10);
-    
-    setTimeout(() => {
-        toast.classList.remove('show');
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.5s ease';
         setTimeout(() => {
-            toast.remove();
-        }, 300);
-    }, 3000);
+            toastContainer.removeChild(toast);
+        }, 500);
+    }, 5000);
 }
 
 // Show profile completion notification
@@ -1138,4 +1199,770 @@ function fixNavigationHoverIssue() {
     
     // Re-setup navigation event listeners
     setupNavigation();
+}
+
+// Initialize Razorpay payment with package options
+function initializeRazorpay(packageType = null, customAmount = null) {
+    // Show loading indicator
+    showToast('Initializing payment...', 'info');
+    
+    const user = firebase.auth().currentUser;
+    if (!user) {
+        showToast('Please log in to make a payment', 'error');
+        return;
+    }
+    
+    // Package details
+    const packages = {
+        basic: { name: 'Basic Package', amount: 1790 },
+        standard: { name: 'Standard Package', amount: 3499 },
+        premium: { name: 'Premium Package', amount: 4799 }
+    };
+    
+    // Determine amount and package name
+    let amount, packageName;
+    
+    if (customAmount) {
+        // Custom amount entered by user
+        amount = parseInt(customAmount);
+        packageName = 'Custom Package';
+        if (isNaN(amount) || amount <= 0) {
+            showToast('Please enter a valid amount', 'error');
+            return;
+        }
+    } else if (packageType && packages[packageType]) {
+        // Selected package
+        amount = packages[packageType].amount;
+        packageName = packages[packageType].name;
+    } else {
+        // Default to premium if no package selected
+        amount = packages.premium.amount;
+        packageName = packages.premium.name;
+    }
+    
+    // Verify Razorpay is loaded
+    if (typeof Razorpay === 'undefined') {
+        console.error('Razorpay not loaded');
+        showToast('Payment gateway not loaded. Please refresh and try again.', 'error');
+        return;
+    }
+    
+    try {
+        // Razorpay options
+        const options = {
+            key: 'rzp_test_3iqUnjofSg184z', // Replace with your Razorpay key
+            amount: amount * 100, // Amount in paise
+            currency: 'INR',
+            name: 'EduSetGo',
+            description: packageName,
+            image: 'images/logo.png',
+            handler: function(response) {
+                console.log('Payment success response:', response);
+                
+                // Create payment data object
+                const paymentData = {
+                    paymentId: response.razorpay_payment_id,
+                    amount: amount,
+                    packageType: packageType || 'custom',
+                    packageName: packageName,
+                    date: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'paid'
+                };
+                
+                // First get the user document to check if paymentHistory exists
+                db.collection('users').doc(user.uid).get()
+                    .then(doc => {
+                        let updateData = {};
+                        
+                        if (!doc.exists) {
+                            // Create new user document if it doesn't exist
+                            updateData = {
+                                paymentHistory: [paymentData],
+                                paymentStatus: 'paid',
+                                paymentMethod: 'razorpay',
+                                paymentId: response.razorpay_payment_id,
+                                paymentAmount: amount,
+                                packageType: packageType || 'custom',
+                                packageName: packageName,
+                                paymentDate: firebase.firestore.FieldValue.serverTimestamp(),
+                                email: user.email,
+                                displayName: user.displayName || '',
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            };
+                            
+                            return db.collection('users').doc(user.uid).set(updateData);
+                        }
+                        
+                        // Get existing data
+                        const userData = doc.data() || {};
+                        
+                        // Initialize payment history array if it doesn't exist or isn't an array
+                        let paymentHistory = [];
+                        
+                        if (userData.paymentHistory && Array.isArray(userData.paymentHistory)) {
+                            paymentHistory = [...userData.paymentHistory]; // Create a copy of the array
+                        } else if (userData.paymentId) {
+                            // Convert single payment to array if needed
+                            const oldPayment = {
+                                paymentId: userData.paymentId,
+                                amount: userData.paymentAmount || 0,
+                                packageType: userData.packageType || 'unknown',
+                                packageName: userData.packageName || 'Unknown Package',
+                                date: userData.paymentDate || firebase.firestore.FieldValue.serverTimestamp(),
+                                status: 'paid'
+                            };
+                            paymentHistory = [oldPayment];
+                        }
+                        
+                        // Add new payment to history
+                        paymentHistory.push(paymentData);
+                        
+                        console.log('Updated payment history:', paymentHistory);
+                        
+                        // Update user document with payment data
+                        updateData = {
+                            paymentStatus: 'paid',
+                            paymentMethod: 'razorpay',
+                            paymentId: response.razorpay_payment_id,
+                            paymentAmount: amount,
+                            packageType: packageType || 'custom',
+                            packageName: packageName,
+                            paymentDate: firebase.firestore.FieldValue.serverTimestamp(),
+                            paymentHistory: paymentHistory // Use the updated array
+                        };
+                        
+                        return db.collection('users').doc(user.uid).update(updateData);
+                    })
+                    .then(() => {
+                        console.log('Payment data saved successfully');
+                        showToast(`Payment successful! Your account has been upgraded to ${packageName}.`, 'success');
+                        
+                        // Hide payment section and show success message with payment history
+                        const paymentSection = document.getElementById('paymentOptions');
+                        const successSection = document.getElementById('paymentSuccess');
+                        
+                        if (paymentSection) paymentSection.style.display = 'none';
+                        if (successSection) {
+                            successSection.style.display = 'block';
+                            
+                            // Get payment history to display
+                            loadAndDisplayPaymentHistory(user.uid, successSection, response.razorpay_payment_id);
+                        }
+                        
+                        // Force reload payment history section after a short delay
+                        setTimeout(() => {
+                            loadPaymentHistorySection(true); // Pass true to force refresh
+                        }, 3000);
+                    })
+                    .catch(error => {
+                        console.error('Error updating user payment status:', error);
+                        showToast('Payment was successful, but we could not update your account status. Please contact support.', 'warning');
+                    });
+            },
+            prefill: {
+                name: user.displayName || '',
+                email: user.email || '',
+                contact: user.phoneNumber || ''
+            },
+            notes: {
+                userId: user.uid,
+                packageType: packageType || 'custom',
+                packageName: packageName
+            },
+            theme: {
+                color: '#4f46e5'
+            },
+            modal: {
+                ondismiss: function() {
+                    console.log('Payment modal dismissed');
+                    showToast('Payment cancelled', 'warning');
+                }
+            }
+        };
+        
+        console.log('Razorpay options:', options);
+        
+        // Create Razorpay instance
+        const rzp = new Razorpay(options);
+        
+        // Handle payment failure
+        rzp.on('payment.failed', function(response) {
+            console.error('Payment failed response:', response);
+            showToast(`Payment failed: ${response.error.description}`, 'error');
+        });
+        
+        // Open payment modal
+        rzp.open();
+        console.log('Razorpay modal opened');
+        
+    } catch (error) {
+        console.error('Razorpay initialization error:', error);
+        showToast('Failed to initialize payment gateway. Please try again.', 'error');
+    }
+}
+
+// Function to load and display payment history
+function loadAndDisplayPaymentHistory(userId, container, currentPaymentId) {
+    db.collection('users').doc(userId).get()
+        .then(doc => {
+            if (!doc.exists) {
+                console.error('User document not found');
+                displayPaymentSuccess(container, currentPaymentId);
+                return;
+            }
+            
+            const userData = doc.data();
+            const paymentHistory = userData.paymentHistory || [];
+            
+            // Sort payment history by date (newest first)
+            paymentHistory.sort((a, b) => {
+                const dateA = a.date ? a.date.toDate() : new Date(0);
+                const dateB = b.date ? b.date.toDate() : new Date(0);
+                return dateB - dateA;
+            });
+            
+            // Find current payment
+            const currentPayment = paymentHistory.find(payment => payment.paymentId === currentPaymentId);
+            
+            // Display success message with payment history
+            let historyHTML = '';
+            
+            if (paymentHistory.length > 0) {
+                historyHTML = `
+                    <div class="payment-history">
+                        <h3>Your Payment History</h3>
+                        <div class="payment-history-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Package</th>
+                                        <th>Amount</th>
+                                        <th>Transaction ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
+                
+                paymentHistory.forEach(payment => {
+                    const date = payment.date ? payment.date.toDate() : new Date();
+                    const formattedDate = date.toLocaleDateString('en-US', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                    
+                    const isCurrentPayment = payment.paymentId === currentPaymentId;
+                    
+                    historyHTML += `
+                        <tr class="${isCurrentPayment ? 'current-payment' : ''}">
+                            <td>${formattedDate}</td>
+                            <td>${payment.packageName || 'Unknown Package'}</td>
+                            <td>₹${payment.amount || 0}</td>
+                            <td>${payment.paymentId || 'N/A'}</td>
+                        </tr>
+                    `;
+                });
+                
+                historyHTML += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Display success message with current payment details
+            if (currentPayment) {
+                const amount = currentPayment.amount || 0;
+                const packageName = currentPayment.packageName || 'Custom Package';
+                
+                container.innerHTML = `
+                    <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+                    <h2>Payment Successful!</h2>
+                    <p>Thank you for upgrading to ${packageName}.</p>
+                    <p>Your payment of ₹${amount} has been processed successfully.</p>
+                    <p>Transaction ID: ${currentPaymentId}</p>
+                    ${historyHTML}
+                    <button class="btn-primary" onclick="window.location.hash='#dashboard'">Return to Dashboard</button>
+                `;
+            } else {
+                displayPaymentSuccess(container, currentPaymentId);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading payment history:', error);
+            displayPaymentSuccess(container, currentPaymentId);
+        });
+}
+
+// Fallback function to display basic success message
+function displayPaymentSuccess(container, paymentId) {
+    container.innerHTML = `
+        <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+        <h2>Payment Successful!</h2>
+        <p>Your payment has been processed successfully.</p>
+        <p>Transaction ID: ${paymentId}</p>
+        <button class="btn-primary" onclick="window.location.hash='#dashboard'">Return to Dashboard</button>
+    `;
+}
+
+// Function to load and display only payment history in the payment section
+function loadPaymentHistorySection(forceRefresh = false) {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+    
+    const paymentSection = document.getElementById('payment');
+    if (!paymentSection) return;
+    
+    // Clear existing content
+    paymentSection.innerHTML = `
+        <div class="section-header">
+            <h2>Payment History</h2>
+            <p>View all your past transactions</p>
+        </div>
+        <div id="paymentHistoryContainer" class="payment-history-container">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i> Loading payment history...
+            </div>
+        </div>
+    `;
+    
+    // Get the container
+    const historyContainer = document.getElementById('paymentHistoryContainer');
+    
+    // Add debugging to check user ID
+    console.log('Loading payment history for user ID:', user.uid);
+    
+    // Use a cache-busting approach if forceRefresh is true
+    let docRef = db.collection('users').doc(user.uid);
+    if (forceRefresh) {
+        // This forces Firestore to get the latest data from the server
+        docRef = docRef.withConverter({
+            fromFirestore: function(snapshot, options) {
+                return snapshot.data(options);
+            },
+            toFirestore: function(data) {
+                return data;
+            }
+        });
+    }
+    
+    // Load payment history with error handling
+    docRef.get({ source: forceRefresh ? 'server' : 'default' })
+        .then(doc => {
+            console.log('User document exists:', doc.exists);
+            if (doc.exists) {
+                console.log('User document data:', doc.data());
+            }
+            
+            if (!doc.exists) {
+                historyContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-receipt"></i>
+                        <p>No payment history found</p>
+                        <p class="text-muted">You haven't made any payments yet.</p>
+                        <button class="btn-primary" onclick="showPaymentOptions()">Make a Payment</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            const userData = doc.data();
+            console.log('Payment history in user data:', userData.paymentHistory);
+            
+            // Check if paymentHistory exists and is an array
+            if (!userData.paymentHistory || !Array.isArray(userData.paymentHistory) || userData.paymentHistory.length === 0) {
+                // Check if there's a single payment that needs to be converted to an array
+                if (userData.paymentId && userData.paymentAmount) {
+                    console.log('Found single payment data, converting to history array');
+                    // Create a payment history array from the single payment data
+                    const singlePayment = {
+                        paymentId: userData.paymentId,
+                        amount: userData.paymentAmount,
+                        packageType: userData.packageType || 'unknown',
+                        packageName: userData.packageName || 'Unknown Package',
+                        date: userData.paymentDate || firebase.firestore.FieldValue.serverTimestamp(),
+                        status: 'paid'
+                    };
+                    
+                    // Update the user document with the new payment history array
+                    db.collection('users').doc(user.uid).update({
+                        paymentHistory: [singlePayment]
+                    }).then(() => {
+                        console.log('Created payment history array from single payment');
+                        // Reload the payment history section
+                        setTimeout(() => loadPaymentHistorySection(true), 1000);
+                    }).catch(err => {
+                        console.error('Error creating payment history array:', err);
+                    });
+                }
+                
+                historyContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-receipt"></i>
+                        <p>No payment history found</p>
+                        <p class="text-muted">You haven't made any payments yet.</p>
+                        <button class="btn-primary" onclick="showPaymentOptions()">Make a Payment</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            const paymentHistory = userData.paymentHistory;
+            
+            // Sort payment history by date (newest first)
+            paymentHistory.sort((a, b) => {
+                const dateA = a.date ? (a.date.toDate ? a.date.toDate() : new Date(a.date)) : new Date(0);
+                const dateB = b.date ? (b.date.toDate ? b.date.toDate() : new Date(b.date)) : new Date(0);
+                return dateB - dateA;
+            });
+            
+            // Create payment history HTML
+            let historyHTML = `
+                <div class="payment-summary">
+                    <div class="summary-card">
+                        <div class="summary-icon"><i class="fas fa-credit-card"></i></div>
+                        <div class="summary-details">
+                            <h3>${paymentHistory.length}</h3>
+                            <p>Total Payments</p>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon"><i class="fas fa-money-bill-wave"></i></div>
+                        <div class="summary-details">
+                            <h3>₹${calculateTotalSpent(paymentHistory)}</h3>
+                            <p>Total Spent</p>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="summary-details">
+                            <h3>${formatDate(getLastPaymentDate(paymentHistory))}</h3>
+                            <p>Last Payment</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="action-bar">
+                    <button class="btn-primary" onclick="showPaymentOptions()">Make a New Payment</button>
+                </div>
+                <div class="payment-history-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Package</th>
+                                <th>Amount</th>
+                                <th>Transaction ID</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            paymentHistory.forEach(payment => {
+                // Handle different date formats
+                let paymentDate;
+                if (payment.date) {
+                    if (payment.date.toDate) {
+                        paymentDate = payment.date.toDate();
+                    } else if (payment.date.seconds) {
+                        paymentDate = new Date(payment.date.seconds * 1000);
+                    } else {
+                        paymentDate = new Date(payment.date);
+                    }
+                } else {
+                    paymentDate = new Date();
+                }
+                
+                const formattedDate = paymentDate.toLocaleDateString('en-US', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                });
+                
+                historyHTML += `
+                    <tr>
+                        <td>${formattedDate}</td>
+                        <td>${payment.packageName || 'Unknown Package'}</td>
+                        <td>₹${payment.amount || 0}</td>
+                        <td>${payment.paymentId || 'N/A'}</td>
+                        <td><span class="status-badge status-success">Paid</span></td>
+                    </tr>
+                `;
+            });
+            
+            historyHTML += `
+                        </tbody>
+                    </table>
+                </div>
+                <div class="payment-history-note">
+                    <p><i class="fas fa-info-circle"></i> For any payment-related queries, please contact our support team.</p>
+                </div>
+            `;
+            
+            historyContainer.innerHTML = historyHTML;
+        })
+        .catch(error => {
+            console.error('Error loading payment history:', error);
+            historyContainer.innerHTML = `
+                <div class="error-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Error loading payment history</p>
+                    <p class="text-muted">${error.message}</p>
+                    <button class="retry-btn" onclick="loadPaymentHistorySection(true)">Retry</button>
+                </div>
+            `;
+        });
+}
+
+// Helper function to calculate total spent
+function calculateTotalSpent(paymentHistory) {
+    return paymentHistory.reduce((total, payment) => {
+        return total + (payment.amount || 0);
+    }, 0);
+}
+
+// Helper function to get last payment date
+function getLastPaymentDate(paymentHistory) {
+    if (paymentHistory.length === 0) return new Date();
+    
+    const sortedPayments = [...paymentHistory].sort((a, b) => {
+        const dateA = a.date ? a.date.toDate() : new Date(0);
+        const dateB = b.date ? b.date.toDate() : new Date(0);
+        return dateB - dateA;
+    });
+    
+    return sortedPayments[0].date ? sortedPayments[0].date.toDate() : new Date();
+}
+
+// Helper function to format date
+function formatDate(date) {
+    return date.toLocaleDateString('en-US', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+    });
+}
+
+// Function to show payment options
+function showPaymentOptions() {
+    const paymentSection = document.getElementById('payment');
+    if (!paymentSection) return;
+    
+    // Clear existing content
+    paymentSection.innerHTML = `
+        <div class="section-header">
+            <h2>Payment</h2>
+            <p>Choose a package or enter a custom amount</p>
+        </div>
+    `;
+    
+    // Create payment options UI
+    createPaymentOptionsUI(paymentSection);
+    
+    // Add a link to go back to payment history
+    const backLink = document.createElement('div');
+    backLink.className = 'back-to-history';
+    backLink.innerHTML = `
+        <button class="text-link" onclick="loadPaymentHistorySection()">
+            <i class="fas fa-arrow-left"></i> Back to Payment History
+        </button>
+    `;
+    
+    paymentSection.insertBefore(backLink, paymentSection.firstChild.nextSibling);
+}
+
+// Add event listener for payment nav link with improved script loading
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentNavLink = document.querySelector('.side-nav a[href="#payment"]');
+    if (paymentNavLink) {
+        paymentNavLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Hide all sections
+            document.querySelectorAll('main.content > section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show payment section
+            const paymentSection = document.getElementById('payment');
+            if (paymentSection) {
+                paymentSection.classList.add('active');
+                
+                // Load payment history
+                loadPaymentHistorySection();
+            }
+            
+            // Update URL hash
+            window.location.hash = '#payment';
+            
+            // Update active nav link
+            document.querySelectorAll('.side-nav li').forEach(item => {
+                item.classList.remove('active');
+            });
+            this.parentElement.classList.add('active');
+        });
+    } else {
+        console.warn('Payment nav link not found in the DOM');
+    }
+});
+
+// Also initialize payment history when the page loads with #payment hash
+window.addEventListener('DOMContentLoaded', function() {
+    if (window.location.hash === '#payment') {
+        setTimeout(() => {
+            loadPaymentHistorySection();
+        }, 500);
+    }
+});
+
+// Create payment options UI
+function createPaymentOptionsUI(container) {
+    // Create payment options container
+    const paymentOptions = document.createElement('div');
+    paymentOptions.id = 'paymentOptions';
+    paymentOptions.className = 'payment-options-container';
+    
+    // Add payment options HTML
+    paymentOptions.innerHTML = `
+        <h2>Choose a Package</h2>
+        <p>Select one of our packages or enter a custom amount</p>
+        
+        <div class="package-cards">
+            <div class="package-option" data-package="basic">
+                <div class="package-header">
+                    <h3>Basic Package</h3>
+                    <div class="package-price">₹1,790</div>
+                </div>
+                <div class="package-content">
+                    <ul>
+                        <li>Information on top universities</li>
+                        <li>Application process overview</li>
+                        <li>SOP drafting support</li>
+                        <li>3 university applications</li>
+                        <li>Student community access</li>
+                    </ul>
+                    <button class="select-package-btn">Select</button>
+                </div>
+            </div>
+            
+            <div class="package-option" data-package="standard">
+                <div class="package-header">
+                    <h3>Standard Package</h3>
+                    <div class="package-price">₹3,499</div>
+                </div>
+                <div class="package-content">
+                    <ul>
+                        <li>All Basic features</li>
+                        <li>One-on-one consultations</li>
+                        <li>Personal statement support</li>
+                        <li>Basic interview preparation</li>
+                        <li>Application timeline guidance</li>
+                    </ul>
+                    <button class="select-package-btn">Select</button>
+                </div>
+            </div>
+            
+            <div class="package-option" data-package="premium">
+                <div class="package-header">
+                    <h3>Premium Package</h3>
+                    <div class="package-price">₹4,799</div>
+                </div>
+                <div class="package-content">
+                    <ul>
+                        <li>All Standard features</li>
+                        <li>Exclusive counseling sessions</li>
+                        <li>3 free visa mock interviews</li>
+                        <li>Visa application support</li>
+                        <li>Networking sessions access</li>
+                    </ul>
+                    <button class="select-package-btn">Select</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="custom-amount-container">
+            <h3>Or Enter Custom Amount</h3>
+            <div class="custom-amount-input">
+                <span class="currency-symbol">₹</span>
+                <input type="number" id="customAmount" min="1" placeholder="Enter amount">
+                <button id="customAmountBtn">Pay Custom Amount</button>
+            </div>
+        </div>
+        
+        <div class="test-card-info">
+            <h3>Test Card Information</h3>
+            <p>Use these details for testing:</p>
+            <ul>
+                <li><strong>Card Number:</strong> 4111 1111 1111 1111</li>
+                <li><strong>Expiry:</strong> Any future date (e.g., 12/25)</li>
+                <li><strong>CVV:</strong> Any 3 digits (e.g., 123)</li>
+                <li><strong>Name:</strong> Any name</li>
+                <li><strong>3D Secure Password:</strong> 1234</li>
+            </ul>
+        </div>
+    `;
+    
+    // Add success message container (hidden initially)
+    const successSection = document.createElement('div');
+    successSection.id = 'paymentSuccess';
+    successSection.className = 'payment-success';
+    successSection.style.display = 'none';
+    
+    // Add both to container
+    container.appendChild(paymentOptions);
+    container.appendChild(successSection);
+    
+    // Add event listeners to package buttons
+    const packageButtons = paymentOptions.querySelectorAll('.select-package-btn');
+    packageButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const packageType = this.closest('.package-option').getAttribute('data-package');
+            
+            // Load Razorpay if needed and initialize payment
+            if (typeof Razorpay !== 'undefined') {
+                initializeRazorpay(packageType);
+            } else {
+                loadRazorpayAndPay(packageType);
+            }
+        });
+    });
+    
+    // Add event listener to custom amount button
+    const customAmountBtn = document.getElementById('customAmountBtn');
+    if (customAmountBtn) {
+        customAmountBtn.addEventListener('click', function() {
+            const customAmount = document.getElementById('customAmount').value;
+            
+            // Load Razorpay if needed and initialize payment
+            if (typeof Razorpay !== 'undefined') {
+                initializeRazorpay(null, customAmount);
+            } else {
+                loadRazorpayAndPay(null, customAmount);
+            }
+        });
+    }
+}
+
+// Load Razorpay script and initialize payment
+function loadRazorpayAndPay(packageType = null, customAmount = null) {
+    console.log('Loading Razorpay script...');
+    showToast('Preparing payment gateway...', 'info');
+    
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    
+    script.onload = function() {
+        console.log('Razorpay script loaded successfully');
+        initializeRazorpay(packageType, customAmount);
+    };
+    
+    script.onerror = function(error) {
+        console.error('Failed to load Razorpay script:', error);
+        showToast('Failed to load payment gateway. Please check your internet connection and try again.', 'error');
+    };
+    
+    document.body.appendChild(script);
 }
