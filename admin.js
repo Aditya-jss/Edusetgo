@@ -1066,44 +1066,19 @@ function loadPayments(db) {
     let paidUsers = 0;
     const allPayments = [];
 
-    // Get all users and filter for those with payment data
     db.collection('users')
+        .where('paymentStatus', '==', 'paid')
         .get()
         .then((querySnapshot) => {
-            console.log("Total users query returned:", querySnapshot.size, "users");
+            console.log("Payment query returned:", querySnapshot.size, "paid users");
 
-            // Filter users who have payment data
-            const paidUsers = [];
-            querySnapshot.forEach((doc) => {
-                const userData = doc.data();
-
-                // Check if user has payment data (multiple criteria)
-                const hasPaymentStatus = userData.paymentStatus === 'paid';
-                const hasPaymentAmount = userData.paymentAmount && userData.paymentAmount > 0;
-                const hasPaymentHistory = userData.paymentHistory && Array.isArray(userData.paymentHistory) && userData.paymentHistory.length > 0;
-                const hasPaymentId = userData.paymentId;
-
-                // User is considered paid if they have payment status OR payment data
-                if (hasPaymentStatus || hasPaymentAmount || hasPaymentHistory || hasPaymentId) {
-                    paidUsers.push(doc);
-                }
-            });
-
-            console.log("Filtered paid users:", paidUsers.length, "out of", querySnapshot.size, "total users");
-
-            if (paidUsers.length === 0) {
+            if (querySnapshot.empty) {
                 paymentsTableBody.innerHTML = '<tr><td colspan="8" class="text-center">No payments found</td></tr>';
                 updatePaymentStats(0, 0, 0, 0);
                 return;
             }
 
-            // Process the paid users
-            const processedUsers = { docs: paidUsers, forEach: function(callback) { this.docs.forEach(callback); } };
-            return Promise.resolve(processedUsers);
-
-        })
-        .then((processedUsers) => {
-            processedUsers.forEach((doc) => {
+            querySnapshot.forEach((doc) => {
                 const userData = doc.data();
                 console.log("User payment data:", userData);
 
@@ -1117,14 +1092,14 @@ function loadPayments(db) {
                             ...payment
                         });
                     });
-                } else if (userData.paymentAmount || userData.paymentId) {
-                    // Handle legacy payment data or users with payment ID but no amount
+                } else if (userData.paymentAmount) {
+                    // Handle legacy payment data
                     allPayments.push({
                         userId: doc.id,
                         userName: userData.name || userData.email.split('@')[0],
                         userEmail: userData.email,
                         paymentId: userData.paymentId || 'N/A',
-                        amount: userData.paymentAmount || 0,
+                        amount: userData.paymentAmount,
                         packageName: userData.packageName || 'Custom Package',
                         date: userData.paymentDate,
                         status: 'paid'

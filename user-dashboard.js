@@ -1286,31 +1286,15 @@ function proceedWithPayment(user, packageType = null, customAmount = null) {
     try {
         // Razorpay options
         const options = {
-            key: 'rzp_test_RCzDLGsVumZRqx', // Your actual Razorpay key
+            key: 'rzp_test_RCzDLGsVumZRqx', // Your test Razorpay key
             amount: amount * 100, // Amount in paise
             currency: 'INR',
             name: 'EduSetGo',
             description: packageName,
             image: 'images/logo.png',
             handler: function(response) {
-                console.log('🎉 RAZORPAY SUCCESS CALLBACK TRIGGERED');
-                console.log('💳 Payment success response:', response);
-                console.log('📊 Payment details:', { amount, packageType, packageName });
-                console.log('👤 Current user:', firebase.auth().currentUser ? firebase.auth().currentUser.uid : 'NO USER');
-
-                // Enhanced debugging
-                console.log('🔍 DEBUGGING: About to call handleSuccessfulPayment');
-                console.log('🔍 DEBUGGING: Firebase auth state:', firebase.auth().currentUser);
-                console.log('🔍 DEBUGGING: Database reference:', db);
-                console.log('🔍 DEBUGGING: Function exists:', typeof handleSuccessfulPayment);
-
-                try {
-                    // Call the success handler
-                    handleSuccessfulPayment(response, amount, packageType, packageName);
-                } catch (error) {
-                    console.error('🚨 CRITICAL ERROR in payment handler:', error);
-                    alert('Payment successful but error saving to database: ' + error.message);
-                }
+                console.log('Payment success response:', response);
+                handleSuccessfulPayment(response, amount, packageType, packageName);
             },
             prefill: {
                 name: user.displayName || '',
@@ -1379,7 +1363,7 @@ function loadAndDisplayPaymentHistory(userId, container, currentPaymentId = null
                     amount: userData.paymentAmount,
                     packageType: userData.packageType || 'custom',
                     packageName: userData.packageName || 'Custom Package',
-                    date: userData.paymentDate || new Date(), // Use regular Date instead of serverTimestamp for arrays
+                    date: userData.paymentDate || firebase.firestore.FieldValue.serverTimestamp(),
                     status: 'paid'
                 };
                 
@@ -1862,15 +1846,9 @@ function loadRazorpayAndPay(packageType = null, customAmount = null) {
 
 // Function to handle successful payment and update Firebase
 function handleSuccessfulPayment(response, amount, packageType, packageName) {
-    console.log('🚀 ENTERING handleSuccessfulPayment function');
-    console.log('📥 Parameters received:', { response, amount, packageType, packageName });
-
     const user = firebase.auth().currentUser;
-    console.log('🔍 Current user check:', user ? `${user.email} (${user.uid})` : 'NO USER');
-
     if (!user) {
         console.error('❌ Payment Error: No authenticated user found');
-        alert('❌ CRITICAL: No authenticated user found during payment save!');
         showToast('Authentication error. Please log in and try again.', 'error');
         return;
     }
@@ -1878,7 +1856,6 @@ function handleSuccessfulPayment(response, amount, packageType, packageName) {
     console.log('✅ Handling successful payment for user:', user.uid);
     console.log('📄 Payment response:', response);
     console.log('💰 Payment details:', { amount, packageType, packageName });
-    console.log('🔍 Database reference check:', db ? 'DB EXISTS' : 'DB MISSING');
 
     // Ensure amount is a number
     amount = Number(amount);
@@ -1894,7 +1871,7 @@ function handleSuccessfulPayment(response, amount, packageType, packageName) {
         amount: amount,
         packageType: packageType || 'custom',
         packageName: packageName,
-        date: new Date(), // Use regular Date instead of serverTimestamp for arrays
+        date: firebase.firestore.FieldValue.serverTimestamp(),
         status: 'paid',
         userId: user.uid,
         userEmail: user.email
@@ -1946,21 +1923,13 @@ function handleSuccessfulPayment(response, amount, packageType, packageName) {
 
             console.log('💾 Updating user document with data:', updateData);
             console.log('🔄 Attempting to save to Firestore for user:', user.uid);
-            console.log('🔍 Firestore operation details:', {
-                collection: 'users',
-                docId: user.uid,
-                operation: 'set with merge',
-                dataSize: JSON.stringify(updateData).length
-            });
 
             // Use set with merge option to ensure it works for both new and existing documents
-            console.log('⏳ Starting Firestore save operation...');
             return db.collection('users').doc(user.uid).set(updateData, { merge: true });
         })
         .then(() => {
             console.log('✅ SUCCESS: Payment data successfully stored in Firebase');
             console.log('🎉 Payment completed for user:', user.uid, 'Amount:', amount);
-            alert('✅ SUCCESS: Payment saved to database successfully!');
             showToast(`Payment successful! Your account has been upgraded to ${packageName}.`, 'success');
             
             // Hide payment section and show success message with payment history
@@ -1980,7 +1949,6 @@ function handleSuccessfulPayment(response, amount, packageType, packageName) {
         })
         .catch(error => {
             console.error("❌ CRITICAL ERROR: Failed to update payment status:", error);
-            alert('🚨 CRITICAL ERROR: Failed to save payment to database: ' + error.message);
             console.error("🔍 Error details:", {
                 code: error.code,
                 message: error.message,
