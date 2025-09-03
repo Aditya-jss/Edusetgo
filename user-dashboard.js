@@ -1363,7 +1363,7 @@ function loadAndDisplayPaymentHistory(userId, container, currentPaymentId = null
                     amount: userData.paymentAmount,
                     packageType: userData.packageType || 'custom',
                     packageName: userData.packageName || 'Custom Package',
-                    date: userData.paymentDate || firebase.firestore.FieldValue.serverTimestamp(),
+                    date: userData.paymentDate || new Date(), // Use regular Date instead of serverTimestamp for arrays
                     status: 'paid'
                 };
                 
@@ -1871,7 +1871,7 @@ function handleSuccessfulPayment(response, amount, packageType, packageName) {
         amount: amount,
         packageType: packageType || 'custom',
         packageName: packageName,
-        date: firebase.firestore.FieldValue.serverTimestamp(),
+        date: new Date(), // Use regular Date instead of serverTimestamp for arrays
         status: 'paid',
         userId: user.uid,
         userEmail: user.email
@@ -1930,6 +1930,9 @@ function handleSuccessfulPayment(response, amount, packageType, packageName) {
         .then(() => {
             console.log('✅ SUCCESS: Payment data successfully stored in Firebase');
             console.log('🎉 Payment completed for user:', user.uid, 'Amount:', amount);
+
+            // Show success alert with payment details
+            alert('✅ SUCCESS: Payment saved to database successfully!\n\nPayment ID: ' + response.razorpay_payment_id + '\nAmount: ₹' + amount);
             showToast(`Payment successful! Your account has been upgraded to ${packageName}.`, 'success');
             
             // Hide payment section and show success message with payment history
