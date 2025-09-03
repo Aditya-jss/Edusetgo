@@ -148,12 +148,18 @@ function initializeFirebase() {
         
         // Load users for the table
         loadUsers(db);
-        
+
         // Load dashboard stats
         updateDashboardStats(db);
-        
+
         // Load recent activity
         loadRecentActivity(db);
+
+        // Load payments data
+        loadPayments(db);
+
+        // Load payment errors for monitoring
+        loadPaymentErrors(db);
         
         console.log("Firebase data loaded successfully");
     } catch (error) {
@@ -406,7 +412,10 @@ function openUserDetailModal(userId, db) {
                     studyDestination = destinationMap[userData.studyDestination] || userData.studyDestination;
                 }
                 document.getElementById('userDetailDestination').textContent = studyDestination;
-                
+
+                // Update payment information
+                updateUserPaymentInfo(userData);
+
                 // Load user applications
                 loadUserApplications(userId, db);
                 
@@ -1036,5 +1045,320 @@ function deleteApplication(appId, userId, db) {
         .catch(error => {
             console.error("Error deleting application:", error);
             showToast('Error deleting application: ' + error.message, 'error');
+        });
+}
+
+// Load payments from Firestore
+function loadPayments(db) {
+    console.log("Loading payments from Firestore...");
+    const paymentsTableBody = document.getElementById('paymentsTableBody');
+    if (!paymentsTableBody) {
+        console.error("Payments table body not found in the DOM");
+        return;
+    }
+
+    // Clear existing rows
+    paymentsTableBody.innerHTML = '';
+
+    // Initialize payment statistics
+    let totalRevenue = 0;
+    let totalPayments = 0;
+    let paidUsers = 0;
+    const allPayments = [];
+
+    // Get all users and filter for those with payment data
+    db.collection('users')
+        .get()
+        .then((querySnapshot) => {
+            console.log("Total users query returned:", querySnapshot.size, "users");
+
+            // Filter users who have payment data
+            const paidUsers = [];
+            querySnapshot.forEach((doc) => {
+                const userData = doc.data();
+
+                // Check if user has payment data (multiple criteria)
+                const hasPaymentStatus = userData.paymentStatus === 'paid';
+                const hasPaymentAmount = userData.paymentAmount && userData.paymentAmount > 0;
+                const hasPaymentHistory = userData.paymentHistory && Array.isArray(userData.paymentHistory) && userData.paymentHistory.length > 0;
+                const hasPaymentId = userData.paymentId;
+
+                // User is considered paid if they have payment status OR payment data
+                if (hasPaymentStatus || hasPaymentAmount || hasPaymentHistory || hasPaymentId) {
+                    paidUsers.push(doc);
+                }
+            });
+
+            console.log("Filtered paid users:", paidUsers.length, "out of", querySnapshot.size, "total users");
+
+            if (paidUsers.length === 0) {
+                paymentsTableBody.innerHTML = '<tr><td colspan="8" class="text-center">No payments found</td></tr>';
+                updatePaymentStats(0, 0, 0, 0);
+                return;
+            }
+
+            // Process the paid users
+            const processedUsers = { docs: paidUsers, forEach: function(callback) { this.docs.forEach(callback); } };
+            return Promise.resolve(processedUsers);
+
+        })
+        .then((processedUsers) => {
+            processedUsers.forEach((doc) => {
+                const userData = doc.data();
+                console.log("User payment data:", userData);
+
+                // Process payment history if available
+                if (userData.paymentHistory && Array.isArray(userData.paymentHistory)) {
+                    userData.paymentHistory.forEach(payment => {
+                        allPayments.push({
+                            userId: doc.id,
+                            userName: userData.name || userData.email.split('@')[0],
+                            userEmail: userData.email,
+                            ...payment
+                        });
+                    });
+                } else if (userData.paymentAmount || userData.paymentId) {
+                    // Handle legacy payment data or users with payment ID but no amount
+                    allPayments.push({
+                        userId: doc.id,
+                        userName: userData.name || userData.email.split('@')[0],
+                        userEmail: userData.email,
+                        paymentId: userData.paymentId || 'N/A',
+                        amount: userData.paymentAmount || 0,
+                        packageName: userData.packageName || 'Custom Package',
+                        date: userData.paymentDate,
+                        status: 'paid'
+                    });
+                }
+            });
+
+            // Sort payments by date (newest first)
+            allPayments.sort((a, b) => {
+                const dateA = a.date ? (a.date.toDate ? a.date.toDate() : new Date(a.date)) : new Date(0);
+                const dateB = b.date ? (b.date.toDate ? b.date.toDate() : new Date(b.date)) : new Date(0);
+                return dateB - dateA;
+            });
+
+            // Calculate statistics
+            totalPayments = allPayments.length;
+            totalRevenue = allPayments.reduce((sum, payment) => sum + (Number(payment.amount) || 0), 0);
+            paidUsers = new Set(allPayments.map(p => p.userId)).size;
+            const avgPayment = totalPayments > 0 ? totalRevenue / totalPayments : 0;
+
+            // Update statistics display
+            updatePaymentStats(totalRevenue, totalPayments, paidUsers, avgPayment);
+
+            // Populate payment table
+            allPayments.forEach(payment => {
+                // Format date
+                let paymentDate = 'N/A';
+                if (payment.date) {
+                    const date = payment.date.toDate ? payment.date.toDate() : new Date(payment.date);
+                    paymentDate = date.toLocaleDateString('en-US', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                }
+
+                // Create row
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${payment.userName}</td>
+                    <td>${payment.userEmail}</td>
+                    <td>${payment.paymentId || 'N/A'}</td>
+                    <td>₹${Number(payment.amount || 0).toLocaleString()}</td>
+                    <td>${payment.packageName || 'Custom Package'}</td>
+                    <td>${paymentDate}</td>
+                    <td><span class="payment-status status-paid">Paid</span></td>
+                    <td class="actions-cell">
+                        <button class="btn btn-primary btn-sm view-payment-btn" data-userid="${payment.userId}">View User</button>
+                    </td>
+                `;
+
+                paymentsTableBody.appendChild(row);
+            });
+
+            // Add event listeners to view payment buttons
+            document.querySelectorAll('.view-payment-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = this.getAttribute('data-userid');
+                    openUserDetailModal(userId, db);
+                });
+            });
+        })
+        .catch((error) => {
+            console.error("Error getting payments:", error);
+            paymentsTableBody.innerHTML = '<tr><td colspan="8" class="text-center">Error loading payments: ' + error.message + '</td></tr>';
+            updatePaymentStats(0, 0, 0, 0);
+        });
+}
+
+// Update payment statistics display
+function updatePaymentStats(totalRevenue, totalPayments, paidUsers, avgPayment) {
+    const totalRevenueElement = document.getElementById('totalRevenue');
+    const totalPaymentsElement = document.getElementById('totalPayments');
+    const paidUsersElement = document.getElementById('paidUsers');
+    const avgPaymentElement = document.getElementById('avgPayment');
+
+    if (totalRevenueElement) {
+        totalRevenueElement.textContent = `₹${totalRevenue.toLocaleString()}`;
+    }
+    if (totalPaymentsElement) {
+        totalPaymentsElement.textContent = totalPayments;
+    }
+    if (paidUsersElement) {
+        paidUsersElement.textContent = paidUsers;
+    }
+    if (avgPaymentElement) {
+        avgPaymentElement.textContent = `₹${Math.round(avgPayment).toLocaleString()}`;
+    }
+}
+
+// Update user payment information in modal
+function updateUserPaymentInfo(userData) {
+    const paymentStatusElement = document.getElementById('userDetailPayment');
+    const paymentDateElement = document.getElementById('userDetailPaymentDate');
+    const paymentDateRow = document.getElementById('paymentDateRow');
+
+    if (!paymentStatusElement) return;
+
+    // Determine payment status
+    let paymentStatus = 'Unpaid';
+    let paymentDate = null;
+    let totalPaid = 0;
+    let paymentCount = 0;
+
+    if (userData.paymentStatus && userData.paymentStatus.toLowerCase() === 'paid') {
+        paymentStatus = 'Paid';
+        paymentDate = userData.paymentDate;
+
+        // Calculate total from payment history
+        if (userData.paymentHistory && Array.isArray(userData.paymentHistory)) {
+            paymentCount = userData.paymentHistory.length;
+            totalPaid = userData.paymentHistory.reduce((sum, payment) => sum + (Number(payment.amount) || 0), 0);
+        } else if (userData.paymentAmount) {
+            paymentCount = 1;
+            totalPaid = Number(userData.paymentAmount) || 0;
+        }
+    } else if (userData.isPaid) {
+        paymentStatus = 'Paid';
+        paymentDate = userData.paymentDate;
+        totalPaid = Number(userData.paymentAmount) || 0;
+        paymentCount = 1;
+    }
+
+    // Update payment status display
+    if (paymentStatus === 'Paid') {
+        paymentStatusElement.innerHTML = `
+            <span class="payment-status status-paid">Paid</span>
+            <div class="payment-details">
+                <small>Total: ₹${totalPaid.toLocaleString()} (${paymentCount} payment${paymentCount !== 1 ? 's' : ''})</small>
+            </div>
+        `;
+
+        // Show payment date if available
+        if (paymentDate && paymentDateElement && paymentDateRow) {
+            const date = paymentDate.toDate ? paymentDate.toDate() : new Date(paymentDate);
+            const formattedDate = date.toLocaleDateString('en-US', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            paymentDateElement.textContent = formattedDate;
+            paymentDateRow.style.display = 'block';
+        }
+    } else {
+        paymentStatusElement.innerHTML = '<span class="payment-status status-unpaid">Unpaid</span>';
+        if (paymentDateRow) {
+            paymentDateRow.style.display = 'none';
+        }
+    }
+}
+
+// Load payment errors for monitoring
+function loadPaymentErrors(db) {
+    console.log("Loading payment errors for monitoring...");
+
+    // Get payment errors from the last 7 days
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    db.collection('payment_errors')
+        .where('timestamp', '>=', sevenDaysAgo)
+        .orderBy('timestamp', 'desc')
+        .limit(50)
+        .get()
+        .then((querySnapshot) => {
+            console.log("Payment errors query returned:", querySnapshot.size, "errors");
+
+            if (querySnapshot.size > 0) {
+                console.warn("⚠️ PAYMENT ERRORS DETECTED:", querySnapshot.size, "errors in the last 7 days");
+
+                querySnapshot.forEach((doc) => {
+                    const errorData = doc.data();
+                    console.error("💥 Payment Error:", {
+                        id: doc.id,
+                        userId: errorData.userId,
+                        userEmail: errorData.userEmail,
+                        paymentId: errorData.paymentId,
+                        amount: errorData.amount,
+                        error: errorData.error,
+                        timestamp: errorData.timestamp
+                    });
+                });
+
+                // You could add UI elements to display these errors in the admin dashboard
+                // For now, we'll just log them to the console
+            } else {
+                console.log("✅ No payment errors found in the last 7 days");
+            }
+        })
+        .catch((error) => {
+            console.error("Error loading payment errors:", error);
+        });
+}
+
+// Function to monitor payment success rate
+function monitorPaymentSuccessRate(db) {
+    console.log("Monitoring payment success rate...");
+
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    // Count successful payments today
+    db.collection('users')
+        .where('paymentDate', '>=', startOfDay)
+        .where('paymentStatus', '==', 'paid')
+        .get()
+        .then((successSnapshot) => {
+            const successCount = successSnapshot.size;
+
+            // Count payment errors today
+            db.collection('payment_errors')
+                .where('timestamp', '>=', startOfDay)
+                .get()
+                .then((errorSnapshot) => {
+                    const errorCount = errorSnapshot.size;
+                    const totalAttempts = successCount + errorCount;
+                    const successRate = totalAttempts > 0 ? (successCount / totalAttempts * 100).toFixed(2) : 100;
+
+                    console.log("📊 Payment Success Rate Today:", {
+                        successful: successCount,
+                        failed: errorCount,
+                        total: totalAttempts,
+                        successRate: successRate + '%'
+                    });
+
+                    if (successRate < 90) {
+                        console.warn("⚠️ LOW PAYMENT SUCCESS RATE:", successRate + '%');
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error counting payment errors:", error);
+                });
+        })
+        .catch((error) => {
+            console.error("Error counting successful payments:", error);
         });
 }

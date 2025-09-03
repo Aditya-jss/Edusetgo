@@ -1201,163 +1201,116 @@ function fixNavigationHoverIssue() {
     setupNavigation();
 }
 
-// Initialize Razorpay payment with package options
+// Function to verify user document exists
+function verifyUserDocument(userId) {
+    return db.collection('users').doc(userId).get()
+        .then(doc => {
+            if (!doc.exists) {
+                console.error('❌ User document does not exist for UID:', userId);
+                throw new Error('User profile not found. Please complete your profile first.');
+            }
+            console.log('✅ User document verified for UID:', userId);
+            return doc.data();
+        });
+}
+
+// Initialize Razorpay payment
 function initializeRazorpay(packageType = null, customAmount = null) {
-    // Show loading indicator
-    showToast('Initializing payment...', 'info');
-    
+    console.log('🚀 Initializing Razorpay payment...');
+    console.log('📦 Package type:', packageType);
+    console.log('💰 Custom amount:', customAmount);
+
     const user = firebase.auth().currentUser;
     if (!user) {
+        console.error('❌ Payment Error: No authenticated user found');
         showToast('Please log in to make a payment', 'error');
         return;
     }
-    
-    // Package details
-    const packages = {
-        basic: { name: 'Basic Package', amount: 1790 },
-        standard: { name: 'Standard Package', amount: 3499 },
-        premium: { name: 'Premium Package', amount: 4799 }
-    };
-    
-    // Determine amount and package name
+
+    console.log('✅ User authenticated:', {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName
+    });
+
+    // Verify user document exists before proceeding
+    verifyUserDocument(user.uid)
+        .then(userData => {
+            console.log('📋 User data verified:', userData);
+            proceedWithPayment(user, packageType, customAmount);
+        })
+        .catch(error => {
+            console.error('❌ User verification failed:', error);
+            showToast(error.message, 'error');
+        });
+}
+
+// Proceed with payment after user verification
+function proceedWithPayment(user, packageType = null, customAmount = null) {
+    console.log('💳 Proceeding with payment for user:', user.uid);
+
+    // Determine amount and package name based on selection
     let amount, packageName;
     
-    if (customAmount) {
-        // Custom amount entered by user
+    if (packageType) {
+        switch(packageType) {
+            case 'basic':
+                amount = 1790;
+                packageName = 'Basic Package';
+                break;
+            case 'standard':
+                amount = 3499;
+                packageName = 'Standard Package';
+                break;
+            case 'premium':
+                amount = 4799;
+                packageName = 'Premium Package';
+                break;
+            default:
+                amount = 1000;
+                packageName = 'Custom Package';
+        }
+    } else if (customAmount) {
         amount = parseInt(customAmount);
         packageName = 'Custom Package';
+        
         if (isNaN(amount) || amount <= 0) {
             showToast('Please enter a valid amount', 'error');
             return;
         }
-    } else if (packageType && packages[packageType]) {
-        // Selected package
-        amount = packages[packageType].amount;
-        packageName = packages[packageType].name;
     } else {
-        // Default to premium if no package selected
-        amount = packages.premium.amount;
-        packageName = packages.premium.name;
-    }
-    
-    // Verify Razorpay is loaded
-    if (typeof Razorpay === 'undefined') {
-        console.error('Razorpay not loaded');
-        showToast('Payment gateway not loaded. Please refresh and try again.', 'error');
+        showToast('Please select a package or enter a custom amount', 'error');
         return;
     }
     
     try {
         // Razorpay options
         const options = {
-            key: 'rzp_test_3iqUnjofSg184z', // Replace with your Razorpay key
+            key: 'rzp_test_RCzDLGsVumZRqx', // Your actual Razorpay key
             amount: amount * 100, // Amount in paise
             currency: 'INR',
             name: 'EduSetGo',
             description: packageName,
             image: 'images/logo.png',
             handler: function(response) {
-                console.log('Payment success response:', response);
-                
-                // Create payment data object
-                const paymentData = {
-                    paymentId: response.razorpay_payment_id,
-                    amount: amount,
-                    packageType: packageType || 'custom',
-                    packageName: packageName,
-                    date: firebase.firestore.FieldValue.serverTimestamp(),
-                    status: 'paid'
-                };
-                
-                // First get the user document to check if paymentHistory exists
-                db.collection('users').doc(user.uid).get()
-                    .then(doc => {
-                        let updateData = {};
-                        
-                        if (!doc.exists) {
-                            // Create new user document if it doesn't exist
-                            updateData = {
-                                paymentHistory: [paymentData],
-                                paymentStatus: 'paid',
-                                paymentMethod: 'razorpay',
-                                paymentId: response.razorpay_payment_id,
-                                paymentAmount: amount,
-                                packageType: packageType || 'custom',
-                                packageName: packageName,
-                                paymentDate: firebase.firestore.FieldValue.serverTimestamp(),
-                                email: user.email,
-                                displayName: user.displayName || '',
-                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                            };
-                            
-                            return db.collection('users').doc(user.uid).set(updateData);
-                        }
-                        
-                        // Get existing data
-                        const userData = doc.data() || {};
-                        
-                        // Initialize payment history array if it doesn't exist or isn't an array
-                        let paymentHistory = [];
-                        
-                        if (userData.paymentHistory && Array.isArray(userData.paymentHistory)) {
-                            paymentHistory = [...userData.paymentHistory]; // Create a copy of the array
-                        } else if (userData.paymentId) {
-                            // Convert single payment to array if needed
-                            const oldPayment = {
-                                paymentId: userData.paymentId,
-                                amount: userData.paymentAmount || 0,
-                                packageType: userData.packageType || 'unknown',
-                                packageName: userData.packageName || 'Unknown Package',
-                                date: userData.paymentDate || firebase.firestore.FieldValue.serverTimestamp(),
-                                status: 'paid'
-                            };
-                            paymentHistory = [oldPayment];
-                        }
-                        
-                        // Add new payment to history
-                        paymentHistory.push(paymentData);
-                        
-                        console.log('Updated payment history:', paymentHistory);
-                        
-                        // Update user document with payment data
-                        updateData = {
-                            paymentStatus: 'paid',
-                            paymentMethod: 'razorpay',
-                            paymentId: response.razorpay_payment_id,
-                            paymentAmount: amount,
-                            packageType: packageType || 'custom',
-                            packageName: packageName,
-                            paymentDate: firebase.firestore.FieldValue.serverTimestamp(),
-                            paymentHistory: paymentHistory // Use the updated array
-                        };
-                        
-                        return db.collection('users').doc(user.uid).update(updateData);
-                    })
-                    .then(() => {
-                        console.log('Payment data saved successfully');
-                        showToast(`Payment successful! Your account has been upgraded to ${packageName}.`, 'success');
-                        
-                        // Hide payment section and show success message with payment history
-                        const paymentSection = document.getElementById('paymentOptions');
-                        const successSection = document.getElementById('paymentSuccess');
-                        
-                        if (paymentSection) paymentSection.style.display = 'none';
-                        if (successSection) {
-                            successSection.style.display = 'block';
-                            
-                            // Get payment history to display
-                            loadAndDisplayPaymentHistory(user.uid, successSection, response.razorpay_payment_id);
-                        }
-                        
-                        // Force reload payment history section after a short delay
-                        setTimeout(() => {
-                            loadPaymentHistorySection(true); // Pass true to force refresh
-                        }, 3000);
-                    })
-                    .catch(error => {
-                        console.error('Error updating user payment status:', error);
-                        showToast('Payment was successful, but we could not update your account status. Please contact support.', 'warning');
-                    });
+                console.log('🎉 RAZORPAY SUCCESS CALLBACK TRIGGERED');
+                console.log('💳 Payment success response:', response);
+                console.log('📊 Payment details:', { amount, packageType, packageName });
+                console.log('👤 Current user:', firebase.auth().currentUser ? firebase.auth().currentUser.uid : 'NO USER');
+
+                // Enhanced debugging
+                console.log('🔍 DEBUGGING: About to call handleSuccessfulPayment');
+                console.log('🔍 DEBUGGING: Firebase auth state:', firebase.auth().currentUser);
+                console.log('🔍 DEBUGGING: Database reference:', db);
+                console.log('🔍 DEBUGGING: Function exists:', typeof handleSuccessfulPayment);
+
+                try {
+                    // Call the success handler
+                    handleSuccessfulPayment(response, amount, packageType, packageName);
+                } catch (error) {
+                    console.error('🚨 CRITICAL ERROR in payment handler:', error);
+                    alert('Payment successful but error saving to database: ' + error.message);
+                }
             },
             prefill: {
                 name: user.displayName || '',
@@ -1380,8 +1333,6 @@ function initializeRazorpay(packageType = null, customAmount = null) {
             }
         };
         
-        console.log('Razorpay options:', options);
-        
         // Create Razorpay instance
         const rzp = new Razorpay(options);
         
@@ -1402,7 +1353,9 @@ function initializeRazorpay(packageType = null, customAmount = null) {
 }
 
 // Function to load and display payment history
-function loadAndDisplayPaymentHistory(userId, container, currentPaymentId) {
+function loadAndDisplayPaymentHistory(userId, container, currentPaymentId = null) {
+    console.log('Loading payment history for user:', userId);
+    
     db.collection('users').doc(userId).get()
         .then(doc => {
             if (!doc.exists) {
@@ -1412,17 +1365,48 @@ function loadAndDisplayPaymentHistory(userId, container, currentPaymentId) {
             }
             
             const userData = doc.data();
-            const paymentHistory = userData.paymentHistory || [];
+            console.log('User data retrieved:', userData);
+            
+            // Check if we have payment data but no payment history
+            let paymentHistory = userData.paymentHistory || [];
+            
+            // If we have payment data but no payment history, create a synthetic entry
+            if (paymentHistory.length === 0 && userData.paymentAmount && userData.paymentId) {
+                console.log('No payment history found, but payment data exists. Creating synthetic entry.');
+                
+                const syntheticPayment = {
+                    paymentId: userData.paymentId,
+                    amount: userData.paymentAmount,
+                    packageType: userData.packageType || 'custom',
+                    packageName: userData.packageName || 'Custom Package',
+                    date: userData.paymentDate || new Date(), // Use regular Date instead of serverTimestamp for arrays
+                    status: 'paid'
+                };
+                
+                paymentHistory = [syntheticPayment];
+                
+                // Store this synthetic history back to the user document
+                db.collection('users').doc(userId).update({
+                    paymentHistory: paymentHistory
+                }).then(() => {
+                    console.log('Synthetic payment history saved to user document');
+                }).catch(error => {
+                    console.error('Error saving synthetic payment history:', error);
+                });
+            }
+            
+            console.log('Payment history to display:', paymentHistory);
             
             // Sort payment history by date (newest first)
             paymentHistory.sort((a, b) => {
-                const dateA = a.date ? a.date.toDate() : new Date(0);
-                const dateB = b.date ? b.date.toDate() : new Date(0);
+                const dateA = a.date ? (a.date.toDate ? a.date.toDate() : new Date(a.date)) : new Date(0);
+                const dateB = b.date ? (b.date.toDate ? b.date.toDate() : new Date(b.date)) : new Date(0);
                 return dateB - dateA;
             });
             
-            // Find current payment
-            const currentPayment = paymentHistory.find(payment => payment.paymentId === currentPaymentId);
+            // Find current payment if ID is provided
+            const currentPayment = currentPaymentId ? 
+                paymentHistory.find(payment => payment.paymentId === currentPaymentId) : null;
             
             // Display success message with payment history
             let historyHTML = '';
@@ -1439,20 +1423,34 @@ function loadAndDisplayPaymentHistory(userId, container, currentPaymentId) {
                                         <th>Package</th>
                                         <th>Amount</th>
                                         <th>Transaction ID</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                 `;
                 
                 paymentHistory.forEach(payment => {
-                    const date = payment.date ? payment.date.toDate() : new Date();
-                    const formattedDate = date.toLocaleDateString('en-US', {
+                    // Handle different date formats
+                    let paymentDate;
+                    if (payment.date) {
+                        if (payment.date.toDate) {
+                            paymentDate = payment.date.toDate();
+                        } else if (payment.date.seconds) {
+                            paymentDate = new Date(payment.date.seconds * 1000);
+                        } else {
+                            paymentDate = new Date(payment.date);
+                        }
+                    } else {
+                        paymentDate = new Date();
+                    }
+                    
+                    const formattedDate = paymentDate.toLocaleDateString('en-US', {
                         day: 'numeric',
                         month: 'short',
                         year: 'numeric'
                     });
                     
-                    const isCurrentPayment = payment.paymentId === currentPaymentId;
+                    const isCurrentPayment = currentPaymentId && payment.paymentId === currentPaymentId;
                     
                     historyHTML += `
                         <tr class="${isCurrentPayment ? 'current-payment' : ''}">
@@ -1460,6 +1458,7 @@ function loadAndDisplayPaymentHistory(userId, container, currentPaymentId) {
                             <td>${payment.packageName || 'Unknown Package'}</td>
                             <td>₹${payment.amount || 0}</td>
                             <td>${payment.paymentId || 'N/A'}</td>
+                            <td><span class="status-badge status-success">Paid</span></td>
                         </tr>
                     `;
                 });
@@ -1472,7 +1471,7 @@ function loadAndDisplayPaymentHistory(userId, container, currentPaymentId) {
                 `;
             }
             
-            // Display success message with current payment details
+            // Display success message with current payment details if available
             if (currentPayment) {
                 const amount = currentPayment.amount || 0;
                 const packageName = currentPayment.packageName || 'Custom Package';
@@ -1487,12 +1486,46 @@ function loadAndDisplayPaymentHistory(userId, container, currentPaymentId) {
                     <button class="btn-primary" onclick="window.location.hash='#dashboard'">Return to Dashboard</button>
                 `;
             } else {
-                displayPaymentSuccess(container, currentPaymentId);
+                // If no current payment ID, just show the payment history
+                const totalPayments = paymentHistory.length;
+                const totalSpent = calculateTotalSpent(paymentHistory);
+                
+                container.innerHTML = `
+                    <div class="payment-summary">
+                        <div class="summary-card">
+                            <div class="summary-icon"><i class="fas fa-credit-card"></i></div>
+                            <div class="summary-details">
+                                <h3>${totalPayments}</h3>
+                                <p>Total Payments</p>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon"><i class="fas fa-money-bill-wave"></i></div>
+                            <div class="summary-details">
+                                <h3>₹${totalSpent}</h3>
+                                <p>Total Spent</p>
+                            </div>
+                        </div>
+                    </div>
+                    ${historyHTML}
+                    <button class="btn-primary" onclick="showPaymentOptions()">Make a New Payment</button>
+                `;
             }
         })
         .catch(error => {
             console.error('Error loading payment history:', error);
-            displayPaymentSuccess(container, currentPaymentId);
+            if (currentPaymentId) {
+                displayPaymentSuccess(container, currentPaymentId);
+            } else {
+                container.innerHTML = `
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Error loading payment history</p>
+                        <p class="text-muted">${error.message}</p>
+                        <button class="retry-btn" onclick="loadPaymentHistorySection(true)">Retry</button>
+                    </div>
+                `;
+            }
         });
 }
 
@@ -1531,9 +1564,6 @@ function loadPaymentHistorySection(forceRefresh = false) {
     // Get the container
     const historyContainer = document.getElementById('paymentHistoryContainer');
     
-    // Add debugging to check user ID
-    console.log('Loading payment history for user ID:', user.uid);
-    
     // Use a cache-busting approach if forceRefresh is true
     let docRef = db.collection('users').doc(user.uid);
     if (forceRefresh) {
@@ -1548,14 +1578,9 @@ function loadPaymentHistorySection(forceRefresh = false) {
         });
     }
     
-    // Load payment history with error handling
+    // Load payment history
     docRef.get({ source: forceRefresh ? 'server' : 'default' })
         .then(doc => {
-            console.log('User document exists:', doc.exists);
-            if (doc.exists) {
-                console.log('User document data:', doc.data());
-            }
-            
             if (!doc.exists) {
                 historyContainer.innerHTML = `
                     <div class="empty-state">
@@ -1568,140 +1593,8 @@ function loadPaymentHistorySection(forceRefresh = false) {
                 return;
             }
             
-            const userData = doc.data();
-            console.log('Payment history in user data:', userData.paymentHistory);
-            
-            // Check if paymentHistory exists and is an array
-            if (!userData.paymentHistory || !Array.isArray(userData.paymentHistory) || userData.paymentHistory.length === 0) {
-                // Check if there's a single payment that needs to be converted to an array
-                if (userData.paymentId && userData.paymentAmount) {
-                    console.log('Found single payment data, converting to history array');
-                    // Create a payment history array from the single payment data
-                    const singlePayment = {
-                        paymentId: userData.paymentId,
-                        amount: userData.paymentAmount,
-                        packageType: userData.packageType || 'unknown',
-                        packageName: userData.packageName || 'Unknown Package',
-                        date: userData.paymentDate || firebase.firestore.FieldValue.serverTimestamp(),
-                        status: 'paid'
-                    };
-                    
-                    // Update the user document with the new payment history array
-                    db.collection('users').doc(user.uid).update({
-                        paymentHistory: [singlePayment]
-                    }).then(() => {
-                        console.log('Created payment history array from single payment');
-                        // Reload the payment history section
-                        setTimeout(() => loadPaymentHistorySection(true), 1000);
-                    }).catch(err => {
-                        console.error('Error creating payment history array:', err);
-                    });
-                }
-                
-                historyContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-receipt"></i>
-                        <p>No payment history found</p>
-                        <p class="text-muted">You haven't made any payments yet.</p>
-                        <button class="btn-primary" onclick="showPaymentOptions()">Make a Payment</button>
-                    </div>
-                `;
-                return;
-            }
-            
-            const paymentHistory = userData.paymentHistory;
-            
-            // Sort payment history by date (newest first)
-            paymentHistory.sort((a, b) => {
-                const dateA = a.date ? (a.date.toDate ? a.date.toDate() : new Date(a.date)) : new Date(0);
-                const dateB = b.date ? (b.date.toDate ? b.date.toDate() : new Date(b.date)) : new Date(0);
-                return dateB - dateA;
-            });
-            
-            // Create payment history HTML
-            let historyHTML = `
-                <div class="payment-summary">
-                    <div class="summary-card">
-                        <div class="summary-icon"><i class="fas fa-credit-card"></i></div>
-                        <div class="summary-details">
-                            <h3>${paymentHistory.length}</h3>
-                            <p>Total Payments</p>
-                        </div>
-                    </div>
-                    <div class="summary-card">
-                        <div class="summary-icon"><i class="fas fa-money-bill-wave"></i></div>
-                        <div class="summary-details">
-                            <h3>₹${calculateTotalSpent(paymentHistory)}</h3>
-                            <p>Total Spent</p>
-                        </div>
-                    </div>
-                    <div class="summary-card">
-                        <div class="summary-icon"><i class="fas fa-calendar-alt"></i></div>
-                        <div class="summary-details">
-                            <h3>${formatDate(getLastPaymentDate(paymentHistory))}</h3>
-                            <p>Last Payment</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="action-bar">
-                    <button class="btn-primary" onclick="showPaymentOptions()">Make a New Payment</button>
-                </div>
-                <div class="payment-history-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Package</th>
-                                <th>Amount</th>
-                                <th>Transaction ID</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-            
-            paymentHistory.forEach(payment => {
-                // Handle different date formats
-                let paymentDate;
-                if (payment.date) {
-                    if (payment.date.toDate) {
-                        paymentDate = payment.date.toDate();
-                    } else if (payment.date.seconds) {
-                        paymentDate = new Date(payment.date.seconds * 1000);
-                    } else {
-                        paymentDate = new Date(payment.date);
-                    }
-                } else {
-                    paymentDate = new Date();
-                }
-                
-                const formattedDate = paymentDate.toLocaleDateString('en-US', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric'
-                });
-                
-                historyHTML += `
-                    <tr>
-                        <td>${formattedDate}</td>
-                        <td>${payment.packageName || 'Unknown Package'}</td>
-                        <td>₹${payment.amount || 0}</td>
-                        <td>${payment.paymentId || 'N/A'}</td>
-                        <td><span class="status-badge status-success">Paid</span></td>
-                    </tr>
-                `;
-            });
-            
-            historyHTML += `
-                        </tbody>
-                    </table>
-                </div>
-                <div class="payment-history-note">
-                    <p><i class="fas fa-info-circle"></i> For any payment-related queries, please contact our support team.</p>
-                </div>
-            `;
-            
-            historyContainer.innerHTML = historyHTML;
+            // Load and display payment history
+            loadAndDisplayPaymentHistory(user.uid, historyContainer);
         })
         .catch(error => {
             console.error('Error loading payment history:', error);
@@ -1965,4 +1858,162 @@ function loadRazorpayAndPay(packageType = null, customAmount = null) {
     };
     
     document.body.appendChild(script);
+}
+
+// Function to handle successful payment and update Firebase
+function handleSuccessfulPayment(response, amount, packageType, packageName) {
+    console.log('🚀 ENTERING handleSuccessfulPayment function');
+    console.log('📥 Parameters received:', { response, amount, packageType, packageName });
+
+    const user = firebase.auth().currentUser;
+    console.log('🔍 Current user check:', user ? `${user.email} (${user.uid})` : 'NO USER');
+
+    if (!user) {
+        console.error('❌ Payment Error: No authenticated user found');
+        alert('❌ CRITICAL: No authenticated user found during payment save!');
+        showToast('Authentication error. Please log in and try again.', 'error');
+        return;
+    }
+
+    console.log('✅ Handling successful payment for user:', user.uid);
+    console.log('📄 Payment response:', response);
+    console.log('💰 Payment details:', { amount, packageType, packageName });
+    console.log('🔍 Database reference check:', db ? 'DB EXISTS' : 'DB MISSING');
+
+    // Ensure amount is a number
+    amount = Number(amount);
+    if (isNaN(amount) || amount <= 0) {
+        console.error('❌ Payment Error: Invalid amount:', amount);
+        showToast('Invalid payment amount. Please try again.', 'error');
+        return;
+    }
+
+    // Create payment data object
+    const paymentData = {
+        paymentId: response.razorpay_payment_id,
+        amount: amount,
+        packageType: packageType || 'custom',
+        packageName: packageName,
+        date: new Date(), // Use regular Date instead of serverTimestamp for arrays
+        status: 'paid',
+        userId: user.uid,
+        userEmail: user.email
+    };
+
+    console.log('💾 Payment data to store:', paymentData);
+    
+    // Update user document with payment data
+    console.log('🔍 Fetching user document for UID:', user.uid);
+    db.collection('users').doc(user.uid).get()
+        .then(doc => {
+            console.log('📋 User document status:', doc.exists ? 'EXISTS' : 'DOES NOT EXIST');
+
+            if (!doc.exists) {
+                console.error('❌ Critical Error: User document does not exist for UID:', user.uid);
+                throw new Error('User document not found. Please contact support.');
+            }
+
+            let updateData = {};
+
+            // Initialize payment history array if it doesn't exist
+            let paymentHistory = [];
+            const userData = doc.data() || {};
+            console.log('📊 Current user data:', userData);
+
+            if (userData.paymentHistory && Array.isArray(userData.paymentHistory)) {
+                paymentHistory = [...userData.paymentHistory];
+                console.log('📜 Existing payment history found:', paymentHistory.length, 'payments');
+            } else {
+                console.log('🆕 No existing payment history found, creating new array');
+            }
+
+            // Add new payment to history
+            paymentHistory.push(paymentData);
+            console.log('📝 Updated payment history:', paymentHistory.length, 'total payments');
+            
+            // Update user document
+            updateData = {
+                paymentStatus: 'paid',
+                paymentMethod: 'razorpay',
+                paymentId: response.razorpay_payment_id,
+                paymentAmount: amount,
+                packageType: packageType || 'custom',
+                packageName: packageName,
+                paymentDate: firebase.firestore.FieldValue.serverTimestamp(),
+                paymentHistory: paymentHistory,
+                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            console.log('💾 Updating user document with data:', updateData);
+            console.log('🔄 Attempting to save to Firestore for user:', user.uid);
+            console.log('🔍 Firestore operation details:', {
+                collection: 'users',
+                docId: user.uid,
+                operation: 'set with merge',
+                dataSize: JSON.stringify(updateData).length
+            });
+
+            // Use set with merge option to ensure it works for both new and existing documents
+            console.log('⏳ Starting Firestore save operation...');
+            return db.collection('users').doc(user.uid).set(updateData, { merge: true });
+        })
+        .then(() => {
+            console.log('✅ SUCCESS: Payment data successfully stored in Firebase');
+            console.log('🎉 Payment completed for user:', user.uid, 'Amount:', amount);
+            alert('✅ SUCCESS: Payment saved to database successfully!');
+            showToast(`Payment successful! Your account has been upgraded to ${packageName}.`, 'success');
+            
+            // Hide payment section and show success message with payment history
+            const paymentSection = document.getElementById('paymentOptions');
+            const successSection = document.getElementById('paymentSuccess');
+            
+            if (paymentSection) paymentSection.style.display = 'none';
+            if (successSection) {
+                successSection.style.display = 'block';
+                loadAndDisplayPaymentHistory(user.uid, successSection, response.razorpay_payment_id);
+            }
+            
+            // Force reload payment history section after a short delay
+            setTimeout(() => {
+                loadPaymentHistorySection(true);
+            }, 3000);
+        })
+        .catch(error => {
+            console.error("❌ CRITICAL ERROR: Failed to update payment status:", error);
+            alert('🚨 CRITICAL ERROR: Failed to save payment to database: ' + error.message);
+            console.error("🔍 Error details:", {
+                code: error.code,
+                message: error.message,
+                userId: user.uid,
+                userEmail: user.email,
+                paymentId: response.razorpay_payment_id,
+                amount: amount,
+                timestamp: new Date().toISOString()
+            });
+
+            // Try to log the error to a separate collection for monitoring
+            try {
+                db.collection('payment_errors').add({
+                    userId: user.uid,
+                    userEmail: user.email,
+                    paymentId: response.razorpay_payment_id,
+                    amount: amount,
+                    packageType: packageType,
+                    packageName: packageName,
+                    error: {
+                        code: error.code,
+                        message: error.message
+                    },
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    console.log('📝 Error logged to payment_errors collection');
+                }).catch(logError => {
+                    console.error('❌ Failed to log error:', logError);
+                });
+            } catch (logError) {
+                console.error('❌ Failed to create error log:', logError);
+            }
+
+            showToast('Payment was successful but there was an error updating your account. Please contact support with payment ID: ' + response.razorpay_payment_id, 'error');
+        });
 }

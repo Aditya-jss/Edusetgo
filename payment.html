@@ -317,7 +317,7 @@
             apiKey: "AIzaSyBLAHgSs8caqBdjbuNqUFs21vb24NO28_U",
             authDomain: "edusetgo-c895f.firebaseapp.com",
             projectId: "edusetgo-c895f",
-            storageBucket: "edusetgo-c895f.appspot.com",
+            storageBucket: "edusetgo-c895f.firebasestorage.app",
             messagingSenderId: "356614273448",
             appId: "1:356614273448:web:ab2de825d2c810cbc9459d",
             measurementId: "G-N5JFFCJ1L2"
@@ -334,7 +334,14 @@
         // Check authentication
         auth.onAuthStateChanged(function(user) {
             if (!user) {
+                console.log('❌ No authenticated user found, redirecting to auth page');
                 window.location.href = 'auth.html';
+            } else {
+                console.log('✅ User authenticated in payment page:', {
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName
+                });
             }
         });
         
@@ -372,31 +379,60 @@
         
         // Process payment
         function processPayment(method) {
+            console.log("🚀 Processing payment with method:", method);
+
+            const user = auth.currentUser;
+            if (!user) {
+                console.error('❌ Payment Error: No authenticated user found');
+                alert('Please log in to make a payment');
+                return;
+            }
+
+            console.log('✅ User authenticated for payment:', {
+                uid: user.uid,
+                email: user.email,
+                displayName: user.displayName
+            });
+
             // Show loading state
             const button = document.querySelector(`#${method}CardForm .btn-pay`);
             const originalText = button.textContent;
             button.disabled = true;
             button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            
+
             // Simulate payment processing
             setTimeout(() => {
                 // Hide all forms
                 paymentForms.forEach(form => form.classList.remove('active'));
-                
+
                 // Show success message
                 document.getElementById('paymentSuccess').style.display = 'block';
-                
+
+                console.log('💾 Updating payment status in Firestore for user:', user.uid);
+
                 // Update user payment status in Firestore
-                const user = auth.currentUser;
-                if (user) {
-                    db.collection('users').doc(user.uid).update({
-                        paymentStatus: 'paid',
-                        paymentMethod: method,
-                        paymentDate: firebase.firestore.FieldValue.serverTimestamp()
-                    }).catch(error => {
-                        console.error("Error updating payment status:", error);
+                const paymentData = {
+                    paymentStatus: 'paid',
+                    paymentMethod: method,
+                    paymentDate: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                console.log('📝 Payment data to update:', paymentData);
+
+                db.collection('users').doc(user.uid).update(paymentData)
+                    .then(() => {
+                        console.log('✅ SUCCESS: Payment status updated in Firestore');
+                    })
+                    .catch(error => {
+                        console.error("❌ ERROR: Failed to update payment status:", error);
+                        console.error("🔍 Error details:", {
+                            code: error.code,
+                            message: error.message,
+                            userId: user.uid,
+                            userEmail: user.email
+                        });
                     });
-                }
             }, 2000);
         }
         

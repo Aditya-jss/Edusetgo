@@ -9,7 +9,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyBLAHgSs8caqBdjbuNqUFs21vb24NO28_U",
     authDomain: "edusetgo-c895f.firebaseapp.com",
     projectId: "edusetgo-c895f",
-    storageBucket: "edusetgo-c895f.appspot.com",
+    storageBucket: "edusetgo-c895f.firebasestorage.app",
     messagingSenderId: "356614273448",
     appId: "1:356614273448:web:ab2de825d2c810cbc9459d",
     measurementId: "G-N5JFFCJ1L2"
